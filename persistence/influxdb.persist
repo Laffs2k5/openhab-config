@@ -1,0 +1,7 @@
+Strategies {
+    default = everyUpdate
+}
+
+Items {
+    gPersistInfluxEveryUpdate* : strategy = everyUpdate
+}
