@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" CONTENT="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="panel-300px.css" />
+    <script src="smarthome-grafana.js"></script>
+    <script src="smarthome-grafana-user-defaults.js"></script>
+</head>
+
+<body>
+</body>
+
+<script>
+    var fromToItemFunction = function(value) {
+        switch (value) {
+            case "0": 
+                return "now-3h";
+            case "1": 
+                return "now-1d";
+            default: 
+            case "2":
+                return "now-1w";
+        }
+    }
+
+    addGrafanaPanel("coffeePot", {
+        fromItemFunction: fromToItemFunction
+    });
+</script>
+
+</html>
