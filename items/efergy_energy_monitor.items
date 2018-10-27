@@ -1,0 +1,152 @@
+/*
+    efergy energy monitor
+    Readout is performed on different device and posted using REST API to OH.
+
+    GET state
+        curl -X GET --header "Accept: text/plain" "http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state"
+    PUT state
+        curl -X PUT --header "Content-Type: text/plain" --header "Accept: application/json" -d "01/03/18,19:57:02,0.000000" "http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state"
+    
+    Setup pi
+        Image: 2017-11-29-raspbian-stretch-lite.zip
+        add ssh file to boot
+        add wpa_supplicant.conf to boot
+        boot pi
+        ssh in: bash -c "ssh pi@efergy.pi.ip.address"
+        change pass: passwd
+        sudo apt-get update
+        sudo apt-get upgrade
+        sudo apt-get install -y git libtool libusb-1.0.0-dev librtlsdr-dev rtl-sdr
+        sudo shutdown -r now
+        
+    Install
+        ssh in: bash -c "ssh pi@efergy.pi.ip.address"
+        git clone https://github.com/magellannh/RPI_Efergy.git
+        cd RPI_Efergy/
+        nano EfergyRPI_log.c
+            // change voltage to 230
+            replace
+                double current_adc = (bytes[4] * 256) + bytes[5];
+            with 
+                double current_adc = (((unsigned char*)bytes)[4] * 256) + ((unsigned char*)bytes)[5];
+        gcc -O3 -lm -o EfergyRPI_log EfergyRPI_log.c
+        rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && print "$1\n"'
+
+    Install Cron
+        Edit crontab
+            sudo crontab -e
+        Cron: start every half hour at :25/:55, run for 29.5min
+            25,55 * * * * timeout --signal=2 --kill-after=15 1770s rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | /home/pi/RPI_Efergy/EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")' >/dev/null 2>&1
+        Cron: Reboot each night in attempt to avoid fs corruption, https://crontab.guru/#22_2_*_*_*
+            22 2 * * * /sbin/shutdown -r now
+        check cron log
+            sudo tail -f /var/log/syslog
+        Edit crontab
+            sudo crontab -e
+        View crontab
+            sudo crontab -l
+        Check if process is running
+            sudo ps -aux | grep rtl
+
+    DEV stuff below
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        Use and tune
+            rtl_fm -f 433.51e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log -d 2
+                This  level shows average plus and minus sample values and centering 
+                which can help with finding the best frequency. Adjust frequency to get 
+                wave center close to  0 .  If center is too high, lower frequency, 
+                otherwise increase it.
+
+            rtl_fm -f 433.5235e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log -d 2
+            360 - 400ish
+
+            rtl_fm -f 433.522e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log -d 2
+            500 - 600
+
+            rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log -d 2
+            -100 - 100
+
+            rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log
+            rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log out.log
+
+        Send to OH
+            First stdout formatted
+                cat out_test.log | perl -n -e'/^.*,(.*)/ && print "$1\n"'
+                rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && print "$1\n"'
+
+            Then echo as curl command
+                cat out_test.log | perl -n -e'/^.*,(.*)/ && print("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")'
+                rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && print("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")'
+
+            Sample output
+                curl -X PUT --header "Content-Type: text/plain" --header "Accept: application/json" -d "6190.908203" "http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state"
+                curl -X PUT --header "Content-Type: text/plain" --header "Accept: application/json" -d "6017.285156" "http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state"
+
+            Actual piping to OH command, using perl function system()
+                cat out_test.log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")'
+                rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")'
+
+            Print result of GET between perls
+                cat out_test.log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n"); print(system("curl -X GET --header \"Accept: text/plain\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"") . "\n")'
+                echo 01/03/18,21:17:44,6073.437500| perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n"); print(system("curl -X GET --header \"Accept: text/plain\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"") . "\n")'
+                rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n"); print(system("curl -X GET --header \"Accept: text/plain\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"") . "\n")'
+
+            Debug by posting to Number item instead, EnergyMonitor_Household_Efergy
+                rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy/state\"\n"); print(system("curl -X GET --header \"Accept: text/plain\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy/state\"") . "\n")'
+
+            Cron: Add timeout to kill after given time
+                timeout --signal=2 --kill-after=5 2m rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")'
+            With output to log file and GET
+                timeout --signal=2 --kill-after=5 2m rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n"); print(system("curl -X GET --header \"Accept: text/plain\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy/state\"") . "\n")' >/home/pi/efergy_cron.log 2>&1
+    */
+    //      Cron: start every 5min run for 1min
+    //          */5 * * * * timeout --signal=2 --kill-after=5 1m rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | /home/pi/RPI_Efergy/EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")'
+    //      Cron: start every 5min run for 2min, print GET for debug, print to log file in home
+    //          */5 * * * * timeout --signal=2 --kill-after=5 2m rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | /home/pi/RPI_Efergy/EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n"); print(system("curl -X GET --header \"Accept: text/plain\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"") . "\n")' >/home/pi/efergy_cron.log 2>&1
+    //      Cron: start every hour at :45, run for 55min
+    //          45 * * * * timeout --signal=2 --kill-after=5 55m rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | /home/pi/RPI_Efergy/EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")' >/dev/null 2>&1
+    //      Cron: start every half hour at :20/:50, run for 29.5min
+    //          20,50 * * * * timeout --signal=2 --kill-after=15 1770s rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast | /home/pi/RPI_Efergy/EfergyRPI_log | perl -n -e'/^.*,(.*)/ && system("curl -X PUT --header \"Content-Type: text/plain\" --header \"Accept: application/json\" -d \"" . $1 . "\" \"http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state\"\n")' >/dev/null 2>&1
+    //      check cron log
+    //          sudo tail -f /var/log/syslog
+    //      Edit crontab
+    //          sudo crontab -e
+    //      View crontab
+    //          sudo crontab -l
+    //      Check if process is running
+    //          sudo ps -aux | grep rtl
+    //
+    //      Cron: start 00:00 each day and run 23h59m
+    
+    //
+    // END DEV stuff
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/* Chart period setting details sitemap */
+String 
+    EnergyMonitor_Household_chartPeriod
+    "Chart period"
+    <line>
+
+/* Household energy monitor */
+DateTime 
+    EnergyMonitor_Household_Efergy_LastReadout
+    "Household energy monitor last readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+String
+    EnergyMonitor_Household_Efergy_ValueString
+    "Household energy monitor string value is [%s]"
+    <lastreading>
+DateTime 
+    EnergyMonitor_Household_Efergy_LastValidReadout
+    "Household energy monitor last valid readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    EnergyMonitor_Household_Efergy
+    "Household energy monitor value is [%d]"
+    <energymonitor>
+    (gPersistInfluxEveryUpdate) */
+

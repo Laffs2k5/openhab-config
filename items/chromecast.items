@@ -1,0 +1,49 @@
+/*
+    Consolidate all chromecast related items
+*/
+
+Group
+    gChromeCasts
+    "All chromecasts"
+    <television>
+
+/* Chromecast stua */
+Dimmer
+    Chromecast_GF_LivingRoom_volume
+    "Living room chromecast volume is [%d %%]"
+    <chromecast>
+    (gChromeCasts)
+    { channel="chromecast:audio:dc4090bdf1b19dd403b4b9ddd36c149d:volume" }
+Player
+    Chromecast_GF_LivingRoom_control             
+    "Living room chromecast state is [%s]"
+    <chromecast>
+    (gChromeCasts)
+    { channel="chromecast:audio:dc4090bdf1b19dd403b4b9ddd36c149d:control" }
+String
+    Chromecast_GF_LivingRoom_playuri
+    "Living room chromecast URI is [%s]"
+    <music>
+    (gChromeCasts)
+    {channel="chromecast:audio:dc4090bdf1b19dd403b4b9ddd36c149d:playuri"}
+/* END Chromecast stua */
+
+/* Chromecast datarom */
+Dimmer
+    Chromecast_GF_ComputerRoom_volume
+    "Computer room chromecast volume is [%d %%]"
+    <chromecast>
+    (gChromeCasts)
+     { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:volume" }
+Player
+    Chromecast_GF_ComputerRoom_control             
+    "Computer room chromecast state is [%s]"
+    <chromecast>
+    (gChromeCasts)
+    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:control" }
+String
+    Chromecast_GF_ComputerRoom_playuri
+    "Computer room chromecast URI is [%s]"
+    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:playuri" }
+/* END Chromecast datarom */
+

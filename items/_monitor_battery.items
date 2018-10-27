@@ -1,0 +1,5 @@
+/*
+    All items related to battery monitoring
+*/
+
+Group   gBatteryMonitoredItems       // for Items to monitor

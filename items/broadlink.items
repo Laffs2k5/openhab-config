@@ -1,0 +1,13 @@
+
+String
+    IR_GF_LivingRoom_Broadlink_RM2_command
+    "Living room IR blaster controller"
+    <irblaster>
+    { channel="broadlink:rm2:b4-43-0d-aa-41-a3:command" }
+/*
+String
+    IR_GF_LivingRoom_Broadlink_RM2_temperature
+    "Living room IR blaster temperature [%.1f °C]"
+    <colortemperature>
+    { channel="broadlink:rm2:b4-43-0d-aa-41-a3:temperature" }
+*/

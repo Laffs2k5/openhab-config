@@ -1,0 +1,89 @@
+
+Group 
+    gSqueezeboxes
+    "All squeezebox devices"
+
+Dimmer
+    Squeeze_GF_LivingRoom_Volume
+    "Living room squeezebox volume is [%d %%]"
+    <volume>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:volume" }
+Switch 
+    Squeeze_GF_LivingRoom_Mute
+    "Living room squeezebox mute is [%s]"
+    (gRoomLivingRoom, gSqueezeboxes)
+    {channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:mute"}
+Player
+    Squeeze_GF_LivingRoom_Control
+    "Living room squeezebox control"
+    <playback2>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:control" }
+String
+    Squeeze_GF_LivingRoom_Stream 
+    ""
+    <streammusic>
+    {channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:stream"}
+Number
+    Squeeze_GF_LivingRoom_PlayingTime
+    "Living room squeezebox playing time is [%d]"
+    <music>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:currentPlayingTime" }
+Number
+    Squeeze_GF_LivingRoom_Duration
+    "Living room squeezebox duration is [%d]"
+    <music>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:duration" }
+Number
+    Squeeze_GF_LivingRoom_ShuffleMode
+    "Living room squeezebox shuffle mode is [MAP(squeeze_shuffle.map):%s]"
+    <icon>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:currentPlaylistShuffle" }
+Number
+    Squeeze_GF_LivingRoom_RepeatMode
+    "Living room squeezebox repeat mode is [MAP(squeeze_repeat.map):%s]"
+    <icon>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:currentPlaylistRepeat" }
+String
+    Squeeze_GF_LivingRoom_Title
+    "Living room squeezebox title is [%s]"
+    <music>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:title" }
+String
+    Squeeze_GF_LivingRoom_Remotetitle
+    "Living room squeezebox remotetitle is [%s]"
+    <music>
+    (gRoomLivingRoom, gSqueezeboxes)
+    {channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:remotetitle"}
+String
+    Squeeze_GF_LivingRoom_Album
+    "Living room squeezebox album is [%s]"
+    <music>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:album" }
+String
+    Squeeze_GF_LivingRoom_Artist
+    "Living room squeezebox artist is [%s]"
+    <music>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:artist" }
+/*
+Image
+    Squeeze_GF_LivingRoom_CoverArt
+    "Living room squeezebox cover art is [%s]"
+    <icon>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:coverartdata" }
+*/
+Dimmer
+    Squeeze_GF_LivingRoom_NotificationVolume
+    "Living room squeezebox notification volume is [%d %%]"
+    <icon>
+    (gRoomLivingRoom, gSqueezeboxes)
+    { channel="squeezebox:squeezeboxplayer:FCA658FD-4020-4417-AA9F-1A87A2498A8D:000420124d4c:notificationSoundVolume" }

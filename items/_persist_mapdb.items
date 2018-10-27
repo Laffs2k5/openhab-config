@@ -1,0 +1,5 @@
+/* 
+    All items related to persisting i mapdb should be maintained i this file
+*/
+
+Group   gPersistMapdbSkipRestoreOnStartup       // for Items to persist for charting

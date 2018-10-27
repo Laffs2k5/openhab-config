@@ -1,0 +1,90 @@
+/*
+    All items related to persisting i InfluxDB should be maintained i this file
+*/
+
+Group   gPersistInfluxEveryUpdate       // for Items to persist for charting
+
+/* Coffee pot plug
+    "mirror" items ie. items with rules are connected to the same channels elsewhere,
+    these are just for persitence in influx
+*/
+Switch
+    Wallplug_firstFloor_kitchen_cofeeMaker // if name is changed data in influx must be migrated
+    "Moccamaster"
+    <switch>
+    (gPersistInfluxEveryUpdate)
+    { channel="tplinksmarthome:hs100:8F6DBF:switch" }
+Number
+    Wallplug_firstFloor_kitchen_cofeeMaker_rssi // if name is changed data in influx must be migrated
+    "Moccamaster signal (dBm)"
+    <signal>
+    (gPersistInfluxEveryUpdate)
+    { channel="tplinksmarthome:hs100:8F6DBF:rssi" }
+
+/* Squeezebox radio light sensors
+    These numbers are updated by a rule that converts sensor data from string
+*/
+Number
+    LightSensor_CL_Guestroom_SqueezeboxRadio
+    "Guest room squeezebox light sensor value is [%d]"
+    <lightsensor>
+    (gRoomGuestRoom, gPersistInfluxEveryUpdate)
+Number
+    LightSensor_FF_Bedroom_SqueezeboxRadio
+    "Bedroom squeezebox light sensor value is [%d]"
+    <lightsensor>
+    (gRoomBedroom, gPersistInfluxEveryUpdate)
+
+/* efergy household energy monitor
+    This number is updated by a rule that converts sensor data from string
+*/
+Number
+    EnergyMonitor_Household_Efergy
+    "Household energy monitor value is [%d]"
+    <energymonitor>
+    (gPersistInfluxEveryUpdate)
+
+/* Fibaro FGD212 Dimmer 2: Staircase light power consumption */
+Number
+    Dimmer_GF_Staircase_SensorPower
+    "Staircase light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomStaircase, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node5:sensor_power"}
+
+/* Fibaro FGD212 Dimmer 2: Dining room power consumption */
+Number
+    Dimmer_GF_DiningRoom_SensorPower
+    "Dining room light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomStaircase, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node10:sensor_power"}
+
+/* Qubino Flush 1 Relay Z-wave: Laundry room main lights power consumption */
+Number
+    Relay_CL_LaundryRoom_meterWatts
+    "Laundry room main lights power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    { channel="zwave:device:2c3b27f3:node7:meter_watts" }
+
+/* TELLDUS Multisensor Z-Wave: Laundry room */
+Number
+    Sensor_CL_LaundryRoom_sensorTemperature
+    "Laundry room temperature is [%.0f °C]"
+    <temperature>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    { channel="zwave:device:2c3b27f3:node9:sensor_temperature" }
+Number
+    Sensor_CL_LaundryRoom_sensorLuminance
+    "Laundry room light sensor value is [%d]"
+    <lightsensor>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    { channel="zwave:device:2c3b27f3:node9:sensor_luminance" }
+Number
+    Sensor_CL_LaundryRoom_batteryLevel
+    "Laundry room battery Level is [%.0f %%]"
+    <battery>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    { channel="zwave:device:2c3b27f3:node9:battery-level" }
+/* END TELLDUS Multisensor */

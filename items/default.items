@@ -1,0 +1,147 @@
+
+/* Persistence */
+// OH 2.1: Group Items without a base type no longer receive state updates. If
+// you rely on such events (e.g. because you react on it in rules), you will
+// need to add a type information, i.e. instead of Group MyLights, you should
+// define Group:Switch MyLights.
+//Group   gPersistChart       // for Items to persist for charting
+//Group   gPersistMyOpenhab   // for Items that are exposed to IFTTT 
+//Group   gPersistHistory     // for Items to preserve their history
+
+/* Appliance categories */
+//Group   gChromeCasts    "Chromecasts"           <television>
+
+/* Misc */
+DateTime
+    CurrentDate
+    "Date [%1$tA, %1$td.%1$tm.%1$tY %1$tH:%1$tM]"
+    <calendar>
+    { channel="ntp:ntp:local:dateTime" }
+
+Number 
+    Sun_Elevation
+    "Sun Elevation"
+    <sun>
+    { channel = "astro:sun:home:position#elevation" }
+Number
+    Sun_Azimuth
+    "Sun Azimuth"
+    <sun>
+    { channel = "astro:sun:home:position#azimuth" }
+DateTime
+    Sunrise_Time
+    "Sunrise [%1$tH:%1$tM]"
+    <sunrise>
+    { channel = "astro:sun:home:rise#start" }
+DateTime
+    Sunset_Time
+    "Sunset [%1$tH:%1$tM]"
+    <sunset>
+    { channel = "astro:sun:home:set#start" }
+Number
+    Moon_Elevation
+    "Moon Elevation"
+    <moon>
+    { channel = "astro:moon:home:position#elevation" }
+Number
+    Moon_Azimuth
+    "Moon Azimuth"
+    <moon>
+    { channel = "astro:moon:home:position#azimuth" }
+String
+    Moon_Phase
+    "Moon Phase [MAP(en.map):%s]"
+    <moon>
+    { channel = "astro:moon:home:phase#name" }
+/* END Misc */
+
+/* Kaffen 
+Switch
+    Wallplug_firstFloor_kitchen_cofeeMaker
+    "Moccamaster"
+    <switch>
+    (gRoomKitchen, gPersistChart)
+    { channel="tplinksmarthome:hs100:8F6DBF:switch" }
+Number
+    Wallplug_firstFloor_kitchen_cofeeMaker_rssi
+    "Moccamaster signal (dBm)"
+    <signal>
+    (gPersistChart)
+    { channel="tplinksmarthome:hs100:8F6DBF:rssi" }
+String 
+    moccamaster_chartPeriod
+    "Chart period"
+    <none>
+/* END Kaffen */
+
+/* Yeelight strip #1 
+Dimmer
+    LedStrip_GF_ComputerRoom_brightness
+    "TV backlight brightness [%d %%]"
+    <dimmablelight>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
+Color
+    LedStrip_GF_ComputerRoom_color
+    "TV backlight color"
+    <colorlight>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Color"}
+Dimmer
+    LedStrip_GF_ComputerRoom_color_temperature
+    "TV backlight color temperature"
+    <light>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Color_Temperature"}
+/* END Yeelight strip #1 */
+
+/* Chromecast stua
+Switch 
+    Online_firstFloor_livingRoom_CC
+    "Stuelyd is [%s]"
+    { channel="network:device:some.ip.address.110:online" }
+Dimmer
+    Volume_firstFloor_livingRoom_CC
+    "Stuelyd"
+    <chromecast>
+    (gRoomLivingRoom, gChromeCasts)
+    { channel="chromecast:audio:dc4090bdf1b19dd403b4b9ddd36c149d:volume" }
+Player
+    Music_firstFloor_livingRoom_CC              
+    "Stuelyd"
+    <chromecast>
+    (gRoomLivingRoom, gChromeCasts)
+    { channel="chromecast:audio:dc4090bdf1b19dd403b4b9ddd36c149d:control" }
+/* END Chromecast stua */
+
+/* Chromecast datarom 
+Switch 
+    Online_firstFloor_computerRoom_CC
+    "LeifCast is [%s]"
+    { channel="network:device:some.ip.address.111:online" }
+Dimmer
+    Volume_firstFloor_computerRoom_CC
+    "LeifCast"
+    <chromecast>
+    (gRoomComputerRoom, gChromeCasts)
+    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:volume" }
+Player
+    Player_firstFloor_computerRoom_CC            
+    "LeifCast"
+    <chromecast>
+    (gRoomComputerRoom, gChromeCasts)
+    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:control" }
+String
+    URI_firstFloor_computerRoom_CC
+    "LeifCast URI: [%s]"
+    <chromecast>
+    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:playuri" }
+/* END Chromecast datarom */
+
+/* MQTT test */
+/*
+Switch 
+    Switch1 
+    {mqtt=">[openhab:myhome/bedroom/switch1:command:ON:1],>[openhab:myhome/bedroom/switch1:command:OFF:0],<[openhab:myhome/bedroom/switch1:state:ON:1],<[openhab:myhome/bedroom/switch1:state:OFF:0"}
+*/
+/* END MQTT test */

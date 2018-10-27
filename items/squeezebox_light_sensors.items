@@ -1,0 +1,103 @@
+/*
+    Get light sensor data from Squeezebox radio
+
+    Based on example here:
+        https://community.openhab.org/t/example-using-light-sensor-data-of-squeezebox-radio-in-openhab/4425
+    
+    To prepare exec binding for ssh without password
+
+        # Exec binding runs as openhab so create key pair for openhab to ssh to squeeze without password
+        > ssh-keygen -t rsa -f /home/openhabian/id_rsa_for_squeezebox_ssh
+        
+        # Copy key to squeeze radios, pwd is googlable on the inet
+        > ssh-copy-id root@squeeze.radio1.ip.address -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no
+        > ssh-copy-id root@squeeze.radio2.ip.address -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no
+        
+        # Set openhab as owner of the key file in order for exec binding to have acccess to it
+        > sudo chown openhab:openhab /home/openhabian/id_rsa_for_squeezebox_ssh
+        > sudo chmod 600 /home/openhabian/id_rsa_for_squeezebox_ssh
+
+    Exec binding Thing config
+        Command:
+            ssh root@squeeze.radio1.ip.address -n -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no cat /sys/class/i2c-adapter/i2c-1/1-0010/ambient
+        Transform:
+            REGEX((.*))
+        Interval:
+            60
+        Timeout:
+            15
+    
+    Need extra virtual item to convert from String to Number
+        Thus String LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
+        and Number LightSensor_CL_Guestroom_SqueezeboxRadio
+*/
+
+/* Chart period setting for light sensor details */
+String 
+    LightSensor_chartPeriod
+    "Chart period"
+    <line>
+
+/* Guest room Squeeze radio light sensor */
+Switch 
+    LightSensor_CL_Guestroom_SqueezeboxRadio_Run
+    "Guest room squeezebox light sensor update"
+    {channel="exec:command:c74bf4cf:run"}
+Number
+    LightSensor_CL_Guestroom_SqueezeboxRadio_ExitValue 
+    "Guest room squeezebox light sensor last exit value [%d]"
+    <exitvalue>
+    {channel="exec:command:c74bf4cf:exit"}
+DateTime 
+    LightSensor_CL_Guestroom_SqueezeboxRadio_LastExecution
+    "Guest room squeezebox light sensor last readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+    {channel="exec:command:c74bf4cf:lastexecution"}
+String
+    LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
+    "Guest room squeezebox light sensor last readout value is [%s]"
+    <lastreading>
+    {channel="exec:command:c74bf4cf:output"}
+DateTime
+    LightSensor_CL_Guestroom_SqueezeboxRadio_LastValidReadout
+    "Guest room squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    LightSensor_CL_Guestroom_SqueezeboxRadio
+    "Guest room squeezebox light sensor value is [%d]"
+    (gRoomGuestRoom) */
+
+/* Bedroom Squeeze radio light sensor */
+Switch 
+    LightSensor_FF_Bedroom_SqueezeboxRadio_Run
+    "Bedroom squeezebox light sensor update"
+    (gRoomBedroom)
+    {channel="exec:command:2ba18d58:run"}
+Number
+    LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue 
+    "Bedroom squeezebox light sensor last exit value [%d]"
+    <exitvalue>
+    (gRoomBedroom)
+    {channel="exec:command:2ba18d58:exit"}
+DateTime 
+    LightSensor_FF_Bedroom_SqueezeboxRadio_LastExecution
+    "Bedroom squeezebox light sensor last updated [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+    (gRoomBedroom)
+    {channel="exec:command:2ba18d58:lastexecution"}
+String
+    LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+    "Bedroom squeezebox light sensor string value is [%s]"
+    <lastreading>
+    (gRoomBedroom)
+    {channel="exec:command:2ba18d58:output"}
+DateTime 
+    LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout
+    "Guest room squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    LightSensor_FF_Bedroom_SqueezeboxRadio
+    "Bedroom squeezebox light sensor value is [%d]"
+    (gRoomBedroom) */

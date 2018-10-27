@@ -1,0 +1,122 @@
+
+/* Yeelight strip #1: Computer room TV backlight */
+Dimmer
+    LedStrip_GF_ComputerRoom_brightness
+    "TV backlight brightness [%d %%]"
+    <dimmablelight>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
+Switch
+    LedStrip_GF_ComputerRoom_switch
+    "TV backlight"
+    <switch>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
+Color
+    LedStrip_GF_ComputerRoom_color
+    "TV backlight color"
+    <colorlight>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Color"}
+Dimmer
+    LedStrip_GF_ComputerRoom_color_temperature
+    "TV backlight color temperature"
+    <colortemperature>
+    (gRoomComputerRoom)
+    {channel="yeelight:Stripe:0x0000000003427b02:Color_Temperature"}
+/* END Yeelight strip #1 */
+
+/* Yeelight strip #2: Stairwell light */
+Dimmer
+    LedStrip_CL_Stairwell_brightness
+    "Stairwell light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomStairwell)
+    {channel="yeelight:Stripe:0x000000000361c9e7:Brightness"}
+Color
+    LedStrip_CL_Stairwell_color
+    "Stairwell light color"
+    <colorlight>
+    (gRoomStairwell)
+    {channel="yeelight:Stripe:0x000000000361c9e7:Color"}
+Dimmer
+    LedStrip_CL_Stairwell_temperature
+    "Stairwell light color temperature"
+    <colortemperature>
+    (gRoomStairwell)
+    {channel="yeelight:Stripe:0x000000000361c9e7:Color_Temperature"}
+/* END Yeelight strip #2 */
+
+/* Fibaro FGD212 Dimmer 2: Staircase light */
+Dimmer
+    Dimmer_GF_Staircase_SwitchDimmer
+    "Staircase light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomStaircase)
+    {channel="zwave:device:2c3b27f3:node5:switch_dimmer"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Dimmer_GF_Staircase_SensorPower
+    "Staircase light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomStaircase, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node5:sensor_power"} */
+//Number   Dimmer_GF_Staircase_SceneNumber         "Scene Number"                       (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:scene_number"}
+//Number   Dimmer_GF_Staircase_MeterKwh            "Electric meter (kWh)"               (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:meter_kwh"}
+//Number   Dimmer_GF_Staircase_MeterWatts          "Electric meter (watts)"             (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:meter_watts"}
+//Switch   Dimmer_GF_Staircase_MeterReset          "Reset the total power consumption"  (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:meter_reset"}
+//Switch   Dimmer_GF_Staircase_AlarmGeneral        "Alarm"                              (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:alarm_general"}
+//Dimmer   Dimmer_GF_Staircase_SwitchDimmer1       "Dimmer"                             (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:switch_dimmer1"}
+//Number   Dimmer_GF_Staircase_SensorPower1        "Sensor (power) 1"                   (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:sensor_power1"}
+//Number   Dimmer_GF_Staircase_MeterKwh1           "Electric meter (kWh) 1"             (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:meter_kwh1"}
+//Number   Dimmer_GF_Staircase_MeterWatts1         "Electric meter (watts) 1"           (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:meter_watts1"}
+//Switch   Dimmer_GF_Staircase_AlarmGeneral1       "Alarm 1"                            (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:alarm_general1"}
+//Number   Dimmer_GF_Staircase_NotificationSend1   "Send notification"                  (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:notification_send1"}
+//Dimmer   Dimmer_GF_Staircase_SwitchDimmer2       "Dimmer"                             (gRoomStaircase) {channel="zwave:device:2c3b27f3:node5:switch_dimmer2"}
+/* END Fibaro FGD212 Dimmer 2 */
+
+/* Fibaro FGD212 Dimmer 2: Dining room */
+Dimmer
+    Dimmer_GF_DiningRoom_SwitchDimmer
+    "Dining room light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomDiningRoom)
+    {channel="zwave:device:2c3b27f3:node10:switch_dimmer"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Dimmer_GF_DiningRoom_SensorPower
+    "Dining room light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomStaircase, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node10:sensor_power"} */
+//Number    Dimmer_GF_DiningRoom_SceneNumber            "Scene Number"                        {channel="zwave:device:2c3b27f3:node10:scene_number"}
+//Number    Dimmer_GF_DiningRoom_MeterKwh               "Electric meter (kWh)"                {channel="zwave:device:2c3b27f3:node10:meter_kwh"}
+//Number    Dimmer_GF_DiningRoom_MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node10:meter_watts"}
+//Switch    Dimmer_GF_DiningRoom_MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node10:meter_reset"}
+//Decimal   Dimmer_GF_DiningRoom_ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node10:config_decimal_param19"}
+//Switch    Dimmer_GF_DiningRoom_AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node10:alarm_heat"}
+//Switch    Dimmer_GF_DiningRoom_AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node10:alarm_power"}
+//Switch    Dimmer_GF_DiningRoom_AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node10:alarm_system"}
+//Dimmer    Dimmer_GF_DiningRoom_SwitchDimmer1          "Dimmer 1"                            {channel="zwave:device:2c3b27f3:node10:switch_dimmer1"}
+//Number    Dimmer_GF_DiningRoom_SensorPower1           "Sensor (power) 1"                    {channel="zwave:device:2c3b27f3:node10:sensor_power1"}
+//Number    Dimmer_GF_DiningRoom_MeterKwh1              "Electric meter (kWh) 1"              {channel="zwave:device:2c3b27f3:node10:meter_kwh1"}
+//Number    Dimmer_GF_DiningRoom_MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node10:meter_watts1"}
+//Switch    Dimmer_GF_DiningRoom_AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node10:alarm_heat1"}
+//Switch    Dimmer_GF_DiningRoom_AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node10:alarm_power1"}
+//Switch    Dimmer_GF_DiningRoom_AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node10:alarm_system1"}
+//Dimmer    Dimmer_GF_DiningRoom_SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node10:switch_dimmer2"}
+/* END Fibaro FGD212 Dimmer 2 */
+
+/* Everspring Microplug Dimmer Z-Wave: Stairwell light */
+Dimmer
+    Wallplug_CL_Stairwell_Dimmer
+    "Stairwell light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomStairwell)
+    { channel="zwave:device:2c3b27f3:node6:switch_dimmer" }
+//Switch
+//    Wallplug_CL_Stairwell_Alarm
+//    "Stairwell light alarm state is [%s]"
+//    { channel="zwave:device:2c3b27f3:node6:alarm_general" }
+/* END Everspring Microplug Dimmer */
+

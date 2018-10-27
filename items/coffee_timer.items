@@ -1,0 +1,70 @@
+
+Group 
+    gCoffeeTimer
+    "Timer1 group"
+    <time>
+String
+    CoffeeTimer_status
+    "Status [%s]"
+    <switch>
+    (gCoffeeTimer)
+Number 
+    CoffeeTimer_timeLeft
+    "Coffee pot current time left is [%d min]"
+    <clock>
+    (gCoffeeTimer)
+Number 
+    CoffeeTimer_setTime
+    "Initial time set was [%d min]"
+    <clock>
+    (gCoffeeTimer)
+Number
+    CoffeeTimer_control 
+    "Timer control"
+    <selfenergy>
+    (gCoffeeTimer)
+String
+    CoffeeTimer_scheduleStatus
+    "Schedule status [%s]"
+    <schedule>
+    (gCoffeeTimer)
+Switch
+    CoffeeTimer_scheduleEnable
+    "Schedule control"
+    <switch> 
+    (gCoffeeTimer)
+Number
+    CoffeeTimer_scheduleHour 
+    "Schedule hour [%d]" 
+    <time> 
+    (gCoffeeTimer)
+Number 
+    CoffeeTimer_scheduleMinute 
+    "Schedule minute [%d]" 
+    <time> 
+    (gCoffeeTimer)
+Switch
+    CoffeeTimer_wallplug
+    "The coffee pot smart plug"
+    <switch>
+    (gCoffeeTimer)
+    {channel="zwave:device:2c3b27f3:node3:switch_binary"}
+/*
+Switch
+    CoffeeTimer_wallplug
+    "The coffee pot smart plug"
+    <switch>
+    (gCoffeeTimer)
+    { channel="tplinksmarthome:hs100:8F6DBF:switch" }
+Number
+    CoffeeTimer_wallplug_rssi
+    "Coffee pot smart plug signal [%d dBm]"
+    <signal>
+    (gCoffeeTimer)
+    { channel="tplinksmarthome:hs100:8F6DBF:rssi" }
+String 
+    CoffeeTimer_chartPeriod
+    "Chart period"
+    <line>
+    (gCoffeeTimer)
+*/

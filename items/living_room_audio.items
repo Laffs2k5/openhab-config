@@ -1,0 +1,39 @@
+Group 
+    gLivingRoomAudio
+    "Living room audio group"
+
+String
+    LivingRoomAudio_receiver_status
+    "Status [%s]"
+    (gLivingRoomAudio)
+Number
+    LivingRoomAudio_receiver_control
+    "Receiver control"
+    <receiver>
+    (gLivingRoomAudio)
+    { autoupdate="false" }
+Number
+    LivingRoomAudio_receiver_volume
+    "Receiver volume [%d %%]"
+    <volume>
+    (gLivingRoomAudio)
+Switch
+    LivingRoomAudio_receiver_visibility
+    "Receiver visibility"
+    (gLivingRoomAudio)
+Number
+    LivingRoomAudio_squeeze_control
+    "Squeeze control"
+    (gLivingRoomAudio)
+    { autoupdate="false" }
+Number
+    LivingRoomAudio_chromecast_control
+    "Chromecast control"
+    (gLivingRoomAudio)
+    { autoupdate="false" }
+Switch
+    Wallplug_GF_LivingRoomAudio_wallplug
+    "Living room audio wallplug state is [%s]"
+    <receiver>
+    (gLivingRoomAudio)
+    { channel="tplinksmarthome:hs100:8F6DBF:switch" }

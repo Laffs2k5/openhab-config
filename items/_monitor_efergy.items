@@ -1,0 +1,9 @@
+/*
+    Items related monitoring the efergy energy monitor
+*/
+
+// Virtual item for keeping track of last notification sent
+DateTime
+    Monitor_Efergy_LastValidReadout_LastNotified
+    "Time of last notification about household energy monitor missing readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
