@@ -1,0 +1,17 @@
+sitemap laundry_room label="Laundry room lights"
+{
+    Frame label="Laundry room light" 
+    {
+        Switch
+            item=Relay_CL_LaundryRoom_MainLights_switch
+            label="Main lights[]"
+        Switch 
+            item=LaundryRoom_MainLights_AutoOff_control
+            mappings=[0="OFF", -5="-5", 5="+5"]
+        Text
+            item=LaundryRoom_MainLights_AutoOff_setTime
+        Switch
+            item=Wallplug_CL_LaundryRoom_NightLights_switch
+            label="Night lights[]"
+    }
+}

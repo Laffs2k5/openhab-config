@@ -1,0 +1,45 @@
+sitemap test_squeezebox label="Testing Squeezebox stuff"
+{
+    Text
+        item=Network_GF_LivingRoom_Squeezebox
+    Text
+        item=Squeeze_GF_LivingRoom_NotificationVolume
+    Text
+        item=Squeeze_GF_LivingRoom_Control
+    Default
+        item=Squeeze_GF_LivingRoom_Control
+    Switch
+        item=Squeeze_GF_LivingRoom_Stream
+        mappings=[
+            "http://lyd.nrk.no/nrk_radio_p1_vestfold_mp3_h"="P1", 
+            "http://lyd.nrk.no/nrk_radio_p13_mp3_h"="P2", 
+            30="+30", 
+            1="90"
+        ]
+    Text
+        item=Squeeze_GF_LivingRoom_Volume
+    Slider
+        item=Squeeze_GF_LivingRoom_Volume
+    Text
+        item=Squeeze_GF_LivingRoom_Mute
+    Text
+        item=Squeeze_GF_LivingRoom_PlayingTime
+    Text
+        item=Squeeze_GF_LivingRoom_Duration
+    Text
+        item=Squeeze_GF_LivingRoom_ShuffleMode
+    Text
+        item=Squeeze_GF_LivingRoom_RepeatMode
+    Text
+        item=Squeeze_GF_LivingRoom_Title
+    Text
+        item=Squeeze_GF_LivingRoom_Remotetitle
+    Text
+        item=Squeeze_GF_LivingRoom_Album
+    Text
+        item=Squeeze_GF_LivingRoom_Artist
+/*
+    Image
+        item=Squeeze_GF_LivingRoom_CoverArt
+*/
+}

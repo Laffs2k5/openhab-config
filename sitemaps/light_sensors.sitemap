@@ -1,0 +1,127 @@
+/*
+    Overview of all light sensors
+*/
+
+sitemap light_sensors label="Light sensors"
+{
+    Frame label="Guest room" {
+        Text
+            item=LightSensor_CL_Guestroom_SqueezeboxRadio
+            label="Squeezebox radio last reading [%d]"
+        Text label="Guest room squeezebox light sensor"
+        {
+            Text
+                item=Network_CL_GuestRoom_Squeezebox
+                label="Device is [MAP(network.map):%s]"
+            Switch
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio_Run
+                label="Force update"
+            Text
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio_ExitValue
+                label="Last exit value [%s]"
+            Text
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio_LastExecution
+                label="Last readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+            Text
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
+                label="Last reading [%s]"
+            Text
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio_LastValidReadout
+                label="Last valid readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+            Text
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio
+                label="Last valid readout [%d]"
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_last3Hours.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="0"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_last24Hours.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="1"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_lastWeek.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="2"]
+            Switch
+                item=LightSensor_chartPeriod
+                label="Chart Period"
+                mappings=[0="3h", 1="24h", 2="Week"]
+        }
+    }
+    Frame label="Bedroom" {
+        Text
+            item=LightSensor_FF_Bedroom_SqueezeboxRadio
+            label="Squeezebox radio last reading [%d]"
+        Text label="Bedroom squeezebox light sensor"
+        {
+            Text
+                item=Network_FF_Bedroom_Squeezebox
+                label="Device is [MAP(network.map):%s]"
+            Switch
+                item=LightSensor_FF_Bedroom_SqueezeboxRadio_Run
+                label="Force update"
+            Text
+                item=LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue
+                label="Last exit value [%s]"
+            Text
+                item=LightSensor_FF_Bedroom_SqueezeboxRadio_LastExecution
+                label="Last readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+            Text
+                item=LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+                label="Last reading [%s]"
+            Text
+                item=LightSensor_CL_Guestroom_SqueezeboxRadio_LastValidReadout
+                label="Last valid readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+            Text
+                item=LightSensor_FF_Bedroom_SqueezeboxRadio
+                label="Last valid readout [%d]"
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_last3Hours.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="0"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_last24Hours.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="1"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_lastWeek.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="2"]
+            Switch
+                item=LightSensor_chartPeriod
+                label="Chart Period"
+                mappings=[0="3h", 1="24h", 2="Week"]
+        }
+    }
+    Frame label="Laundry room" {
+        Text
+            item=Sensor_CL_LaundryRoom_sensorLuminance
+            label="Laundry room last reading [%d]"
+        Text label="Laundry room light sensor"
+        {
+            Text
+                item=Sensor_CL_LaundryRoom_sensorLuminance_LastReadout
+                label="Last readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+            Text
+                item=Sensor_CL_LaundryRoom_sensorLuminance
+                label="Last reading [%d]"
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_laundry_room_last3Hours.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="0"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_laundry_room_last24Hours.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="1"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_laundry_room_lastWeek.html"
+                height=10
+                visibility=[LightSensor_chartPeriod=="2"]
+            Switch
+                item=LightSensor_chartPeriod
+                label="Chart Period"
+                mappings=[0="3h", 1="24h", 2="Week"]
+        }
+    }
+}

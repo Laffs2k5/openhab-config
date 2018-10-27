@@ -1,0 +1,77 @@
+/*
+    Overview of all energy monitors
+*/
+
+sitemap energy_monitors label="Energy monitors"
+{
+    Frame label="Settings"
+    {
+        Switch
+            item=EnergyMonitor_Household_chartPeriod
+            label="Chart Period"
+            mappings=[0="3h", 1="24h", 2="Week"]
+    }
+    Frame label="Household energy monitor"
+    {
+        Text
+            item=EnergyMonitor_Household_Efergy_ValueString
+            label="Last reading [%s]"
+        Text
+            item=EnergyMonitor_Household_Efergy_LastReadout
+            label="Last readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+        Text
+            item=EnergyMonitor_Household_Efergy_LastValidReadout
+            label="Last valid readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+        Text
+            item=EnergyMonitor_Household_Efergy
+            label="Last valid readout [%.0f W]"
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/energy_monitor_efergy_household_last3Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="0"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/energy_monitor_efergy_household_last24Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="1"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/energy_monitor_efergy_household_lastWeek.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="2"]
+    }
+    Frame label="Staircase lights power consumption"
+    {
+        Text
+            item=Dimmer_GF_Staircase_SensorPower
+            label="Last readout [%.0f W]"
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_staircase_dimmer_last3Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="0"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_staircase_dimmer_last24Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="1"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_staircase_dimmer_lastWeek.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="2"]
+    }
+    Frame label="Laundry room power consumption"
+    {
+        Text
+            item=Relay_CL_LaundryRoom_meterWatts
+            label="Main lights last readout [%.0f W]"
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_mainlights_relay_last3Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="0"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_mainlights_relay_last24Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="1"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_mainlights_relay_lastWeek.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="2"]
+    }
+}

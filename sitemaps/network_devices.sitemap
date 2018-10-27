@@ -1,0 +1,82 @@
+/*
+    Overview of all network devices
+*/
+
+sitemap network_devices label="Network devices"
+{
+    Frame label="Network equipment" {
+        Text
+            item=Network_CL_Router
+        Text
+            item=Network_GF_Router
+        Text
+            item=Network_FF_Router
+    }
+    Frame label="Computers" {
+        Text
+            item=Network_CL_Stairroom_Server
+        Text
+            item=Network_GF_ComputerRoom_Peder_PC
+        Text
+            item=Network_GF_ComputerRoom_Stine_PC
+        Text
+            item=Network_GF_ComputerRoom_Mikkel_RPi
+        Text
+            item=Network_GF_ComputerRoom_openhab_RPi
+        Text
+            item=Network_GF_ComputerRoom_efergy_RPi
+    }
+    Frame label="Devices" {
+        Text
+            item=Network_Peder_iPad
+        Text
+            item=Network_Peder_Phone
+        Text
+            item=Network_Stine_Phone
+    }
+    Frame label="Squeezeboxes" {
+        Text
+            item=Network_CL_Bathroom_Squeezebox
+        Text
+            item=Network_CL_GuestRoom_Squeezebox
+        Text
+            item=Network_GF_LivingRoom_Squeezebox
+        Text
+            item=Network_FF_Bedroom_Squeezebox
+        Text
+            item=Network_Shed_Squeezebox
+    }
+    Frame label="Living room" {
+        Text
+            item=Network_GF_LivingRoomAudio_Wallplug
+            label="Receiver wallplug state is [MAP(network.map):%s]"
+        Text
+            item=Network_GF_LivingRoom_ChromecastAudio
+            label="Chromecast state is [MAP(network.map):%s]"
+        Text
+            item=Network_GF_LivingRoom_IrBlaster
+            label="IR blaster state is [MAP(network.map):%s]"
+        Text
+            item=Network_GF_LivingRoom_PictureFrame_Tablet
+            label="Picture frame state is [MAP(network.map):%s]"
+    }
+    Frame label="Computer room" {
+        Text
+            item=Network_GF_ComputerRoom_TV
+            label="TV state is [MAP(network.map):%s]"
+        Text
+            item=Network_GF_ComputerRoom_Chromecast
+            label="Chromecast state is [MAP(network.map):%s]"
+        Text
+            item=Network_GF_ComputerRoom_LedStrip
+            label="TV backlight state is [MAP(network.map):%s]"
+        Text
+            item=Network_GF_ComputerRoom_Printer
+            label="Printer state is [MAP(network.map):%s]"
+    }
+    Frame label="Cellar" {
+        Text
+            item=Network_CL_Stairwell_LedStrip
+            label="Stairwell light state is [MAP(network.map):%s]"
+    }
+}

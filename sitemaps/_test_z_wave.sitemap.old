@@ -1,0 +1,75 @@
+sitemap test_z_wave label="Testing Z-Wave stuff"
+{
+    /*
+    Frame label="Laundry room multisensor" icon="whitegood" {
+        Default item=Sensor_CL_LaundryRoom_alarmBurglar 
+        Default item=Sensor_CL_LaundryRoom_batteryLevel 
+        //Default item=Sensor_CL_LaundryRoom_sensorBinary 
+        Default item=Sensor_CL_LaundryRoom_sensorLuminance 
+        Default item=Sensor_CL_LaundryRoom_sensorTemperature
+    }
+    */
+    /*
+    Frame label="Fibaro dimmer 2" {
+        Text item=gRoomStaircase label="Staircase" icon="staircase" {
+        Switch  item=Dimmer_GF_Staircase_SwitchDimmer       label="Dimmer"
+        Default item=Dimmer_GF_Staircase_SwitchDimmer       label="Dimmer"
+        Default item=Dimmer_GF_Staircase_SceneNumber        label="Scene Number"
+        Default item=Dimmer_GF_Staircase_SensorPower        label="Sensor (power)"
+        Default item=Dimmer_GF_Staircase_MeterKwh           label="Electric meter (kWh)"
+        Default item=Dimmer_GF_Staircase_MeterWatts         label="Electric meter (watts)"
+        Default item=Dimmer_GF_Staircase_MeterReset         label="Reset the total power consumption"
+        Default item=Dimmer_GF_Staircase_AlarmGeneral       label="Alarm"
+        Switch  item=Dimmer_GF_Staircase_SwitchDimmer1      label="Dimmer 1"
+        Default item=Dimmer_GF_Staircase_SwitchDimmer1      label="Dimmer 1"
+        Default item=Dimmer_GF_Staircase_SensorPower1       label="Sensor (power) 1"
+        Default item=Dimmer_GF_Staircase_MeterKwh1          label="Electric meter (kWh) 1"
+        Default item=Dimmer_GF_Staircase_MeterWatts1        label="Electric meter (watts) 1"
+        Default item=Dimmer_GF_Staircase_AlarmGeneral1      label="Alarm 1"
+        Default item=Dimmer_GF_Staircase_NotificationSend1  label="Send notification"
+        Switch  item=Dimmer_GF_Staircase_SwitchDimmer2      label="Dimmer 2"
+        Default item=Dimmer_GF_Staircase_SwitchDimmer2      label="Dimmer 2"
+        }
+    }
+    */
+    /*
+    Frame label="Everspring" {
+        Switch
+            item=Wallplug_CL_Stairwell_Dimmer
+        Default 
+            item=Wallplug_CL_Stairwell_Dimmer
+            label="Dimmer"
+        Text
+            item=Wallplug_CL_Stairwell_Dimmer
+        Switch
+            item=Wallplug_CL_Stairwell_Alarm
+            label="Alarm"
+        Text
+            item=Wallplug_CL_Stairwell_Alarm
+    }
+    */
+    /*
+    Frame label="Hauppauge" {
+        Switch
+            item=Hauppauge_WallplugItem
+        Text
+            item=Hauppauge_WallplugItem
+    }
+    */
+    /*
+    Frame label="Laundry room main lights" icon="whitegood" {
+        Default 
+            item=Relay_CL_LaundryRoom_switchBinary
+            label="Laundry room main lights switch state is"
+        Default 
+            item=Relay_CL_LaundryRoom_sensorBinary
+            label="Laundry room main lights binary sensor state is"
+        Default 
+            item=Relay_CL_LaundryRoom_meterWatts
+            label="Laundry room main lights power consumption"
+        Default 
+            item=Relay_CL_LaundryRoom_meterKwh
+            label="Laundry room main lights power consumption"
+    }
+    */
+}

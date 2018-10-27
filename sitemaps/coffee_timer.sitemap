@@ -1,0 +1,74 @@
+sitemap coffee_timer label="Coffee timer"
+{
+    Frame label="Manual control"
+    {
+        Text
+            item=CoffeeTimer_status
+        Switch
+            item=CoffeeTimer_control
+            mappings=[0="0", -30="-30", 30="+30", 1="90"]
+    }
+    Frame label="Schedule"
+    {
+        Switch
+            item=CoffeeTimer_scheduleEnable
+            label="Schedule control []"
+        Text
+            item=CoffeeTimer_scheduleStatus
+            visibility=[CoffeeTimer_scheduleEnable=="ON"]
+        Selection
+            item=CoffeeTimer_scheduleHour
+            mappings=[0="00:00", 1="01:00", 2="02:00", 3="03:00", 4="04:00", 5="05:00", 6="06:00", 7="07:00", 8="08:00", 9="09:00", 10="10:00", 11="11:00", 12="12:00",13="13:00", 14="14:00", 15="15:00", 16="16:00", 17="17:00", 18="18:00", 19="19:00", 20="20:00", 21="21:00", 22="22:00", 23="23:00"]
+        Selection
+            item=CoffeeTimer_scheduleMinute
+            mappings=[0="00", 5="05", 10="10", 15="15", 20="20", 25="25", 30="30", 35="35", 40="40", 45="45", 50="50", 55="55"]
+/*
+        Text label="Coffee pot details"
+        {
+            Text
+                item=Network_GF_Kitchen_Wallplug
+                label="Device is [MAP(network.map):%s]"
+            Text
+                item=CoffeeTimer_wallplug
+                label="Current status [%s]"
+            Text
+                item=CoffeeTimer_timeLeft
+                label="Current time left is [%d min]"
+            Text
+                item=CoffeeTimer_wallplug_rssi
+                label="Current signal [%d dBm]"
+*/
+/*
+            Switch
+                item=CoffeeTimer_chartPeriod
+                label="Chart Period"
+                mappings=[0="3h", 1="24h", 2="Week"]
+            Webview
+                url="/static/grafana/coffee_pot_dynamic_charts_example.html?dashboard=the-coffee-pot&panel=2&fromItem=CoffeeTimer_chartPeriod&to=now&panel=2&" height=10
+*/
+/*
+            Image
+                refresh=60000
+                url="http://oh.host.ip.address:3000/render/dashboard-solo/db/the-coffee-pot?orgId=1&panelId=2&now-3h&to=now&theme=dark&tz=UTC%2B01%3A00"
+*/
+/*
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/coffee_pot_last3Hours.html"
+                height=10
+                visibility=[CoffeeTimer_chartPeriod=="0"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/coffee_pot_last24Hours.html"
+                height=10
+                visibility=[CoffeeTimer_chartPeriod=="1"]
+            Webview
+                url="https://EXAMPLE.TLD/static/grafana/coffee_pot_lastWeek.html"
+                height=10
+                visibility=[CoffeeTimer_chartPeriod=="2"]
+            Switch
+                item=CoffeeTimer_chartPeriod
+                label="Chart Period"
+                mappings=[0="3h", 1="24h", 2="Week"]
+        }
+*/
+    }
+}

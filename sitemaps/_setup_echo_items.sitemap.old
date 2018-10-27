@@ -1,0 +1,14 @@
+/*
+    The sitemap is used to trigger changes to items exposed to Amazon Echo through myopenhab.org
+    A state change is required in order for OH to make the item visible on myopenhab.org
+
+    ref.: http://docs.openhab.org/addons/ios/openhabcloud/readme.html#configuration
+        Note: The exposed items will show up after they receive an update to their state.
+*/
+sitemap setup_echo_items label="Trigger one time state change of items exposed to Amazon Echo through myopenhab.org"
+{
+    Switch
+        item=Echo_LedStrip_GF_ComputerRoom_brightness
+    Colorpicker
+        item=Echo_LedStrip_GF_ComputerRoom_color
+}

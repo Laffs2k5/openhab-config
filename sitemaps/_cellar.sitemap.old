@@ -1,6 +1,6 @@
 sitemap cellar label="Cellar"
 {
-    Frame label="The Stairwell light [SomethingSecret]" {
+    Frame label="The Stairwell light" {
         Text
             item=Network_CL_Stairwell_LedStrip
             label="Device is [MAP(network.map):%s]"
