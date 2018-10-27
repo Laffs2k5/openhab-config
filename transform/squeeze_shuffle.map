@@ -1,0 +1,6 @@
+// Squeezebox: shuffle modes
+0=Shuffle off
+1=Shuffle by song
+2=Shuffle by album
+NULL=UNKNOWN
+-=UNKNOWN

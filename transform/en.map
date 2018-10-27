@@ -1,0 +1,17 @@
+CLOSED=closed
+OPEN=open
+NULL=unknown
+ON=on
+OFF=off
+1=on
+0=off
+
+// Astro moon phases
+NEW=New moon
+WAXING_CRESCENT=Waxing crescent
+FIRST_QUARTER=First quarter
+WAXING_GIBBOUS=Waxing gibbous
+FULL=Full moon
+WANING_GIBBOUS=Waning gibbous
+THIRD_QUARTER=Third quarter
+WANING_CRESCENT=Waning crescent

@@ -1,0 +1,5 @@
+// Misc transforms
+ON=ENABLED
+OFF=DISABLED
+NULL=UNKNOWN
+-=UNKNOWN

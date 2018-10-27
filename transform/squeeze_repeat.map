@@ -1,0 +1,6 @@
+// Squeezebox: repeat modes
+0=Repeat off
+1=Repeat song
+2=Repeat playlist
+NULL=UNKNOWN
+-=UNKNOWN

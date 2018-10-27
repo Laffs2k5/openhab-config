@@ -1,0 +1,5 @@
+// Network binding returns ON/OFF for devices
+ON=ONLINE
+OFF=OFFLINE
+NULL=UNKNOWN
+-=UNKNOWN
