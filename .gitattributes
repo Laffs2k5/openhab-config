@@ -1,0 +1,11 @@
+# Need to remove personal stuff before commit to github
+sitemaps/_default.sitemap.old                   filter=removeAddPersonalStuff
+sitemaps/coffee_timer.sitemap                   filter=removeAddPersonalStuff
+sitemaps/energy_monitors.sitemap                filter=removeAddPersonalStuff
+sitemaps/light_sensors.sitemap                  filter=removeAddPersonalStuff
+services/mqtt.cfg                               filter=removeAddPersonalStuff
+items/efergy_energy_monitor.items               filter=removeAddPersonalStuff
+items/squeezebox_light_sensors.items            filter=removeAddPersonalStuff
+items/default.items                             filter=removeAddPersonalStuff
+items/network_binding.items                     filter=removeAddPersonalStuff
+html/grafana/smarthome-grafana-user-defaults.js filter=removeAddPersonalStuff
