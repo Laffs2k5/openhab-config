@@ -1,0 +1,102 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+//import org.openhab.core.types.Integer
+
+// Constants
+val String  LOGGER_NAME = "squeezebox_light_sensors"
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [ 
+    loggerName, 
+    itemChanged |
+    logDebug(loggerName, "State of item '{}' changed to '{}'", 
+        itemChanged.name, 
+        itemChanged.state.toString())
+    true
+]
+val Functions$Function3<String, GenericItem, GenericItem, Boolean> postStringItemStateToIntegerItem = [ 
+    loggerName, 
+    StringItem,
+    NumberItem |
+    logDebug(loggerName, "Posting state '{}' of item '{}' as integer to item '{}'", 
+        StringItem.state.toString(), 
+        StringItem.name, 
+        NumberItem.name)
+    NumberItem.postUpdate(DecimalType.valueOf(StringItem.state.toString()))
+    true
+]
+val Functions$Function5<String, GenericItem, DateTimeItem, GenericItem, NumberItem, Boolean> storeReadoutIfValid = [ 
+    loggerName, 
+    StringExitValue,
+    DateTimeRecordValidReadout,
+    StringReadValue,
+    NumberItemToUpdate |
+    
+    // Constants
+    val Number  VALID_MAX_READING = 100000
+    val Number  VALID_MIN_READING = 0
+    
+    var int     exitCode = -1
+    var Number valueRead
+
+    logDebug(loggerName, "Exit value item state: {}", StringExitValue.state)
+    if( StringExitValue.state !== NULL && StringExitValue.state !== UNDEF ) {
+        exitCode = DecimalType.valueOf(StringExitValue.state.toString()).intValue
+    }
+    logDebug(loggerName, "Parsed exit code: {}", exitCode)
+    if( exitCode == 0 ) {
+        logDebug(loggerName, "Value readout string: {}", StringReadValue.state)
+        try {
+            valueRead = DecimalType.valueOf(StringReadValue.state.toString())
+        } catch(Throwable t) {
+            logError(loggerName, "Exception caught when parsing readout string to Number: {}", t.toString())
+            valueRead = -1
+        }
+        logDebug(loggerName, "Value readout parsed Number: {}", valueRead)
+        logDebug(loggerName, "Checking against valid limits: [{}, {}]", VALID_MIN_READING, VALID_MAX_READING)
+        if( valueRead >= VALID_MIN_READING && valueRead <= VALID_MAX_READING ) {
+            logDebug(loggerName, "Posting valid readout date to item {}", DateTimeRecordValidReadout.name)
+            DateTimeRecordValidReadout.postUpdate(new DateTimeType())
+            logDebug(loggerName, "Posting state '{}' of item '{}' as Number to item '{}'", 
+                StringReadValue.state.toString(), 
+                StringReadValue.name, 
+                NumberItemToUpdate.name)
+            NumberItemToUpdate.postUpdate(valueRead)
+        }
+        else {
+            logInfo(loggerName, "Value read out {} is outside valid limits [{}, {}], will not post update to item {}", 
+                valueRead, VALID_MIN_READING, VALID_MAX_READING, NumberItemToUpdate.name)
+        }
+    }
+    true
+]
+
+rule "SqueezeboxRadio light sensor string to number, guest room"
+when
+    Item LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString received update
+then
+    val GenericItem ItemChanged = LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
+    logStateChange.apply(LOGGER_NAME, ItemChanged)
+    storeReadoutIfValid.apply(
+        LOGGER_NAME,
+        LightSensor_CL_Guestroom_SqueezeboxRadio_ExitValue,
+        LightSensor_CL_Guestroom_SqueezeboxRadio_LastValidReadout,
+        ItemChanged,
+        LightSensor_CL_Guestroom_SqueezeboxRadio
+    )
+end
+
+rule "SqueezeboxRadio light sensor string to number, bedroom"
+when
+    Item LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString received update
+then
+    val GenericItem ItemChanged = LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+    logStateChange.apply(LOGGER_NAME, ItemChanged)
+    storeReadoutIfValid.apply(
+        LOGGER_NAME,
+        LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue,
+        LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout,
+        ItemChanged,
+        LightSensor_FF_Bedroom_SqueezeboxRadio
+    )
+end

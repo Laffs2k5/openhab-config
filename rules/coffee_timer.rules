@@ -1,0 +1,375 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import java.util.concurrent.locks.ReentrantLock // Needed to block rules from triggering them self
+
+// Constants
+val String  LOGGER_NAME = "coffee_timer"
+val int     DEF_TIMER_DURATION = 90     // minutes
+val int     CONTROL_MODE_NOCHANGE = -1  // indicates "no change needed"
+val int     CONTROL_MODE_STOP = 0       // indicates to stop timer
+val int     CONTROL_MODE_START = 1      // indicates start/restart timer
+
+// Globals
+var Timer           g_coffeeOffTimer = null // for turning off power
+var Timer           g_coffeeUiTimer = null  // for updating the UI with remaining time
+var Timer           g_coffeeSchedulerTimer = null  // for turning on by schedule
+var int             g_coffeeTimeLeft = 0    // keep track of time left, minutes
+var ReentrantLock   g_coffeeLockStateChanges  = new ReentrantLock()
+var ReentrantLock   g_coffeeLockScheduleChanges  = new ReentrantLock()
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [ 
+    loggerName, 
+    itemChanged |
+    val String LOGGER = loggerName + ".logStateChange"
+    logDebug(LOGGER, "State of item '{}' changed to '{}'", 
+        itemChanged.name, 
+        itemChanged.state.toString())
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [ 
+    loggerName, 
+    itemChanged |
+    val String LOGGER = loggerName + ".logUnexpectedState"
+    logError(LOGGER, "The state '{}' of item '{}' was unexpected!", 
+        itemChanged.state.toString(),
+        itemChanged.name)
+    true
+]
+val Functions$Function3<String, Timer, String, Boolean> stopTimer = [ 
+    loggerName,
+    timerToStop,
+    timerName |
+    val String LOGGER = loggerName + ".stopTimer"
+    var String dispName = "unknown"
+    if( timerName !== null ) {dispName = timerName}
+    if( timerToStop !== null ) {
+        logDebug(LOGGER,"Stopping timer '{}', was running: {}", timerName, timerToStop.isRunning())
+        timerToStop.cancel()
+    } else {
+        logDebug(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
+    }
+    true
+]
+val Functions$Function5<String, SwitchItem, GenericItem, GenericItem, Integer, Boolean> updateCoffeeStatusUi = [ 
+    loggerName,
+    CoffeeSwitch,
+    statusTextItem,
+    statusNumberItem,
+    statusTimeLeft |
+    val String LOGGER = loggerName + ".updateCoffeeStatusUi"
+    logDebug(LOGGER, "start")
+    try {
+        // On/off status combined with time left as a string
+        var String statusText = CoffeeSwitch.state.toString()
+        if( statusTimeLeft !== null ) {
+            statusText = String.format("%s with %d min to go", CoffeeSwitch.state.toString(), statusTimeLeft)
+        }
+        logDebug(LOGGER, "updating UI item '{}' with value '{}'", statusTextItem.name, statusText)
+        statusTextItem.postUpdate(statusText)
+
+        // Time left as a number
+        var int timeLeft = 0
+        if( statusTimeLeft !== null ) {
+            timeLeft = statusTimeLeft
+        }
+        logDebug(LOGGER, "updating UI item '{}' with value '{}'", statusNumberItem.name, timeLeft.toString())
+        statusNumberItem.postUpdate(timeLeft)
+    } catch(Throwable t) {
+        logError(LOGGER, "exception caught: {}", t.toString())
+    }
+    logDebug(LOGGER, "done")
+    true
+]
+val Functions$Function4<String, ReentrantLock, SwitchItem, OnOffType, Boolean> operateCoffeePlug = [ 
+    loggerName,
+    reentrantLock,
+    switchToOperate,
+    stateToSet |
+    val String LOGGER = loggerName + ".operateCoffeePlug"
+    logDebug(LOGGER, "start")
+    reentrantLock.lock()
+    try {
+        logDebug(LOGGER, "got lock, operate switch")
+        switchToOperate.sendCommand(stateToSet)
+        while( switchToOperate.state != stateToSet ) {
+            Thread::sleep(500)
+        }
+        Thread::sleep(1000) // safe guard
+    } catch(Throwable t) {
+        logError(LOGGER, "exception caught: {}", t.toString())
+    } finally {
+        reentrantLock.unlock()
+        logDebug(LOGGER, "lock released")
+    }
+    logDebug(LOGGER, "done")
+    true
+]
+val Functions$Function3<String, NumberItem, NumberItem, Integer> calculateScheduleMinutes = [ 
+    loggerName, 
+    hourItem,
+    minuteItem |
+    val String LOGGER = loggerName + ".calculateScheduleMinutes"
+    val int hourValue = (hourItem.state as DecimalType).intValue
+    val int minuteValue = (minuteItem.state as DecimalType).intValue
+    logDebug(LOGGER, "read schedule trigger hour value '{}' from item '{}'", hourValue, hourItem.name)
+    logDebug(LOGGER, "read schedule trigger minute value '{}' from item '{}'", minuteValue, minuteItem.name)
+
+    // Minutes after midnight to trigger
+    val int triggerMinutes = (hourValue * 60) + minuteValue
+    logDebug(LOGGER, "minutes after midnight to trigger is '{}'", triggerMinutes)
+
+    // Calculate when to trigger
+    // Add 24h if schedule time has already passed
+    var int triggerInMinutes = triggerMinutes - now.getMinuteOfDay().intValue
+    if (triggerInMinutes < 0) { 
+        logDebug(LOGGER, "minutes until trigger is less than zero '{}', adding 24 hours", triggerInMinutes)
+        triggerInMinutes += (24 * 60)
+    }
+    logDebug(LOGGER, "minutes until trigger is '{}'", triggerInMinutes)
+    triggerInMinutes
+]
+
+// When the physical wallplug change state
+rule "Coffee wallplug state change"
+when 
+    Item CoffeeTimer_wallplug changed
+then
+    val String LOGGER = LOGGER_NAME + ".wallplugChange"
+    val GenericItem itemChanged = CoffeeTimer_wallplug
+    logStateChange.apply(LOGGER, itemChanged)
+
+    val SwitchItem CoffeeSwitch = CoffeeTimer_wallplug
+    //val StringItem CoffeeStatusItem = CoffeeTimer_status
+    //val NumberItem CoffeeTimeLeftItem = CoffeeTimer_timeLeft
+    val NumberItem CoffeeControlItem = CoffeeTimer_control
+    //val NumberItem CoffeeSetTimeItem = CoffeeTimer_setTime
+
+    val Boolean gotLock = g_coffeeLockStateChanges.tryLock()
+
+    try {
+        logDebug(LOGGER, "gotLock={}",gotLock.toString())
+        
+        // If lock was aquired this indicates that the state change was 
+        // initiated from the item itself aka. the physical plug. Otherwise
+        // we assume the state change was done by internal code and thus
+        // skipping calling the timer control item
+        if( gotLock == true ) {
+            if( CoffeeSwitch.state == OnOffType::ON ) {
+                // Tell the control item to start the timer
+                CoffeeControlItem.postUpdate(CONTROL_MODE_START)
+            } else if( CoffeeSwitch.state == OnOffType::OFF ) {
+                // Tell the control item to stop the timer
+                CoffeeControlItem.postUpdate(CONTROL_MODE_STOP)
+            } else {
+                logUnexpectedState.apply(LOGGER, CoffeeSwitch)
+            }
+        } else {
+            logDebug(LOGGER, "State change lock set, ignoring last change for '{}'", CoffeeSwitch.name)
+        }
+    } catch(Throwable t) {
+        logError(LOGGER, "exception caught: {}", t.toString())
+    } finally {
+        if( gotLock == true ) {
+            g_coffeeLockStateChanges.unlock()
+            logDebug(LOGGER, "unlock")
+        }
+    }
+end
+
+// When the UI control element change state
+rule "Coffee control item state change"
+when
+    Item CoffeeTimer_control changed
+then
+    val String LOGGER = LOGGER_NAME + ".controlChange"
+    val GenericItem itemChanged = CoffeeTimer_control
+    logStateChange.apply(LOGGER, itemChanged)
+
+    //val SwitchItem CoffeeSwitch = CoffeeTimer_wallplug
+    //val StringItem CoffeeStatusItem = CoffeeTimer_status
+    //val NumberItem CoffeeTimeLeftItem = CoffeeTimer_timeLeft
+    val NumberItem CoffeeControlItem = CoffeeTimer_control
+    val NumberItem CoffeeSetTimeItem = CoffeeTimer_setTime
+
+    val int controlValue = (CoffeeControlItem.state as DecimalType).intValue
+
+    if( controlValue != CONTROL_MODE_NOCHANGE ) {
+        // Determine new timeout
+        var int newTimeLeft = Math.max(0, g_coffeeTimeLeft + controlValue) // never negative
+        logDebug(LOGGER, "controlValue={}, g_coffeeTimeLeft={}, newTimeLeft={}", controlValue, g_coffeeTimeLeft, newTimeLeft)
+        if( controlValue == CONTROL_MODE_START ) {
+            newTimeLeft = DEF_TIMER_DURATION // default timeout for timer
+        }
+        if( controlValue == CONTROL_MODE_STOP ) {
+            newTimeLeft = 0 // 0 will result in termination of timer and plug being switched off
+        }    
+        logDebug(LOGGER, "setting newTimeLeft={}", newTimeLeft)
+        
+        // Apply new timeout
+        CoffeeSetTimeItem.postUpdate(newTimeLeft)
+
+        // To prevent the UI showing STOP button in "pressed" state
+        CoffeeControlItem.postUpdate(CONTROL_MODE_NOCHANGE)
+    }
+end
+
+// When the set time changes
+rule "Coffee timeout state change"
+when
+    Item CoffeeTimer_setTime changed
+then
+    val String LOGGER = LOGGER_NAME + ".timeoutChange"
+    val GenericItem itemChanged = CoffeeTimer_setTime
+    logStateChange.apply(LOGGER, itemChanged)
+
+    val SwitchItem CoffeeSwitch = CoffeeTimer_wallplug
+    val StringItem CoffeeStatusItem = CoffeeTimer_status
+    val NumberItem CoffeeTimeLeftItem = CoffeeTimer_timeLeft
+    val NumberItem CoffeeControlItem = CoffeeTimer_control
+    val NumberItem CoffeeSetTimeItem = CoffeeTimer_setTime
+
+    // Kill timers if exists
+    stopTimer.apply(LOGGER, g_coffeeOffTimer, "Power off")
+    stopTimer.apply(LOGGER, g_coffeeUiTimer, "UI timer")
+
+    // Failsafe default to timer off in case of problems
+    if( CoffeeSetTimeItem.state == NULL || CoffeeSetTimeItem.state == UNDEF ) {
+        CoffeeControlItem.postUpdate(CONTROL_MODE_STOP)
+    } else {
+        // Persist new time left value in global variable
+        g_coffeeTimeLeft = (CoffeeSetTimeItem.state as DecimalType).intValue
+
+        // < 1 means turning off
+        if( g_coffeeTimeLeft < 1 ) {
+            operateCoffeePlug.apply(LOGGER, g_coffeeLockStateChanges, CoffeeSwitch, OnOffType::OFF)
+            updateCoffeeStatusUi.apply(LOGGER, CoffeeSwitch, CoffeeStatusItem, CoffeeTimeLeftItem, null)
+        } else { // g_coffeeTimeLeft >= 1 means starting coffeetimer
+            operateCoffeePlug.apply(LOGGER, g_coffeeLockStateChanges, CoffeeSwitch, OnOffType::ON)
+            updateCoffeeStatusUi.apply(LOGGER, CoffeeSwitch, CoffeeStatusItem, CoffeeTimeLeftItem, g_coffeeTimeLeft)
+
+            // Set timer to turn off physical wallplug
+            g_coffeeOffTimer = createTimer(now.plusMinutes(g_coffeeTimeLeft)) [| // for debug: now.plusSeconds(g_coffeeTimeLeft)
+                CoffeeSwitch.sendCommand(OnOffType::OFF)
+            ]
+
+            // Set timer for updating UI with remaining time
+            g_coffeeUiTimer = createTimer(now.plusMinutes(1)) [| // for debug: now.plusSeconds(1)
+                g_coffeeTimeLeft-- // count down, persist in global variable
+                if( g_coffeeTimeLeft > 0 ) {
+                    // Update UI and reschedule timer
+                    updateCoffeeStatusUi.apply(LOGGER, CoffeeSwitch, CoffeeStatusItem, CoffeeTimeLeftItem, g_coffeeTimeLeft)
+                    g_coffeeUiTimer.reschedule(now.plusMinutes(1)) // for debug: now.plusSeconds(1)
+                }
+            ]
+        }
+    }
+end
+
+/* Let's see how persistence through MapDB works
+
+// Scheduler: Disabled is default after startup
+rule "Coffee initialization"
+when 
+	System started
+then
+    val String LOGGER = LOGGER_NAME + ".init"
+    logInfo(LOGGER, "coffee initialization")
+    CoffeeTimer_scheduleEnable.postUpdate(OnOffType::OFF)
+    CoffeeTimer_scheduleHour.postUpdate(6)
+    CoffeeTimer_scheduleMinute.postUpdate(0)
+end
+*/
+
+// Scheduler: When enabled state changes
+rule "Coffee schedule enabled state change"
+when
+    Item CoffeeTimer_scheduleEnable received update ON or
+    Item CoffeeTimer_scheduleEnable received update OFF
+then
+    val String LOGGER = LOGGER_NAME + ".scheduleEnableChange"
+    val GenericItem itemChanged =  CoffeeTimer_scheduleEnable
+    logStateChange.apply(LOGGER, itemChanged)
+
+    val NumberItem CoffeeControlItem = CoffeeTimer_control
+    val StringItem ScheduleStatusItem = CoffeeTimer_scheduleStatus
+    val SwitchItem ScheduleEnableItem = CoffeeTimer_scheduleEnable
+    val NumberItem ScheduleHourItem = CoffeeTimer_scheduleHour
+    val NumberItem ScheduleMinuteItem = CoffeeTimer_scheduleMinute
+
+    // Kill timer if exists
+    stopTimer.apply(LOGGER, g_coffeeSchedulerTimer, "Schedule")
+
+    g_coffeeLockScheduleChanges.lock()
+    var String statusText = String.format("%s", ScheduleEnableItem.state.toString())
+    try {
+        if (ScheduleEnableItem.state == OnOffType::ON) {
+            if(ScheduleHourItem.state == NULL || ScheduleHourItem.state == UNDEF ||
+               ScheduleMinuteItem.state == NULL || ScheduleMinuteItem.state == UNDEF 
+            ) {
+                logError(LOGGER, "Unable to schedule coffee, either hour or minute is not set!")
+            }
+            else {
+                val int triggerInMinutes = calculateScheduleMinutes.apply(LOGGER, ScheduleHourItem, ScheduleMinuteItem)
+                logDebug(LOGGER, "minutes until trigger is '{}'", triggerInMinutes)
+                
+                // Set timer to tell timer code to turn off physical wallplug
+                g_coffeeSchedulerTimer = createTimer(now.plusMinutes(triggerInMinutes)) [| // for debug: now.plusSeconds(triggerInMinutes)
+                    logInfo(LOGGER, "scheduled automatic start of coffee timer")
+                    CoffeeTimer_scheduleEnable.postUpdate(OnOffType::OFF)
+                    CoffeeControlItem.postUpdate(CONTROL_MODE_START)
+                ]
+                statusText += String.format(" for %02d:%02d", (ScheduleHourItem.state as DecimalType).intValue, (ScheduleMinuteItem.state as DecimalType).intValue)
+            }
+        }
+        logDebug(LOGGER, "updating UI item '{}' with value '{}'", ScheduleStatusItem.name, statusText)
+        ScheduleStatusItem.postUpdate(statusText)
+    } catch(Throwable t) {
+        logError(LOGGER, "exception caught: {}", t.toString())
+    } finally {
+        g_coffeeLockScheduleChanges.unlock()
+    }
+end
+
+// Scheduler: Trigger reschedule if enabled when hour state changes
+rule "Coffee schedule hour state change"
+when
+    Item CoffeeTimer_scheduleHour changed
+then
+    val String LOGGER = LOGGER_NAME + ".scheduleMinChange"
+    val GenericItem itemChanged =  CoffeeTimer_scheduleHour
+    logStateChange.apply(LOGGER, itemChanged)
+
+    g_coffeeLockScheduleChanges.lock()
+    try {
+        if (CoffeeTimer_scheduleEnable.state == OnOffType::ON) {
+            CoffeeTimer_scheduleEnable.postUpdate(OnOffType::ON)
+        }
+    } catch(Throwable t) {
+        logError(LOGGER, "exception caught: {}", t.toString())
+    } finally {
+        g_coffeeLockScheduleChanges.unlock()
+    }
+end
+
+// Scheduler: Trigger reschedule if enabled when minute state changes
+rule "Coffee schedule minute state change"
+when
+    Item CoffeeTimer_scheduleMinute changed
+then
+    val String LOGGER = LOGGER_NAME + ".scheduleMinChange"
+    val GenericItem itemChanged =  CoffeeTimer_scheduleHour
+    logStateChange.apply(LOGGER, itemChanged)
+
+    g_coffeeLockScheduleChanges.lock()
+    try {
+        if (CoffeeTimer_scheduleEnable.state == OnOffType::ON) {
+            CoffeeTimer_scheduleEnable.postUpdate(OnOffType::ON)
+        }
+    } catch(Throwable t) {
+        logError(LOGGER, "exception caught: {}", t.toString())
+    } finally {
+        g_coffeeLockScheduleChanges.unlock()
+    }
+end
+

@@ -1,0 +1,59 @@
+// Imports
+import java.util.HashMap
+import java.util.LinkedHashMap
+
+// Constants
+val String  LOGGER_NAME = "battery_monitor"
+val Number  BATTERY_ALERT_THRESHOLD = 15 // % of full
+val HashMap< String, LinkedHashMap<String, String>> DeviceData = newHashMap(
+
+    "Sensor_CL_LaundryRoom_batteryLevel" -> (newLinkedHashMap(
+            "TYPE"      -> "TELLDUS PST02B Slim Z-Wave Multi-Sensor",
+            "BATTERY"   -> "CR123A lithium battery")),
+
+    "ITEM_NAME_HERE" -> (newLinkedHashMap(
+            "TYPE"      -> "DETAILS ABOUT DEVICE TYPE HERE",
+            "BATTERY"   -> "WHAT BATTERY TO ORDER"))
+)
+
+// At configurd time(s) perform a check of battery levels.
+// Report any below threshold.
+rule "Battery monitoring trigger"
+when
+    Time cron "0 0 20 * * ?" // at 20:00 every day
+    // DEBUG
+    //Time cron "0 0/1 * 1/1 * ? *" // every minute
+then
+    val String LOGGER = LOGGER_NAME + ".cronTrigger"
+    val String timestamp = now.toString("dd-MM-yy HH:mm")
+    logDebug(LOGGER, "Battery monitoring status check triggered at {}",timestamp)
+
+    // Look for items with low battery
+    var lowBatteryItems = gBatteryMonitoredItems.members.filter[s|s.state <= BATTERY_ALERT_THRESHOLD]
+    // DEBUG:
+    //var lowBatteryItems = gBatteryMonitoredItems.members.filter[s|s.state >= BATTERY_ALERT_THRESHOLD]
+
+    // Report on each of the items
+    var String notifyMsg = ""
+    lowBatteryItems.forEach [ device |
+        notifyMsg += " - " + device.name + ":\n"
+        notifyMsg += "      Battery level: " + device.state.toString + "\n"
+        try {
+            var LinkedHashMap<String, String> dd = DeviceData.get(device.name)
+            notifyMsg += "      This device is a " + dd.get("TYPE") + "\n"
+            notifyMsg += "      Powered by " + dd.get("BATTERY") + "\n"
+            logDebug(LOGGER, "Device '{}' reports {}% battery.\nThis device is a '{}' powered by '{}'",device.name,device.state.toString(),dd.get("TYPE"),dd.get("BATTERY"))
+        } catch(Throwable t) {
+            logError(LOGGER, "Exception caught when reporting on device: {}.The exception was: {}",
+            device.name,
+            t.toString())
+        }
+    ]
+
+    // Notify and log
+    if (notifyMsg != "") {
+        notifyMsg = "Please note that the following device(s) are reporting a battery level below the configured threshold of " + BATTERY_ALERT_THRESHOLD + "%:\n" + notifyMsg
+        logWarn(LOGGER,notifyMsg)
+        sendPushbulletNote("Openhab battery monitoring", notifyMsg)
+    }
+end

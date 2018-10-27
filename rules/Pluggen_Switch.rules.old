@@ -1,0 +1,30 @@
+var Timer timer = null
+
+rule "Moccamaster auto off"
+when
+    Item Wallplug_firstFloor_kitchen_cofeeMaker changed
+then
+    // when using the physical on button there will be a 
+    // delay based on the bindings refresh interval
+    logInfo("Moccamaster","Item change received, state is {}", Wallplug_firstFloor_kitchen_cofeeMaker.state)
+    if (Wallplug_firstFloor_kitchen_cofeeMaker.state==OFF) {
+        if (timer!=null) {
+            logDebug("Moccamaster","Cancel auto off timer")
+            timer.cancel
+            timer = null
+        }
+    }
+    else if (Wallplug_firstFloor_kitchen_cofeeMaker.state==ON) {
+        if(timer==null) {
+            // first ON command, so create a timer to turn the light off again
+            logDebug("Moccamaster","Create auto off timer")
+            timer = createTimer(now.plusMinutes(60)) [| // for debug: now.plusSeconds(5)
+                sendCommand(Wallplug_firstFloor_kitchen_cofeeMaker, OFF)
+            ]
+        } else {
+            // subsequent ON command, so reschedule the existing timer
+            logDebug("Moccamaster","Reschedule auto off timer")
+            timer.reschedule(now.plusMinutes(60)) // for debug: now.plusSeconds(5)
+        }
+    }
+end

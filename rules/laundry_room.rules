@@ -1,0 +1,364 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+
+// Constants
+val String  LOGGER_NAME = "laundry_room"
+val int     CONTROL_MODE_NOCHANGE = -1  // indicates "no change needed"
+val int     CONTROL_MODE_DISABLE = 0    // indicates to deactivate auto off functionality
+val int     CONTROL_MODE_START = 1      // indicates start/restart auto off timer
+
+// Globals
+var Timer   g_laudryRoomOffTimer = null // for turning off after set time
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".logStateChange"
+    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
+        itemChanged.state.toString())
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdate = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".logReceivedUpdate"
+    logInfo(LOGGER, "Item '{}' received update",
+        itemUpdated.name)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
+    logInfo(LOGGER, "Item '{}' received update '{}'",
+        itemUpdated.name,
+        itemUpdated.state)
+    true
+]
+val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand = [
+    loggerName,
+    itemCommanded,
+    command |
+    val String LOGGER = loggerName //+ ".logReceivedCommand"
+    logInfo(LOGGER, "Item '{}' received command '{}'",
+        itemCommanded.name,
+        command)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".logUnexpectedState"
+    logError(LOGGER, "The state '{}' of item '{}' was unexpected!",
+        itemChanged.state.toString(),
+        itemChanged.name)
+    true
+]
+
+// When set time changes configure the zwave relay with the update value
+rule "Auto off time changed"
+when
+    Item LaundryRoom_MainLights_AutoOff_setTime received update
+then
+    val String LOGGER = LOGGER_NAME + ".autoOffChange"
+    logInfo(LOGGER, "Auto off rule triggered")
+
+    val int controlValue = (LaundryRoom_MainLights_AutoOff_setTime.state as DecimalType).intValue
+    val int secondsValue = controlValue*60
+    logInfo(LOGGER, "Auto off control value: '{}'",controlValue)
+    logInfo(LOGGER, "Auto off seconds value: '{}'",secondsValue)
+
+    // Example of how to configure zwave item dynamically using the REST API
+    val httpBody = "{'config_11_2':" + secondsValue.toString() + "}"
+    logInfo(LOGGER, "Auto off httpBody: '{}'",httpBody)
+    sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node7/config", "application/json", httpBody)
+end
+
+// Allow to enable/disable motion triggering
+// The zwave group asociation of the motion sensor is reconfigured
+rule "Motion trigger control change"
+when
+    Item LaundryRoom_MainLights_MotionTrigger_control changed
+then
+    val String LOGGER = LOGGER_NAME + ".autoOffEnabledChange"
+    val GenericItem itemChanged = LaundryRoom_MainLights_MotionTrigger_control
+    logStateChange.apply(LOGGER, itemChanged)
+
+    val MotionTriggerItem = LaundryRoom_MainLights_MotionTrigger_control
+    var httpBody = "{'group_2': ['node_7_0']}" // default to ON
+    if( MotionTriggerItem.state == OnOffType::ON ) {
+        httpBody = "{'group_2': ['node_7_0']}"
+    } else if( MotionTriggerItem.state == OnOffType::OFF ) {
+        httpBody = "{'group_2': null}"
+    } else {
+        logUnexpectedState.apply(LOGGER, MotionTriggerItem)
+    }
+
+    logInfo(LOGGER, "Auto off enabled httpBody: '{}'",httpBody)
+    val httpResult = sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node9/config", "application/json", httpBody)
+    logInfo(LOGGER, "Auto off enabled httpResult: '{}'",httpResult)
+end
+
+// Motion triggering should be automatically disabled at night
+rule "Automatic enable/disable motion trigger"
+when
+    Time cron "0 0 23 1/1 * ? *" or
+    Time cron "0 0 05 1/1 * ? *"
+then
+    val String LOGGER = LOGGER_NAME + ".autoMotionDisable"
+    logInfo(LOGGER, "Auto enable/disable motion rule triggered")
+    var Number hour = now.getHourOfDay
+    logInfo(LOGGER, "hour: '{}'",hour)
+
+    var msg = "Rule was triggered, hour=" + hour.toString()
+
+    val MotionTriggerItem = LaundryRoom_MainLights_MotionTrigger_control
+    if( hour == 23 ) {
+        MotionTriggerItem.sendCommand(OnOffType::OFF)
+        msg = msg + ", setting motion trigger to 'OFF'"
+    } else if( hour == 05 ) {
+        MotionTriggerItem.sendCommand(OnOffType::ON)
+        msg = msg + ", setting motion trigger to 'ON'"
+    } else {
+        logError(LOGGER, "The hour '{}' was unexpected!",hour)
+
+        // Default to ON
+        MotionTriggerItem.sendCommand(OnOffType::ON)
+        msg = msg + ", setting motion trigger to 'DEFAULT'"
+    }
+
+    //sendPushbulletNote("Motion trigger schedule", msg)
+end
+
+// When the UI control element change state
+rule "Auto off control item state change"
+when
+    //Item LaundryRoom_MainLights_AutoOff_control changed
+    Item LaundryRoom_MainLights_AutoOff_control received update
+then
+    val String LOGGER = LOGGER_NAME + ".controlChange"
+    //val GenericItem itemChanged = LaundryRoom_MainLights_AutoOff_control
+    //logStateChange.apply(LOGGER, itemChanged)
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    //val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
+    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
+    val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
+    val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
+
+    val int controlValue = (AutoOffControlItem.state as DecimalType).intValue
+
+    if( controlValue != CONTROL_MODE_NOCHANGE ) {
+        // Failsafe default to timer off in case of problems
+        if( AutoOffSetTimeItem.state == NULL || AutoOffSetTimeItem.state == UNDEF ) {
+            logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffSetTimeItem.name)
+            AutoOffSetTimeItem.postUpdate(0)
+        }
+
+        // Determine new set time
+        // Failsafe default to timer off in case of problems
+        var int setTimeValue = 0
+        if( AutoOffSetTimeItem.state != NULL && AutoOffSetTimeItem.state != UNDEF ) {
+            setTimeValue = (AutoOffSetTimeItem.state as DecimalType).intValue
+        } else {
+            logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffSetTimeItem.name)
+        }
+        var int newSetTime = Math.max(0, setTimeValue + controlValue) // never negative
+        //logInfo(LOGGER, "controlValue={}, setTimeValue={}, newSetTime={}", controlValue, setTimeValue, newSetTime)
+        if( controlValue == CONTROL_MODE_START ) {
+            newSetTime = setTimeValue   // no change, just start/restart auto off timer
+        } else if( controlValue == CONTROL_MODE_DISABLE) {
+            newSetTime = 0              // 0 will result in termination of auto off timer
+        }
+        logInfo(LOGGER, "setting newSetTime={} minutes", newSetTime)
+
+        // Apply new set time
+        AutoOffSetTimeItem.postUpdate(newSetTime)
+
+        // To prevent the UI showing button in "pressed" state
+        AutoOffControlItem.postUpdate(CONTROL_MODE_NOCHANGE)
+    }
+end
+
+// When light sensor data is received
+// record date/time
+rule "Laundry room light sensor data received"
+when
+    Item Sensor_CL_LaundryRoom_sensorLuminance received update
+then
+    val String LOGGER = LOGGER_NAME + ".lightDataReceived"
+    logReceivedUpdate.apply(LOGGER, triggeringItem)
+    Sensor_CL_LaundryRoom_sensorLuminance_LastReadout.postUpdate(new DateTimeType())
+end
+
+/*
+rule "Laundry room main lights, switch received command"
+when
+    Item Relay_CL_LaundryRoom_MainLights_switch received command
+then
+    val GenericItem itemCommanded = Relay_CL_LaundryRoom_MainLights_switch
+    logReceivedCommand.apply(LOGGER_NAME, itemCommanded, receivedCommand.toString())
+end
+
+rule "Laundry room night lights, switch received command"
+when
+    Item Wallplug_CL_LaundryRoom_NightLights_switch received command
+then
+    val GenericItem itemCommanded = Wallplug_CL_LaundryRoom_NightLights_switch
+    logReceivedCommand.apply(LOGGER_NAME, itemCommanded, receivedCommand.toString())
+end
+*/
+/*
+val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
+    loggerName,
+    timerToStop,
+    timerName |
+    val String LOGGER = loggerName + ".stopTimer"
+    var String dispName = "unknown"
+    if( timerName !== null ) {dispName = timerName}
+    if( timerToStop !== null ) {
+        logInfo(LOGGER,"Stopping timer '{}', was running: {}", timerName, timerToStop.isRunning())
+        timerToStop.cancel()
+    } else {
+        logInfo(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
+    }
+    true
+]
+*/
+
+/*
+// When motion is detected AND not night (23-05)
+//  - Enable main lights
+//  - Start auto off timer (if configured)
+rule "Motion sensor triggered"
+when
+    Item Sensor_CL_LaundryRoom_alarmBurglar received update ON
+then
+    val String LOGGER = LOGGER_NAME + ".motionDetected"
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
+    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
+    //val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
+    //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
+
+    val Boolean isDay = now.getHourOfDay > 5 && now.getHourOfDay < 23
+
+    logInfo(LOGGER, "Motion detected, hourOfDay={}, isDay={}", now.getHourOfDay, isDay)
+
+    if( isDay ) {
+        logDebug(LOGGER, "Enabling main lights...")
+        MainSwitch.sendCommand(OnOffType::ON)
+    }
+end
+*/
+/*
+// When main lights change:
+//  - Set night light to inverse
+rule "Laundry room main lights, switch state change"
+when
+    Item Relay_CL_LaundryRoom_MainLights_switch changed
+then
+    val String LOGGER = LOGGER_NAME + ".mainLightsChange"
+    val GenericItem itemChanged = Relay_CL_LaundryRoom_MainLights_switch
+    logStateChange.apply(LOGGER, itemChanged)
+
+    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
+    val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
+    //val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
+    //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
+
+    // Set night light to inverse of main lights
+    // Sync proxy UI item
+    if( MainSwitch.state == OnOffType::ON ) {
+        Thread::sleep(1000) // Takes some time to light up main lights
+        NightSwitch.sendCommand(OnOffType::OFF)
+    } else if( MainSwitch.state == OnOffType::OFF ) {
+        NightSwitch.sendCommand(OnOffType::ON)
+    } else {
+        logUnexpectedState.apply(LOGGER, MainSwitch)
+    }
+end
+*/
+
+/*
+// When main lights are updated:
+//  - Start/restart auto off timer (if configured)
+rule "Laundry room main lights, switch received update"
+when
+    Item Relay_CL_LaundryRoom_MainLights_switch received update
+then
+    val String LOGGER = LOGGER_NAME + ".mainLightsUpdate"
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
+    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
+    val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
+    //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
+
+    // Start/restart auto off timer (if configured)
+    if( MainSwitch.state == OnOffType::ON ) {
+        // Tell the control item to start auto off timer
+        AutoOffControlItem.postUpdate(CONTROL_MODE_START)
+    } else if( MainSwitch.state == OnOffType::OFF ) {
+        // Tell the control item to stop the timer
+        // TODO
+    } else {
+        logUnexpectedState.apply(LOGGER, MainSwitch)
+    }
+end
+*/
+/*
+// When the set time changes
+rule "Auto off set time state change"
+when
+    Item LaundryRoom_MainLights_AutoOff_setTime received update
+then
+    val String LOGGER = LOGGER_NAME + ".setTimeChange"
+    //val GenericItem itemUpdated = LaundryRoom_MainLights_AutoOff_setTime
+    //logReceivedUpdate.apply(LOGGER, itemUpdated)
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
+    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
+    val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
+    val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
+
+    // Kill timer if exists
+//    stopTimer.apply(LOGGER, g_laudryRoomOffTimer, "Auto off")
+    if( g_laudryRoomOffTimer !== null ) {
+        logInfo(LOGGER,"Cancel auto off timer")
+        g_laudryRoomOffTimer.cancel
+    } else {
+        logInfo(LOGGER,"Not cancelling auto off timer as it was not instantiated")
+    }
+
+    // Failsafe default to timer off in case of problems
+    if( AutoOffSetTimeItem.state == NULL || AutoOffSetTimeItem.state == UNDEF ) {
+        logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffControlItem.name)
+        AutoOffControlItem.postUpdate(CONTROL_MODE_DISABLE)
+    } else {
+        // > 0 means auto off is enabled
+        val int setTimeValue = (AutoOffSetTimeItem.state as DecimalType).intValue
+        if( setTimeValue > 0 ) {
+            // Set timer to turn off physical wallplug
+            logInfo(LOGGER, "Starting/restarting auto off timer, setTimeValue={}",setTimeValue)
+            g_laudryRoomOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
+                logInfo(LOGGER, "Auto off timer triggered")
+                MainSwitch.sendCommand(OnOffType::OFF)
+            ]
+//            if( g_laudryRoomOffTimer !== null ) {
+//                logInfo(LOGGER,"Reschedule auto off timer")
+//                g_laudryRoomOffTimer.reschedule(now.plusMinutes(setTimeValue))
+//            } else {
+//                logInfo(LOGGER,"Instantiating new auto off timer")
+//                g_laudryRoomOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
+//                    MainSwitch.sendCommand(OnOffType::OFF)
+//                ]
+//            }
+        }
+    }
+end
+*/

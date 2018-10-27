@@ -1,0 +1,83 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+//import org.openhab.core.types.Integer
+
+// Constants
+val String  LOGGER_NAME = "efergy_energy_monitor"
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
+    itemChanged |
+    logDebug(loggerName, "State of item '{}' changed to '{}'",
+        itemChanged.name,
+        itemChanged.state.toString())
+    true
+]
+val Functions$Function3<String, GenericItem, DateTimeItem, Boolean> recordStateChangeDate = [
+    loggerName,
+    itemChanged,
+    DateTimeItemToUpdate |
+
+    logDebug(loggerName, "State of item '{}' changed, recording date in '{}'",
+        itemChanged.name,
+        DateTimeItemToUpdate.name)
+    DateTimeItemToUpdate.postUpdate(new DateTimeType())
+    true
+]
+val Functions$Function4<String, DateTimeItem, GenericItem, NumberItem, Boolean> storeReadoutIfValid = [
+    loggerName,
+    DateTimeRecordValidReadout,
+    StringReadValue,
+    NumberItemToUpdate |
+
+    // Constants
+    val Number  VALID_MAX_READING = 19000 // 50A x 240V + 7000w margin
+    val Number  VALID_MIN_READING = 0
+
+    var Number valueRead
+
+    logDebug(loggerName, "Value readout string: {}", StringReadValue.state)
+    try {
+        valueRead = DecimalType.valueOf(StringReadValue.state.toString())
+    } catch(Throwable t) {
+        logError(loggerName, "Exception caught when parsing readout string to Number: {}", t.toString())
+        valueRead = -1
+    }
+    logDebug(loggerName, "Value readout parsed as Number: {}", valueRead)
+    logDebug(loggerName, "Checking against valid limits: [{}, {}]", VALID_MIN_READING, VALID_MAX_READING)
+    if( valueRead >= VALID_MIN_READING && valueRead <= VALID_MAX_READING ) {
+        logDebug(loggerName, "Posting valid readout date to item {}", DateTimeRecordValidReadout.name)
+        DateTimeRecordValidReadout.postUpdate(new DateTimeType())
+        logDebug(loggerName, "Posting state '{}' of item '{}' as Number to item '{}'",
+            StringReadValue.state.toString(),
+            StringReadValue.name,
+            NumberItemToUpdate.name)
+        NumberItemToUpdate.postUpdate(valueRead)
+    }
+    else {
+        logInfo(loggerName, "Value read out {} is outside valid limits [{}, {}], will not post update to item {}",
+            valueRead, VALID_MIN_READING, VALID_MAX_READING, NumberItemToUpdate.name)
+    }
+    true
+]
+
+rule "efergy energy monitor string to number"
+when
+    Item EnergyMonitor_Household_Efergy_ValueString received update
+then
+    val GenericItem ItemChanged = EnergyMonitor_Household_Efergy_ValueString
+    val String LOGGER = LOGGER_NAME + ".updateReceived"
+    logStateChange.apply(LOGGER, ItemChanged)
+    recordStateChangeDate.apply(
+        LOGGER,
+        ItemChanged,
+        EnergyMonitor_Household_Efergy_LastReadout
+    )
+    storeReadoutIfValid.apply(
+        LOGGER,
+        EnergyMonitor_Household_Efergy_LastValidReadout,
+        ItemChanged,
+        EnergyMonitor_Household_Efergy
+    )
+end

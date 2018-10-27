@@ -1,0 +1,77 @@
+// Constants
+val String  LOGGER_NAME = "efergy_monitor"
+val int     VALID_READOUT_MAX_MINUTES = 30 // set negative for DEBUG
+val int     ALERT_MIN_HOURS_THRESHOLD = 24 // set negative for DEBUG
+
+// Every hour
+// Check if a valid readout has been performed within configured time
+// If not alert, make sure alerts arent sent mor often than the configured threshold
+rule "Efergy status check trigger"
+when
+    // https://www.freeformatter.com/cron-expression-generator-quartz.html
+    Time cron "0 0 * ? * * *" // At second :00 of minute :00 of every hour
+    // DEBUG
+    //Time cron "30 * * ? * * *" // At second :30 of every minute
+then
+    val String LOGGER = LOGGER_NAME + ".cronTrigger"
+    val String dateFormat = "dd-MM-yyyy HH:mm"
+    val DateTime triggeredTime = now
+    val String timestamp = triggeredTime.toString(dateFormat)
+    logInfo(LOGGER, "Efergy monitoring status check triggered at {}",timestamp)
+
+    val LastValidReadoutItem = EnergyMonitor_Household_Efergy_LastValidReadout
+    val LastNotifiedItem = Monitor_Efergy_LastValidReadout_LastNotified
+
+    // Determine last valid readout
+    logDebug(LOGGER, "Last valid readout item state: {}", LastValidReadoutItem.state)
+    var DateTime lastValidReadoutTime = new DateTime(1900, 1, 1, 0, 0, 0)
+    if( LastValidReadoutItem.state != NULL && LastValidReadoutItem.state != UNDEF ) {
+        try {
+            lastValidReadoutTime = new DateTime((LastValidReadoutItem.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli)
+        } catch(Throwable t) {
+            logError(LOGGER, "Exception caught when parsing last valid readout item state to Date: {}", t.toString())
+        }
+    }
+    else {
+        logWarn(LOGGER,"The state of the last valid readout item {} is {}, defaulting to a long long time ago: {}", LastValidReadoutItem.name, LastValidReadoutItem.state, lastValidReadoutTime.toString(dateFormat))
+    }
+    logDebug(LOGGER, "Last valid readout DateTime: {}", lastValidReadoutTime.toString(dateFormat))
+
+    // Check if it's been too long since last valid readout
+    if( lastValidReadoutTime.plusMinutes(VALID_READOUT_MAX_MINUTES) < triggeredTime ) {
+        logDebug(LOGGER, "It has been too long since last valid readout!")
+        logDebug(LOGGER, "Last notified item state: {}", LastNotifiedItem.state)
+        var DateTime lastNotifiedTime = new DateTime(1900, 1, 1, 0, 0, 0)
+        if( LastNotifiedItem.state != NULL && LastNotifiedItem.state != UNDEF ) {
+            try {
+                lastNotifiedTime = new DateTime((LastNotifiedItem.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli)
+            } catch(Throwable t) {
+                logError(LOGGER, "Exception caught when parsing last notified item state to Date: {}", t.toString())
+            }
+        }
+        else {
+           logWarn(LOGGER,"The state of the last notified item {} is {}, defaulting to a long long time ago: {}", LastNotifiedItem.name, LastNotifiedItem.state, lastNotifiedTime.toString(dateFormat))
+        }
+        logDebug(LOGGER, "Last notified DateTime: {}", lastNotifiedTime.toString(dateFormat))
+
+        // Warn always
+        val String notifyMsg = "Please note that the efergy energy monitor has not reported a valid readout for more than " + VALID_READOUT_MAX_MINUTES.toString() + " minutes, last valid readout was at " + lastValidReadoutTime.toString(dateFormat) + "."
+        logWarn(LOGGER,notifyMsg)
+
+        // Notify?
+        if( lastNotifiedTime.plusHours(ALERT_MIN_HOURS_THRESHOLD) < triggeredTime ) {
+            logDebug(LOGGER, "Sending notification as last notification was not sent within the threshold of {} hours.", ALERT_MIN_HOURS_THRESHOLD)
+            sendPushbulletNote("Openhab Efergy status check", notifyMsg)
+            // Record last notification datetime
+            LastNotifiedItem.postUpdate(new DateTimeType())
+        }
+        else {
+            logInfo(LOGGER, "Not sending notification as last notification was sent within the threshold of {} hours, last notification was sent at {}.", ALERT_MIN_HOURS_THRESHOLD, lastNotifiedTime.toString(dateFormat))
+        }
+    }
+    else {
+        logDebug(LOGGER, "Last valid readout within configured threshold of {} minutes.", VALID_READOUT_MAX_MINUTES)
+    }
+
+end
+
