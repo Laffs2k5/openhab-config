@@ -120,3 +120,25 @@ Dimmer
 //    { channel="zwave:device:2c3b27f3:node6:alarm_general" }
 /* END Everspring Microplug Dimmer */
 
+/* 2x Nexa AN-180 wallplug Z-Wave: Living room wall light */
+Group:Switch:OR(ON, OFF)
+    gLightsLivingRoomWallLights
+    "Living room wall lights"
+    <walllamp>
+Switch
+    LivingRoomWallGroup_switch
+    "Living room wall lights state is [%s]"
+    <walllamp>
+Switch
+    Wallplug_GF_LivingRoomWall_switch1
+    "Living room wall lights switch 1 state is [%s]"
+    <walllamp>
+    (gRoomLivingRoom,gLightsLivingRoomWallLights)
+    {channel="zwave:device:2c3b27f3:node12:switch_binary"}
+Switch
+    Wallplug_GF_LivingRoomWall_switch2
+    "Living room wall lights switch 2 state is [%s]"
+    <walllamp>
+    (gRoomLivingRoom,gLightsLivingRoomWallLights)
+    {channel="zwave:device:2c3b27f3:node13:switch_binary"}
+/* END Nexa AN-180 wallplug Z-Wave: Living room wall light */

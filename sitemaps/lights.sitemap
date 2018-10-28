@@ -1,5 +1,10 @@
 sitemap lights label="Lights"
 {
+    Frame label="The Living room light"
+    {
+        Switch
+            item=gLightsLivingRoomWallLights
+    }
     Frame label="The Dining room light"
     {
         Switch
