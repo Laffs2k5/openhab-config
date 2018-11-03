@@ -4,6 +4,15 @@ sitemap lights label="Lights"
     {
         Switch
             item=gLightsLivingRoomWallLights
+            label="Wall lights[]"
+        Switch
+            item=LivingRoom_WallLights_MotionTrigger_control
+            label="Motion trigger[]"
+        Switch
+            item=LivingRoom_WallLights_AutoOff_control
+            mappings=[0="OFF", -5="-5", 5="+5"]
+        Text
+            item=LivingRoom_WallLights_AutoOff_setTime
     }
     Frame label="The Dining room light"
     {

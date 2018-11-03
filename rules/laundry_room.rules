@@ -8,7 +8,7 @@ val int     CONTROL_MODE_DISABLE = 0    // indicates to deactivate auto off func
 val int     CONTROL_MODE_START = 1      // indicates start/restart auto off timer
 
 // Globals
-var Timer   g_laudryRoomOffTimer = null // for turning off after set time
+
 
 // Lambdas
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
@@ -58,7 +58,7 @@ val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
 ]
 
 // When set time changes configure the zwave relay with the update value
-rule "Auto off time changed"
+rule "Laundry room lights, Auto off time changed"
 when
     Item LaundryRoom_MainLights_AutoOff_setTime received update
 then
@@ -78,7 +78,7 @@ end
 
 // Allow to enable/disable motion triggering
 // The zwave group asociation of the motion sensor is reconfigured
-rule "Motion trigger control change"
+rule "Laundry room lights, Motion trigger control change"
 when
     Item LaundryRoom_MainLights_MotionTrigger_control changed
 then
@@ -102,7 +102,7 @@ then
 end
 
 // Motion triggering should be automatically disabled at night
-rule "Automatic enable/disable motion trigger"
+rule "Laundry room lights, Automatic enable/disable motion trigger"
 when
     Time cron "0 0 23 1/1 * ? *" or
     Time cron "0 0 05 1/1 * ? *"
@@ -133,7 +133,7 @@ then
 end
 
 // When the UI control element change state
-rule "Auto off control item state change"
+rule "Laundry room lights, Auto off control item state change"
 when
     //Item LaundryRoom_MainLights_AutoOff_control changed
     Item LaundryRoom_MainLights_AutoOff_control received update

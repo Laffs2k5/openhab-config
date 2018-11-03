@@ -1,0 +1,260 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+
+// Constants
+val String  LOGGER_NAME = "living_room_lights"
+val int     CONTROL_MODE_NOCHANGE = -1  // indicates "no change needed"
+val int     CONTROL_MODE_DISABLE = 0    // indicates to deactivate auto off functionality
+val int     CONTROL_MODE_START = 1      // indicates start/restart auto off timer
+
+// Globals
+var Timer   g_livingRoomWallLightsOffTimer = null   // For turning off living room wall lights
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName + ".logStateChange"
+    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
+        itemChanged.state.toString())
+    true
+]
+val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand = [
+    loggerName,
+    itemCommanded,
+    command |
+    val String LOGGER = loggerName + ".logReceivedCommand"
+    logInfo(LOGGER, "Item '{}' received command '{}'",
+        itemCommanded.name,
+        command)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdate = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName + ".logReceivedUpdate"
+    logInfo(LOGGER, "Item '{}' received update",
+        itemUpdated.name)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".logUnexpectedState"
+    logError(LOGGER, "The state '{}' of item '{}' was unexpected!",
+        itemChanged.state.toString(),
+        itemChanged.name)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
+    logInfo(LOGGER, "Item '{}' received update '{}'",
+        itemUpdated.name,
+        itemUpdated.state)
+    true
+]
+val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
+    loggerName,
+    timerToStop,
+    timerName |
+    val String LOGGER = loggerName + ".stopTimer"
+    var String dispName = "unknown"
+    if( timerName !== null ) {dispName = timerName}
+    if( timerToStop !== null ) {
+        logInfo(LOGGER,"Stopping timer '{}', was running: {}", timerName, timerToStop.isRunning())
+        timerToStop.cancel()
+    } else {
+        logInfo(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
+    }
+    true
+]
+
+// This is jsut debug
+rule "Living room lights, motion sensor, binary received update"
+when
+    Item Sensor_GF_LivingRoomWall_sensorBinary received update
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsMotionBinaryUpdated"
+    logReceivedUpdate.apply(LOGGER, triggeringItem)
+end
+
+// This is just debug
+rule "Living room lights, motion sensor, binary received command"
+when
+    Item Sensor_GF_LivingRoomWall_sensorBinary received command
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsMotionBinaryReceivedCommand"
+    val GenericItem itemCommanded = Sensor_GF_LivingRoomWall_sensorBinary
+    logReceivedCommand.apply(LOGGER, itemCommanded, receivedCommand.toString())
+end
+
+// Motion sensor controls wall lights group
+// Except when motion sensor trigger is disabled
+rule "Living room lights, motion sensor, binary changed"
+when
+    Item Sensor_GF_LivingRoomWall_sensorBinary changed
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsMotionBinaryChanged"
+    val GenericItem itemChanged = Sensor_GF_LivingRoomWall_sensorBinary
+    val WallLightsGroup = gLightsLivingRoomWallLights
+    val MotionTriggerItem = LivingRoom_WallLights_MotionTrigger_control
+
+    logStateChange.apply(LOGGER, itemChanged)
+
+    if( MotionTriggerItem.state == OnOffType::ON) {
+        if( itemChanged.state == OnOffType::ON) {
+            WallLightsGroup.sendCommand(OnOffType::ON)
+        } else if(itemChanged.state == OnOffType::OFF) {
+            // TODO
+            // restart a timer to turn off the lights here
+
+            // Kill timer if exists
+            if( g_livingRoomWallLightsOffTimer !== null ) {
+                logInfo(LOGGER,"Auto off timer exists")
+            } else {
+                logInfo(LOGGER,"Auto off timer does NOT exist")
+            }
+            stopTimer.apply(LOGGER, g_livingRoomWallLightsOffTimer, "Auto off")
+            if( g_livingRoomWallLightsOffTimer !== null ) {
+                logInfo(LOGGER,"Auto off timer exists")
+            } else {
+                logInfo(LOGGER,"Not cancelling auto off timer as it was not instantiated")
+            }
+
+            val int setTimeValue = (LivingRoom_WallLights_AutoOff_setTime.state as DecimalType).intValue
+            logInfo(LOGGER, "Starting auto off timer, setTimeValue={}",setTimeValue)
+            g_livingRoomWallLightsOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
+                logInfo(LOGGER, "Auto off timer triggered")
+                WallLightsGroup.sendCommand(OnOffType::OFF)
+            ]
+        } else {
+            logUnexpectedState.apply(LOGGER, itemChanged)
+        }
+    } else if(MotionTriggerItem.state == OnOffType::OFF) {
+        logInfo(LOGGER, "Motion detected, skipping turning on lights as motion trigger is disabled.")
+    } else {
+        logUnexpectedState.apply(LOGGER, MotionTriggerItem)
+    }
+end
+
+// When set time changes configure the zwave relay with the update value
+rule "Living room wall lights, Auto off time changed"
+when
+    Item LivingRoom_WallLights_AutoOff_setTime received update
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsAutoOffChange"
+    //val MotionTriggerItem = LivingRoom_WallLights_MotionTrigger_control
+    val int controlValue = (LivingRoom_WallLights_AutoOff_setTime.state as DecimalType).intValue
+
+    if( controlValue < 1 ) {
+        logInfo(LOGGER, "New auto off time is {} minutes, auto off will be disabled.", controlValue)
+    } else {
+        logInfo(LOGGER, "Recording new auto off time {} minutes.", controlValue)
+    }
+
+    /*
+    logInfo(LOGGER, "Auto off control value: '{}'",controlValue)
+    val int secondsValue = controlValue*60
+    logInfo(LOGGER, "Auto off seconds value: '{}'",secondsValue)
+
+    if( secondsValue < 30 ) { // limitation of device
+        logInfo(LOGGER, "Auto off time is too small, motion trigger will be disabled.")
+        MotionTriggerItem.sendCommand(OnOffType::OFF)
+    } else {
+        MotionTriggerItem.sendCommand(OnOffType::ON)
+        // Configure zwave item dynamically using the REST API
+        val httpBody = "{'config_2_2':" + secondsValue.toString() + "}"
+        logInfo(LOGGER, "Auto off time httpBody: '{}'",httpBody)
+        val httpResult = sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node15/config", "application/json", httpBody)
+        logInfo(LOGGER, "Auto off time configure httpResult: '{}'",httpResult)
+    }
+    */
+end
+
+// Allow to enable/disable motion triggering
+rule "Living room wall lights, Motion trigger control change"
+when
+    Item LivingRoom_WallLights_MotionTrigger_control changed
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsAutoOffEnabledChange"
+    val GenericItem itemChanged = LivingRoom_WallLights_MotionTrigger_control
+    logStateChange.apply(LOGGER, itemChanged)
+end
+
+// Motion triggering should be automatically disabled at night
+rule "Living room wall lights, Automatic enable/disable motion trigger"
+when
+    Time cron "0 0 23 1/1 * ? *" or
+    Time cron "0 0 05 1/1 * ? *"
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsAutoMotionDisable"
+    val MotionTriggerItem = LivingRoom_WallLights_MotionTrigger_control
+
+    logInfo(LOGGER, "Auto enable/disable motion rule triggered")
+
+    var Number hour = now.getHourOfDay
+    logInfo(LOGGER, "hour: '{}'",hour)
+
+    var msg = "Rule was triggered, hour=" + hour.toString()
+    if( hour == 23 ) {
+        MotionTriggerItem.sendCommand(OnOffType::OFF)
+        msg = msg + ", setting motion trigger to 'OFF'"
+    } else if( hour == 05 ) {
+        MotionTriggerItem.sendCommand(OnOffType::ON)
+        msg = msg + ", setting motion trigger to 'ON'"
+    } else {
+        logError(LOGGER, "The hour '{}' was unexpected!",hour)
+
+        // Default to ON
+        MotionTriggerItem.sendCommand(OnOffType::ON)
+        msg = msg + ", setting motion trigger to 'DEFAULT'"
+    }
+end
+
+// When the UI control element change state
+rule "Living room wall lights, Auto off control item state change"
+when
+    Item LivingRoom_WallLights_AutoOff_control received update
+then
+    val String LOGGER = LOGGER_NAME + ".wallLightsAutoOffControlChange"
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    val NumberItem AutoOffControlItem = LivingRoom_WallLights_AutoOff_control
+    val NumberItem AutoOffSetTimeItem = LivingRoom_WallLights_AutoOff_setTime
+
+    val int controlValue = (AutoOffControlItem.state as DecimalType).intValue
+
+    if( controlValue != CONTROL_MODE_NOCHANGE ) {
+        // Failsafe default to timer off in case of problems
+        if( AutoOffSetTimeItem.state == NULL || AutoOffSetTimeItem.state == UNDEF ) {
+            logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffSetTimeItem.name)
+            AutoOffSetTimeItem.postUpdate(0)
+        }
+
+        // Determine new set time
+        // Failsafe default to timer off in case of problems
+        var int setTimeValue = 0
+        if( AutoOffSetTimeItem.state != NULL && AutoOffSetTimeItem.state != UNDEF ) {
+            setTimeValue = (AutoOffSetTimeItem.state as DecimalType).intValue
+        } else {
+            logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffSetTimeItem.name)
+        }
+        var int newSetTime = Math.max(0, setTimeValue + controlValue) // never negative
+        //logInfo(LOGGER, "controlValue={}, setTimeValue={}, newSetTime={}", controlValue, setTimeValue, newSetTime)
+        if( controlValue == CONTROL_MODE_START ) {
+            newSetTime = setTimeValue   // no change, just start/restart auto off timer
+        } else if( controlValue == CONTROL_MODE_DISABLE) {
+            newSetTime = 0              // 0 will result in termination of auto off timer
+        }
+        logInfo(LOGGER, "setting newSetTime={} minutes", newSetTime)
+
+        // Apply new set time
+        AutoOffSetTimeItem.postUpdate(newSetTime)
+
+        // To prevent the UI showing button in "pressed" state
+        AutoOffControlItem.postUpdate(CONTROL_MODE_NOCHANGE)
+    }
+end

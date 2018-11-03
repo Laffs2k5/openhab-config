@@ -1,0 +1,73 @@
+/* Virtual items */
+Group
+    gLivingRoomWallLightAutoOff
+    "Living room wall light auto off group"
+    <time>
+
+// For auto off functionaluty
+Number
+    LivingRoom_WallLights_AutoOff_setTime
+    "Auto off time set is [%d min]"
+    <time>
+    (gLivingRoomWallLightAutoOff)
+Number
+    LivingRoom_WallLights_AutoOff_control
+    "Auto off control"
+    <selfenergy>
+    (gLivingRoomWallLightAutoOff)
+Switch
+    LivingRoom_WallLights_MotionTrigger_control
+    "Living room wall light on by motion is [%s]"
+    <motion>
+    (gLivingRoomWallLightAutoOff)
+
+/* Shenzhen multisensor Z-Wave: Living room */
+Switch
+    Sensor_GF_LivingRoomWall_sensorBinary
+    "Living room Binary Sensor state is [%s]"
+    {channel="zwave:device:2c3b27f3:node15:sensor_binary"}
+/* Not used
+Switch
+    Sensor_GF_LivingRoomWall_alarmBurglar
+    "Living room motion sensor state is [%s]"
+    {channel="zwave:device:2c3b27f3:node15:alarm_burglar"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_GF_LivingRoomWall_sensorLuminance
+    "Living room light sensor value is [%d]"
+    {channel="zwave:device:2c3b27f3:node15:sensor_luminance"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_GF_LivingRoomWall_sensorTemperature
+    "Living room temperature is [%.0f °C]"
+    {channel="zwave:device:2c3b27f3:node15:sensor_temperature"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_GF_LivingRoomWall_batteryLevel
+    "Living room battery Level is [%.0f %%]"
+    {channel="zwave:device:2c3b27f3:node15:battery-level"} */
+/* END Shenzhen multisensor Z-Wave: Living room */
+
+/* 2x Nexa AN-180 wallplug Z-Wave: Living room wall light */
+Group:Switch:OR(ON, OFF)
+    gLightsLivingRoomWallLights
+    "Living room wall lights"
+    <walllamp>
+//Switch
+//    LivingRoomWallGroup_switch
+//    "Living room wall lights state is [%s]"
+//    <walllamp>
+Switch
+    Wallplug_GF_LivingRoomWall_switch1
+    "Living room wall lights switch 1 state is [%s]"
+    <walllamp>
+    (gRoomLivingRoom,gLightsLivingRoomWallLights)
+    {channel="zwave:device:2c3b27f3:node12:switch_binary"}
+Switch
+    Wallplug_GF_LivingRoomWall_switch2
+    "Living room wall lights switch 2 state is [%s]"
+    <walllamp>
+    (gRoomLivingRoom,gLightsLivingRoomWallLights)
+    {channel="zwave:device:2c3b27f3:node13:switch_binary"}
+/* END Nexa AN-180 wallplug Z-Wave: Living room wall light */
+

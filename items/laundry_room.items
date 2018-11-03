@@ -19,6 +19,7 @@ Switch
     LaundryRoom_MainLights_MotionTrigger_control
     "Laundry room light on by motion is [%s]"
     <motion>
+    (gLaundryRoomAutoOff)
 
 // For recording date and value when receiving updates from Telldus multisensor
 DateTime
