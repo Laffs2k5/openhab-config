@@ -11,6 +11,10 @@ val HashMap< String, LinkedHashMap<String, String>> DeviceData = newHashMap(
             "TYPE"      -> "TELLDUS PST02B Slim Z-Wave Multi-Sensor",
             "BATTERY"   -> "CR123A lithium battery")),
 
+    "Sensor_GF_LivingRoomWall_batteryLevel" -> (newLinkedHashMap(
+            "TYPE"      -> "Shenzhen multisensor Z-Wave",
+            "BATTERY"   -> "CR123A lithium battery")),
+
     "ITEM_NAME_HERE" -> (newLinkedHashMap(
             "TYPE"      -> "DETAILS ABOUT DEVICE TYPE HERE",
             "BATTERY"   -> "WHAT BATTERY TO ORDER"))
