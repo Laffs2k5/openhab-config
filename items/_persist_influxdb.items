@@ -93,13 +93,19 @@ Number
 Number
     Sensor_GF_LivingRoomWall_sensorLuminance
     "Living room light sensor value is [%d]"
+    <temperature>
+    (gRoomLivingRoom, gPersistInfluxEveryUpdate)
     {channel="zwave:device:2c3b27f3:node15:sensor_luminance"}
 Number
     Sensor_GF_LivingRoomWall_sensorTemperature
     "Living room temperature is [%.0f °C]"
+    <lightsensor>
+    (gRoomLivingRoom, gPersistInfluxEveryUpdate)
     {channel="zwave:device:2c3b27f3:node15:sensor_temperature"}
 Number
     Sensor_GF_LivingRoomWall_batteryLevel
     "Living room battery Level is [%.0f %%]"
+    <battery>
+    (gRoomLivingRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node15:battery-level"}
 /* END Shenzhen multisensor Z-Wave: Living room */
