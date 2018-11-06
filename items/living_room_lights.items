@@ -26,31 +26,31 @@ Switch
     Sensor_GF_LivingRoomWall_sensorBinary
     "Living room Binary Sensor state is [%s]"
     (gRoomLivingRoom)
-    {channel="zwave:device:2c3b27f3:node15:sensor_binary"}
+    {channel="zwave:device:2c3b27f3:node18:sensor_binary"}
 /* Not used
 Switch
     Sensor_GF_LivingRoomWall_alarmBurglar
     "Living room motion sensor state is [%s]"
     (gRoomLivingRoom)
-    {channel="zwave:device:2c3b27f3:node15:alarm_burglar"} */
+    {channel="zwave:device:2c3b27f3:node18:alarm_burglar"} */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Sensor_GF_LivingRoomWall_sensorLuminance
     "Living room light sensor value is [%d]"
     (gRoomLivingRoom)
-    {channel="zwave:device:2c3b27f3:node15:sensor_luminance"} */
+    {channel="zwave:device:2c3b27f3:node18:sensor_luminance"} */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Sensor_GF_LivingRoomWall_sensorTemperature
     "Living room temperature is [%.0f °C]"
     (gRoomLivingRoom)
-    {channel="zwave:device:2c3b27f3:node15:sensor_temperature"} */
+    {channel="zwave:device:2c3b27f3:node18:sensor_temperature"} */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Sensor_GF_LivingRoomWall_batteryLevel
     "Living room battery Level is [%.0f %%]"
     (gRoomLivingRoom, gBatteryMonitoredItems)
-    {channel="zwave:device:2c3b27f3:node15:battery-level"} */
+    {channel="zwave:device:2c3b27f3:node18:battery-level"} */
 /* END Shenzhen multisensor Z-Wave: Living room */
 
 /* 2x Nexa AN-180 wallplug Z-Wave: Living room wall light */
