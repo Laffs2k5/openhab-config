@@ -23,9 +23,11 @@ sitemap lights label="Lights"
         Slider
             item=Dimmer_GF_DiningRoom_SwitchDimmer
             label="Brightness"
+            icon="dimmable"
         Setpoint
             item=Dimmer_GF_DiningRoom_SwitchDimmer
             label="Brightness"
+            icon="dimmable"
     }
     Frame label="The Staircase light"
     {
@@ -36,9 +38,11 @@ sitemap lights label="Lights"
         Slider
             item=Dimmer_GF_Staircase_SwitchDimmer
             label="Brightness"
+            icon="dimmable"
         Setpoint
             item=Dimmer_GF_Staircase_SwitchDimmer
             label="Brightness"
+            icon="dimmable"
     }
     Frame label="Laundry room light"
     {
@@ -66,9 +70,11 @@ sitemap lights label="Lights"
         Slider
             item=Wallplug_CL_Stairwell_Dimmer
             label="Lamp brightness"
+            icon="dimmable"
         Setpoint
             item=Wallplug_CL_Stairwell_Dimmer
             label="Lamp brightness"
+            icon="dimmable"
         Text
             item=Network_CL_Stairwell_LedStrip
             label="LED is [MAP(network.map):%s]"
@@ -82,9 +88,11 @@ sitemap lights label="Lights"
         Slider
             item=Wallplug_CL_Stairwell_Dimmer
             label="Lamp brightness"
+            icon="dimmable"
         Setpoint
             item=Wallplug_CL_Stairwell_Dimmer
             label="Lamp brightness"
+            icon="dimmable"
         Switch
             item=LedStrip_CL_Stairwell_brightness
             label="LED power[]"
@@ -92,9 +100,11 @@ sitemap lights label="Lights"
         Slider
             item=LedStrip_CL_Stairwell_brightness
             label="LED brightness"
+            icon="dimmable"
         Setpoint
             item=LedStrip_CL_Stairwell_brightness
             label="LED brightness"
+            icon="dimmable"
         Switch
             item=LedStrip_CL_Stairwell_temperature
             label="LED temp"
@@ -118,9 +128,11 @@ sitemap lights label="Lights"
         Slider
             item=LedStrip_GF_ComputerRoom_brightness
             label="Brightness"
+            icon="dimmable"
         Setpoint
             item=LedStrip_GF_ComputerRoom_brightness
             label="Brightness"
+            icon="dimmable"
         Switch
             item=LedStrip_GF_ComputerRoom_color_temperature
             label="Temp"
