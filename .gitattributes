@@ -9,3 +9,4 @@ items/squeezebox_light_sensors.items            filter=removeAddPersonalStuff
 items/default.items                             filter=removeAddPersonalStuff
 items/network_binding.items                     filter=removeAddPersonalStuff
 html/grafana/smarthome-grafana-user-defaults.js filter=removeAddPersonalStuff
+items/broadlink.items                           filter=removeAddPersonalStuff

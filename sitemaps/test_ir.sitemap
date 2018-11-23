@@ -1,8 +1,15 @@
 sitemap test_ir label="Testing IR stuff"
 {
     Text
-        item=Network_GF_LivingRoom_IrBlaster
+        item=Network_GF_ComputerRoom_IrBlaster
         label="IR blaster state is [MAP(network.map):%s]"
+    Frame label="Logitech Z-5500" {
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label=""
+            mappings=[LOGITECH_Z5500_VOLUME_UP_PY_LINUX="+ py linux",LOGITECH_Z5500_VOLUME_UP_PY_WINDOWS="+ py windows"]
+    }
+/*
     Frame label="Sony TV volume" {
         Switch
             item=IR_GF_LivingRoom_Broadlink_RM2_command
@@ -21,6 +28,7 @@ sitemap test_ir label="Testing IR stuff"
             label=""
             mappings=[SQUEEZEBOX_CLASSIC_POWER="POWER", SQUEEZEBOX_CLASSIC_PLAY="PLAY", SQUEEZEBOX_CLASSIC_PAUSE="PAUSE", SQUEEZEBOX_CLASSIC_VOL_UP="+", SQUEEZEBOX_CLASSIC_VOL_DN="-"]
     }
+*/
 /*
     Text
         item=IR_GF_LivingRoom_Broadlink_RM2_temperature

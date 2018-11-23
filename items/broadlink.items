@@ -1,13 +1,46 @@
+/*
+    Thing config example:
+        Polling Interval:   30
+        Map File:           broadlink.map
+        Authentication Key:
+        IV:
+        Network Address:    192.168.0.116
+        Network Port:       80
+        MAC Address:        random.MAC.address1
 
+    To obtain these values you need https://github.com/Laffs2k5/python-broadlink
+*/
+
+// RM2 Pro
+//  Key:            broadlink.dev1.authKey
+//  IV:             broadlink.Initialization.Vector
+//  MAC Address:    random.MAC.address1
 String
     IR_GF_LivingRoom_Broadlink_RM2_command
     "Living room IR blaster controller"
     <irblaster>
-    { channel="broadlink:rm2:b4-43-0d-aa-41-a3:command" }
+    { channel="broadlink:rm2:random.MAC.address2:command" }
 /*
 String
     IR_GF_LivingRoom_Broadlink_RM2_temperature
     "Living room IR blaster temperature [%.1f °C]"
     <colortemperature>
-    { channel="broadlink:rm2:b4-43-0d-aa-41-a3:temperature" }
+    { channel="broadlink:rm2:random.MAC.address2:temperature" }
 */
+
+// RM3 Mini #1 (blackbean)
+//  Key:
+//  IV:             broadlink.Initialization.Vector
+//  MAC Address:    random.MAC.address3
+
+
+// RM3 Mini #2 (blackbean)
+//  Key:            broadlink.dev3.authKey
+//  IV:             broadlink.Initialization.Vector
+//  MAC Address:    random.MAC.address4
+String
+    IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+    "Computer room IR blaster controller"
+    <irblaster>
+    {channel="broadlink:rm3:e23d754e:command"}
+
