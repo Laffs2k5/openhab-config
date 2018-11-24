@@ -3,11 +3,17 @@ sitemap test_ir label="Testing IR stuff"
     Text
         item=Network_GF_ComputerRoom_IrBlaster
         label="IR blaster state is [MAP(network.map):%s]"
-    Frame label="Logitech Z-5500" {
+    Frame label="Logitech Z-5500 rm3 mini #1" {
+        Switch
+            item=IR_GF_xRoom_Broadlink_RM3Mini_command
+            label=""
+            mappings=[LOGITECH_Z5500_VOLUME_DN="-",LOGITECH_Z5500_VOLUME_UP="+",LOGITECH_Z5500_VOLUME_BURST_TO_ZERO="0"]
+    }
+    Frame label="Logitech Z-5500 rm3 mini #2" {
         Switch
             item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
             label=""
-            mappings=[LOGITECH_Z5500_VOLUME_UP_PY_LINUX="+ py linux",LOGITECH_Z5500_VOLUME_UP_PY_WINDOWS="+ py windows"]
+            mappings=[LOGITECH_Z5500_VOLUME_DN="-",LOGITECH_Z5500_VOLUME_UP="+"]
     }
 /*
     Frame label="Sony TV volume" {

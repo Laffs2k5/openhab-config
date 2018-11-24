@@ -1,25 +1,30 @@
 /*
+    Use broadlink apps e-control or ihc to join device to wifi, everything else
+    is handled outside app.
+
+    Note: auth key and IV is always the same.
+
     Thing config example:
         Polling Interval:   30
         Map File:           broadlink.map
-        Authentication Key:
-        IV:
-        Network Address:    192.168.0.116
+        Network Address:    ir.blaster1.ip.address
         Network Port:       80
         MAC Address:        random.MAC.address1
 
-    To obtain these values you need https://github.com/Laffs2k5/python-broadlink
+    To learn codes use https://github.com/Laffs2k5/python-broadlink
+
+    Applies to all devices:
+        Key:    broadlink.dev1.authKey
+        IV:     broadlink.Initialization.Vector
 */
 
 // RM2 Pro
-//  Key:            broadlink.dev1.authKey
-//  IV:             broadlink.Initialization.Vector
 //  MAC Address:    random.MAC.address1
 String
     IR_GF_LivingRoom_Broadlink_RM2_command
     "Living room IR blaster controller"
     <irblaster>
-    { channel="broadlink:rm2:random.MAC.address2:command" }
+    { channel="broadlink:rm2:a17bc822:command" }
 /*
 String
     IR_GF_LivingRoom_Broadlink_RM2_temperature
@@ -29,18 +34,18 @@ String
 */
 
 // RM3 Mini #1 (blackbean)
-//  Key:
-//  IV:             broadlink.Initialization.Vector
 //  MAC Address:    random.MAC.address3
+String
+    IR_GF_xRoom_Broadlink_RM3Mini_command
+    "x room IR blaster controller"
+    <irblaster>
+    {channel="broadlink:rm3:37cddbbc:command"}
 
 
-// RM3 Mini #2 (blackbean)
-//  Key:            broadlink.dev3.authKey
-//  IV:             broadlink.Initialization.Vector
+// IR blaster - Broadlink RM3 mini #2 [ir.blaster2.ip.address]
 //  MAC Address:    random.MAC.address4
 String
     IR_GF_ComputerRoom_Broadlink_RM3Mini_command
     "Computer room IR blaster controller"
     <irblaster>
-    {channel="broadlink:rm3:e23d754e:command"}
-
+    {channel="broadlink:rm3:cbe165fd:command"}
