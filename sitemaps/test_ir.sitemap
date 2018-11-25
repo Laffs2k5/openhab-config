@@ -1,19 +1,37 @@
 sitemap test_ir label="Testing IR stuff"
 {
-    Text
-        item=Network_GF_ComputerRoom_IrBlaster
-        label="IR blaster state is [MAP(network.map):%s]"
     Frame label="Logitech Z-5500 rm3 mini #1" {
         Switch
             item=IR_GF_xRoom_Broadlink_RM3Mini_command
-            label=""
-            mappings=[LOGITECH_Z5500_VOLUME_DN="-",LOGITECH_Z5500_VOLUME_UP="+",LOGITECH_Z5500_VOLUME_BURST_TO_ZERO="0"]
+            mappings=[LOGITECH_Z5500_VOLUME_DOWN="-",LOGITECH_Z5500_VOLUME_UP="+",LOGITECH_Z5500_VOLUME_BURST_TO_ZERO="0",LOGITECH_Z5500_VOLUME_BURST_TO_MAX="max"]
     }
-    Frame label="Logitech Z-5500 rm3 mini #2" {
+    Frame label="Logitech Z-5500 rm3 mini #2" visibility=[Network_GF_ComputerRoom_IrBlaster=="OFF"] {
+        Text
+            item=Network_GF_ComputerRoom_IrBlaster
+    }
+    Frame label="Logitech Z-5500 rm3 mini #2" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
         Switch
             item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label=""
-            mappings=[LOGITECH_Z5500_VOLUME_DN="-",LOGITECH_Z5500_VOLUME_UP="+"]
+            label="Volume"
+            mappings=[
+                LOGITECH_Z5500_VOLUME_DOWN="-",
+                LOGITECH_Z5500_VOLUME_UP="+",
+                LOGITECH_Z5500_VOLUME_BURST_TO_ZERO="0",
+                LOGITECH_Z5500_VOLUME_BURST_TO_MAX="max",
+                LOGITECH_Z5500_MUTE="mute"
+            ]
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Input"
+            mappings=[
+                LOGITECH_Z5500_SOURCE_COAX="Coax",
+                LOGITECH_Z5500_SOURCE_DIRECT="Direct",
+                LOGITECH_Z5500_SOURCE_OPTICAL="Optical"
+            ]
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Power"
+            mappings=[LOGITECH_Z5500_POWER="power"]
     }
 /*
     Frame label="Sony TV volume" {

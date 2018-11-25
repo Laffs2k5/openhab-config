@@ -7,7 +7,7 @@
     Thing config example:
         Polling Interval:   30
         Map File:           broadlink.map
-        Network Address:    ir.blaster1.ip.address
+        Network Address:    an.ip.address.154
         Network Port:       80
         MAC Address:        random.MAC.address1
 
@@ -33,7 +33,7 @@ String
     { channel="broadlink:rm2:random.MAC.address2:temperature" }
 */
 
-// RM3 Mini #1 (blackbean)
+// IR blaster - Broadlink RM3 mini #1 [an.ip.address.155]
 //  MAC Address:    random.MAC.address3
 String
     IR_GF_xRoom_Broadlink_RM3Mini_command
@@ -42,7 +42,7 @@ String
     {channel="broadlink:rm3:37cddbbc:command"}
 
 
-// IR blaster - Broadlink RM3 mini #2 [ir.blaster2.ip.address]
+// IR blaster - Broadlink RM3 mini #2 [an.ip.address.156]
 //  MAC Address:    random.MAC.address4
 String
     IR_GF_ComputerRoom_Broadlink_RM3Mini_command
