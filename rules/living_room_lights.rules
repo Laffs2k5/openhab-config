@@ -104,6 +104,7 @@ then
     val String LOGGER = LOGGER_NAME + ".motion"
     val GenericItem itemChanged = Sensor_GF_LivingRoomWall_sensorBinary
     val WallLightsGroup = gLightsLivingRoomWallLights
+    val CornerLightSwitch = Wallplug_GF_DiningRoom_CornerLight_switch
     val MotionTriggerControlItem = LivingRoom_WallLights_MotionTrigger_control
     val AutoOffTimeItem = LivingRoom_WallLights_AutoOff_setTime
 
@@ -114,7 +115,8 @@ then
         if( itemChanged.state == OnOffType::ON ) {
             // Pass a long if on state, off state is what triggers delayed lights off
             logInfo(LOGGER, "Turning lights on.")
-            WallLightsGroup.sendCommand(OnOffType::ON )
+            WallLightsGroup.sendCommand(OnOffType::ON)
+            CornerLightSwitch.sendCommand(OnOffType::ON)
         } else if(itemChanged.state == OnOffType::OFF) {
             logInfo(LOGGER, "Setting timer for turning lights off.")
             // Kill timer if exists
@@ -136,6 +138,7 @@ then
             g_livingRoomWallLightsOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
                 logInfo(LOGGER, "Lights auto off triggered")
                 WallLightsGroup.sendCommand(OnOffType::OFF)
+                CornerLightSwitch.sendCommand(OnOffType::OFF)
             ]
         } else {
             logUnexpectedState.apply(LOGGER, itemChanged)

@@ -64,22 +64,6 @@ Number
 //Number   Relay_CL_LaundryRoom_sensorTemperature4   "Sensor (temperature)"       {channel="zwave:device:2c3b27f3:node7:sensor_temperature4"}
 /* END Qubino Flush 1 Relay Z-wave */
 
-/* Everspring Microplug Dimmer Z-Wave: Laundry room night lights */
-Switch
-    Wallplug_CL_LaundryRoom_NightLights_switch
-    "Laundry room night light state is [%s]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node8:switch_binary" }
-//Switch
-//    Wallplug_CL_LaundryRoom_NightLights_switch_alarm
-//    "Laundry room night light general alarm state is [%s]"
-//    { channel="zwave:device:2c3b27f3:node8:alarm_general" }
-//Switch
-//    Wallplug_CL_LaundryRoom_NightLights_switch_alarmPower
-//    Laundry room night light powers alarm state is [%s]"
-//    { channel="zwave:device:2c3b27f3:node8:alarm_power" }
-/* END Everspring Microplug Dimmer */
-
 /* TELLDUS Multisensor Z-Wave: Laundry room */
 Switch
     Sensor_CL_LaundryRoom_alarmBurglar

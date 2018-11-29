@@ -77,3 +77,19 @@ Switch
     {channel="zwave:device:2c3b27f3:node13:switch_binary"}
 /* END Nexa AN-180 wallplug Z-Wave: Living room wall light */
 
+/* Everspring Microplug Dimmer Z-Wave: Dining room lamp in the corner */
+Switch
+    Wallplug_GF_DiningRoom_CornerLight_switch
+    "Dining room corner light state is [%s]"
+    (gRoomDiningRoom)
+    { channel="zwave:device:2c3b27f3:node8:switch_binary" }
+//Switch
+//    Wallplug_GF_DiningRoom_CornerLight_alarm
+//    "Dining room corner light general alarm state is [%s]"
+//    { channel="zwave:device:2c3b27f3:node8:alarm_general" }
+//Switch
+//    Wallplug_GF_DiningRoom_CornerLight_alarmPower
+//    LDiningroom corner light powers alarm state is [%s]"
+//    { channel="zwave:device:2c3b27f3:node8:alarm_power" }
+/* END Everspring Microplug Dimmer */
+

@@ -28,6 +28,9 @@ sitemap lights label="Lights"
             item=Dimmer_GF_DiningRoom_SwitchDimmer
             label="Brightness"
             icon="dimmable"
+        Switch
+            item=Wallplug_GF_DiningRoom_CornerLight_switch
+            label="Corner light[]"
     }
     Frame label="The Staircase light"
     {
@@ -57,9 +60,6 @@ sitemap lights label="Lights"
             mappings=[0="OFF", -5="-5", 5="+5"]
         Text
             item=LaundryRoom_MainLights_AutoOff_setTime
-        Switch
-            item=Wallplug_CL_LaundryRoom_NightLights_switch
-            label="Night lights[]"
     }
     Frame label="The Stairwell light" visibility=[Network_CL_Stairwell_LedStrip!="ON"]
     {

@@ -144,7 +144,6 @@ then
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     //val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
     val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
     val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
 
@@ -202,13 +201,6 @@ then
     logReceivedCommand.apply(LOGGER_NAME, itemCommanded, receivedCommand.toString())
 end
 
-rule "Laundry room night lights, switch received command"
-when
-    Item Wallplug_CL_LaundryRoom_NightLights_switch received command
-then
-    val GenericItem itemCommanded = Wallplug_CL_LaundryRoom_NightLights_switch
-    logReceivedCommand.apply(LOGGER_NAME, itemCommanded, receivedCommand.toString())
-end
 */
 /*
 val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
@@ -240,7 +232,6 @@ then
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
     //val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
     //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
 
@@ -255,35 +246,6 @@ then
 end
 */
 /*
-// When main lights change:
-//  - Set night light to inverse
-rule "Laundry room main lights, switch state change"
-when
-    Item Relay_CL_LaundryRoom_MainLights_switch changed
-then
-    val String LOGGER = LOGGER_NAME + ".mainLightsChange"
-    val GenericItem itemChanged = Relay_CL_LaundryRoom_MainLights_switch
-    logStateChange.apply(LOGGER, itemChanged)
-
-    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
-    //val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
-    //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
-
-    // Set night light to inverse of main lights
-    // Sync proxy UI item
-    if( MainSwitch.state == OnOffType::ON ) {
-        Thread::sleep(1000) // Takes some time to light up main lights
-        NightSwitch.sendCommand(OnOffType::OFF)
-    } else if( MainSwitch.state == OnOffType::OFF ) {
-        NightSwitch.sendCommand(OnOffType::ON)
-    } else {
-        logUnexpectedState.apply(LOGGER, MainSwitch)
-    }
-end
-*/
-
-/*
 // When main lights are updated:
 //  - Start/restart auto off timer (if configured)
 rule "Laundry room main lights, switch received update"
@@ -294,7 +256,6 @@ then
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
     val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
     //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
 
@@ -322,7 +283,6 @@ then
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    //val SwitchItem NightSwitch = Wallplug_CL_LaundryRoom_NightLights_switch
     val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
     val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
 
