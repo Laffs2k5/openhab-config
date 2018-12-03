@@ -4,11 +4,16 @@ sitemap test_ir label="Testing IR stuff"
         Switch
             item=IR_GF_xRoom_Broadlink_RM3Mini_command
             mappings=[
-                SONY_W5500_INPUT_HDMI_1_ALTERNATE="hdmi1 alt",
-                SONY_W5500_INPUT_HDMI_1="hdmi1",
-                SONY_W5500_INPUT_VIDEO_1="video 1",
-                SONY_W5500_POWER_ON="on",
-                SONY_W5500_POWER_OFF_X10="off"
+                SONY_W5500_VOLUME_DOWN_X3="-",
+                SONY_W5500_VOLUME_DOWN_X155="--",
+                SONY_W5500_VOLUME_UP_X3="+",
+                SONY_W5500_VOLUME_UP_X155="++",
+                SONY_W5500_MUTE_TOGGLE_X5="mute",
+                SONY_W5500_THEATER_MODE_X5="th",
+                SONY_W5500_INPUT_HDMI_3_X5="hdmi3",
+                SONY_W5500_INPUT_HDMI_4_X5="hdmi4",
+                SONY_W5500_POWER_ON_X5="on",
+                SONY_W5500_POWER_OFF_X5="off"
                 ]
     }
     Frame label="Computer room ir blaster rm3 mini #2" visibility=[Network_GF_ComputerRoom_IrBlaster=="OFF"] {
