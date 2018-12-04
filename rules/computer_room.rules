@@ -1,63 +1,79 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
 
-var int percent = 0
-var int percent_maxVal = 100
-var int percent_steps = 2
-var int delay_pr_step_millis = 200
-var Timer fade_Timer = null
+// Constants
+val String  LOGGER_NAME = "cmpterRoom"
+//val int     CONTROL_MODE_NOCHANGE = -1  // indicates "no ccmptere ne"
+//val int     CONTROL_MODE_DISABLE = 0    // indicates to deactivate auto off cmptertiony
+//val int     CONTROL_MODE_START = 1      // indicates start/restart auto off timer
 
-rule "TV backlight controlled by chromecast"
+// Globals
+
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".stateChange"
+    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
+        itemChanged.state.toString())
+    true
+]
+
+
+rule "TV backlight controlled by tv online state"
 when
-    //Item Player_firstFloor_computerRoom_CC changed from PLAY to PAUSE or
-    //Item Player_firstFloor_computerRoom_CC changed from PAUSE to PLAY
-    //Item Music_firstFloor_livingRoom_CC changed // For debug
-    //Item Online_firstFloor_computerRoom_CC changed from OFF to ON or
-    //Item Online_firstFloor_computerRoom_CC changed from ON to OFF
     Item Network_GF_ComputerRoom_TV changed from OFF to ON or
     Item Network_GF_ComputerRoom_TV changed from ON to OFF
-then    
-    //logDebug("TvBacklight","CC change received, state is {}", Player_firstFloor_computerRoom_CC.state)
-    //logDebug("TvBacklight","CC change received, state is {}", Music_firstFloor_livingRoom_CC.state) // For debug
-    //logDebug("TvBacklight","CC change received, state is {}", Online_firstFloor_computerRoom_CC.state)
-    logDebug("TvBacklight","CC change received, state is {}", Network_GF_ComputerRoom_TV.state)
+then
+    val String LOGGER = LOGGER_NAME + ".tvState"
+    val GenericItem itemChanged = Network_GF_ComputerRoom_TV
+    val LightBrightnessItem = LedStrip_GF_ComputerRoom_brightness
 
-    //if (Player_firstFloor_computerRoom_CC.state==PAUSE) {
-    //if (Music_firstFloor_livingRoom_CC.state==PAUSE) { // For debug
-    //if (Online_firstFloor_computerRoom_CC.state==OFF) {
-    if (Network_GF_ComputerRoom_TV.state==OFF) {
-        //  Dim down gently when CC is paused
-        logDebug("TvBacklight","Dimmming down")
-        if (LedStrip_GF_ComputerRoom_brightness.state instanceof DecimalType) {
-            percent = ((LedStrip_GF_ComputerRoom_brightness.state as DecimalType) / percent_steps).intValue * percent_steps //round
+    var int percent = 0
+    var int percent_maxVal = 100
+    var int percent_steps = 2
+    var int delay_pr_step_millis = 200
+    var Timer fade_Timer = null
+
+    logStateChange.apply(LOGGER, itemChanged)
+
+    if (itemChanged.state==OFF) {
+
+        //  Dim down gently when TV goes offline
+        //logInfo("TvBacklight","Dimmming down")
+        if (LightBrightnessItem.state instanceof DecimalType) {
+            percent = ((LightBrightnessItem.state as DecimalType) / percent_steps).intValue * percent_steps //round
             fade_Timer = createTimer(now.plusMillis(delay_pr_step_millis)) [|
-                LedStrip_GF_ComputerRoom_brightness.sendCommand(percent)
+                LightBrightnessItem.sendCommand(percent)
                 if (percent > 0) {
                     percent = percent - percent_steps
-                    logDebug("TvBacklight","Dimmming, decrease {} to {}", percent_steps, percent)
+                    //logInfo("TvBacklight","Dimmming, decrease {} to {}", percent_steps, percent)
                     fade_Timer.reschedule(now.plusMillis(delay_pr_step_millis))
                 } else {
-                    logDebug("TvBacklight","Done dimmming, final brightness is {}", percent)
+                    //logInfo("TvBacklight","Done dimmming, final brightness is {}", percent)
                 }
             ]
         }
-    }
-    //else if (Player_firstFloor_computerRoom_CC.state==PLAY) {
-    //else if (Music_firstFloor_livingRoom_CC.state==PLAY) { // For debug
-    //else if (Online_firstFloor_computerRoom_CC.state==ON) {
-    else if (Network_GF_ComputerRoom_TV.state==ON) {
-        // Dim up gently when CC is playing
-        logDebug("TvBacklight","Dimmming up")
-        if (LedStrip_GF_ComputerRoom_brightness.state instanceof DecimalType) {
-            percent = ((LedStrip_GF_ComputerRoom_brightness.state as DecimalType) / percent_steps).intValue * percent_steps //round
+
+    } else if (itemChanged.state==ON) {
+
+        // Dim up gently when TV goes online
+        //logInfo("TvBacklight","Dimmming up")
+        if (LightBrightnessItem.state instanceof DecimalType) {
+            percent = ((LightBrightnessItem.state as DecimalType) / percent_steps).intValue * percent_steps //round
             fade_Timer = createTimer(now.plusMillis(delay_pr_step_millis)) [|
-                LedStrip_GF_ComputerRoom_brightness.sendCommand(percent)
+                LightBrightnessItem.sendCommand(percent)
                 if (percent < percent_maxVal) {
                     percent = percent + percent_steps
-                    logDebug("TvBacklight","Dimmming, increase {} to {}", percent_steps, percent)
+                    //logInfo("TvBacklight","Dimmming, increase {} to {}", percent_steps, percent)
                     fade_Timer.reschedule(now.plusMillis(delay_pr_step_millis))
                 } else {
-                    logDebug("TvBacklight","Done dimmming, final brightness is {}", percent)
+                    //logInfo("TvBacklight","Done dimmming, final brightness is {}", percent)
                 }
             ]
         }
+
     }
 end
