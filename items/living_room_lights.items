@@ -4,7 +4,7 @@ Group
     "Living room wall light auto off group"
     <time>
 
-// For auto off functionaluty
+// For auto off functionality
 Number
     LivingRoom_WallLights_AutoOff_setTime
     "Auto off time set is [%d min]"

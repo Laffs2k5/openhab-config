@@ -113,32 +113,4 @@ sitemap lights label="Lights"
             item=LedStrip_CL_Stairwell_color
             label="LED color"
     }
-    Frame label="TV backlight" visibility=[Network_GF_ComputerRoom_LedStrip!="ON"]
-    {
-        Text
-            item=Network_GF_ComputerRoom_LedStrip
-            label="Device is [MAP(network.map):%s]"
-    }
-    Frame label="TV backlight" visibility=[Network_GF_ComputerRoom_LedStrip=="ON"]
-    {
-        Switch
-            item=LedStrip_GF_ComputerRoom_switch
-            label="Power[]"
-            icon="switch"
-        Slider
-            item=LedStrip_GF_ComputerRoom_brightness
-            label="Brightness"
-            icon="dimmable"
-        Setpoint
-            item=LedStrip_GF_ComputerRoom_brightness
-            label="Brightness"
-            icon="dimmable"
-        Switch
-            item=LedStrip_GF_ComputerRoom_color_temperature
-            label="Temp"
-            mappings=[0="1700", 33="3300", 67="5000", 100="6500"]
-        Colorpicker
-            item=LedStrip_GF_ComputerRoom_color
-            label="Color"
-    }
 }

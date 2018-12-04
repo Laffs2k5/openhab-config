@@ -1,31 +1,4 @@
 
-/* Yeelight strip #1: Computer room TV backlight */
-Dimmer
-    LedStrip_GF_ComputerRoom_brightness
-    "TV backlight brightness [%d %%]"
-    <dimmablelight>
-    (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
-Switch
-    LedStrip_GF_ComputerRoom_switch
-    "TV backlight"
-    <switch>
-    (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
-Color
-    LedStrip_GF_ComputerRoom_color
-    "TV backlight color"
-    <colorlight>
-    (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Color"}
-Dimmer
-    LedStrip_GF_ComputerRoom_color_temperature
-    "TV backlight color temperature"
-    <colortemperature>
-    (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Color_Temperature"}
-/* END Yeelight strip #1 */
-
 /* Yeelight strip #2: Stairwell light */
 Dimmer
     LedStrip_CL_Stairwell_brightness

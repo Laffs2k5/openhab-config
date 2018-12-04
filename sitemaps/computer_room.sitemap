@@ -1,0 +1,96 @@
+sitemap lights label="Computer room"
+{
+    Frame label="IR blaster for TV/Audio control is offline!" visibility=[Network_GF_ComputerRoom_IrBlaster=="OFF"] {
+        Text
+            item=Network_GF_ComputerRoom_IrBlaster
+    }
+    Frame label="TV/Audio automation" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+        Switch
+            item=ComputerRoom_IrBlaster_control
+            label="Scenes[]"
+            mappings=[
+                0="All OFF",
+                1="Chromecast",
+                2="Computer"
+                ]
+    }
+    Frame label="TV control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Volume"
+            mappings=[
+                SONY_W5500_VOLUME_DOWN_X3="-",
+                SONY_W5500_VOLUME_UP_X3="+",
+                SONY_W5500_VOLUME_DOWN_X155="-70%",
+                SONY_W5500_VOLUME_UP_X155="+70%",
+                SONY_W5500_MUTE_TOGGLE_X5="mute"
+                ]
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Display"
+            mappings=[
+                SONY_W5500_THEATER_MODE_X5="Teater mode",
+                SONY_W5500_INPUT_HDMI_3_X5="hdmi 3",
+                SONY_W5500_INPUT_HDMI_4_X5="hdmi 4"
+                ]
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Power"
+            mappings=[
+                SONY_W5500_POWER_ON_X5="on",
+                SONY_W5500_POWER_OFF_X5="off"
+                ]
+    }
+    Frame label="Audio control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Volume"
+            mappings=[
+                LOGITECH_Z5500_VOLUMEDOWN_X2="-",
+                LOGITECH_Z5500_VOLUMEUP_X2="+",
+                LOGITECH_Z5500_VOLUME_BURST_TO_ZERO="0",
+                LOGITECH_Z5500_VOLUME_BURST_TO_MAX="max",
+                LOGITECH_Z5500_MUTE="mute"
+            ]
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Input"
+            mappings=[
+                LOGITECH_Z5500_SOURCE_COAX="Coax",
+                LOGITECH_Z5500_SOURCE_DIRECT="Direct",
+                LOGITECH_Z5500_SOURCE_OPTICAL="Optical"
+            ]
+        Switch
+            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+            label="Power"
+            mappings=[LOGITECH_Z5500_POWER_X2="power"]
+    }
+    Frame label="TV backlight" visibility=[Network_GF_ComputerRoom_LedStrip!="ON"]
+    {
+        Text
+            item=Network_GF_ComputerRoom_LedStrip
+            label="Device is [MAP(network.map):%s]"
+    }
+    Frame label="TV backlight" visibility=[Network_GF_ComputerRoom_LedStrip=="ON"]
+    {
+        Switch
+            item=LedStrip_GF_ComputerRoom_switch
+            label="Power[]"
+            icon="switch"
+        Slider
+            item=LedStrip_GF_ComputerRoom_brightness
+            label="Brightness"
+            icon="dimmable"
+        Setpoint
+            item=LedStrip_GF_ComputerRoom_brightness
+            label="Brightness"
+            icon="dimmable"
+        Switch
+            item=LedStrip_GF_ComputerRoom_color_temperature
+            label="Temp"
+            mappings=[0="1700", 33="3300", 67="5000", 100="6500"]
+        Colorpicker
+            item=LedStrip_GF_ComputerRoom_color
+            label="Color"
+    }
+}
