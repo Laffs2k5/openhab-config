@@ -4,18 +4,18 @@
 
     ref.: https://docs.openhab.org/addons/ios/alexa-skill/readme.html
     Item Label Recommendation
-    Matching of voice commands to Items happens based on the Item label (e.g. “Kitchen Light”). 
-    It is therefore advisable, to choose labels that can be used to form natural commands. As 
-    an example, compare “Alexa, turn on the Kitchen Light” vs. “Alexa, turn on the Ground Floor 
+    Matching of voice commands to Items happens based on the Item label (e.g. “Kitchen Light”).
+    It is therefore advisable, to choose labels that can be used to form natural commands. As
+    an example, compare “Alexa, turn on the Kitchen Light” vs. “Alexa, turn on the Ground Floor
     LEDs Kitchen”.
 
-    In combination with the Alexa skill (and other similar services) you are thereby tempted to 
-    break with your naming scheme and introduce confusion into your setup. openHAB Tip: YOu may 
-    define multiple Items bound to one channel. Instead of manipulating the label of one single 
-    Item, you can define multiple Items specifically for voice commands. 
+    In combination with the Alexa skill (and other similar services) you are thereby tempted to
+    break with your naming scheme and introduce confusion into your setup. openHAB Tip: YOu may
+    define multiple Items bound to one channel. Instead of manipulating the label of one single
+    Item, you can define multiple Items specifically for voice commands.
 */
 
-Group 
+Group
     gEchoItems
     "All items used ny Amazon Echo"
     <echogroup>
@@ -36,3 +36,24 @@ Color
     ["Lighting"]
     {channel="yeelight:Stripe:0x0000000003427b02:Color"}
 /* END Yeelight strip #1 */
+
+/* Computer room: Audio/TV control */
+Switch
+    Echo_Scene_GF_ComputerRoom_Chromecast
+    "TV"
+    <irblaster>
+    (gEchoItems)
+    ["Switchable"]
+Switch
+    Echo_Scene_GF_ComputerRoom_Computer
+    "Computer"
+    <irblaster>
+    (gEchoItems)
+    ["Switchable"]
+Switch
+    Echo_Scene_GF_ComputerRoom_AllOff
+    "All Off"
+    <irblaster>
+    (gEchoItems)
+    ["Switchable"]
+/* END Computer room: Audio/TV control */

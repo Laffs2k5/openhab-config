@@ -193,7 +193,10 @@ then
 
     logInfo(LOGGER, "Motion enable/disable cron running, hour is {}.", now.getHourOfDay)
 
+// TODO this is a bug, without hour being defined nothing happens.
+// proper fix is to have UI motion disable override the setting modified by this job
 //    var Number hour = now.getHourOfDay
+
 //    logInfo(LOGGER, "hour: '{}'",hour)
 
 //    var msg = "Rule was triggered, hour=" + hour.toString()

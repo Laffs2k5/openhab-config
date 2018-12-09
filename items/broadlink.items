@@ -48,4 +48,5 @@ String
     IR_GF_ComputerRoom_Broadlink_RM3Mini_command
     "Computer room IR blaster controller"
     <irblaster>
-    {channel="broadlink:rm3:cbe165fd:command"}
+    { channel="broadlink:rm3:43ef801d:command" }
+

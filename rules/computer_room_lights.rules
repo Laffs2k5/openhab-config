@@ -3,9 +3,6 @@ import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
 
 // Constants
 val String  LOGGER_NAME = "cmpterRoom"
-//val int     CONTROL_MODE_NOCHANGE = -1  // indicates "no ccmptere ne"
-//val int     CONTROL_MODE_DISABLE = 0    // indicates to deactivate auto off cmptertiony
-//val int     CONTROL_MODE_START = 1      // indicates start/restart auto off timer
 
 // Globals
 

@@ -11,4 +11,10 @@ sitemap setup_echo_items label="Trigger one time state change of items exposed t
         item=Echo_LedStrip_GF_ComputerRoom_brightness
     Colorpicker
         item=Echo_LedStrip_GF_ComputerRoom_color
+    Switch
+        item=Echo_Scene_GF_ComputerRoom_Chromecast
+    Switch
+        item=Echo_Scene_GF_ComputerRoom_Computer
+    Switch
+        item=Echo_Scene_GF_ComputerRoom_AllOff
 }

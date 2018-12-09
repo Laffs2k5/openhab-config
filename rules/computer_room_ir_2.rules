@@ -1,0 +1,275 @@
+// Imports
+import java.util.HashMap
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+
+// Constants
+val String  LOGGER_NAME = "cmpterRoom"
+val String  IR_MAPFILE = "broadlink.map"
+
+// Scene control commands
+val int CONTROL_SCENE_NOCHANGE   = -1
+val int CONTROL_SCENE_ALLOFF     = 0  // Turn off receiver + TV
+val int CONTROL_SCENE_CHROMECAST = 1  // Turn off receiver + TV and set to chromecast input
+val int CONTROL_SCENE_COMPUTER   = 2  // Turn off receiver + TV and set to chromecast input
+
+// Common control commands
+val String CONTROL_NOCHANGE = "CONTROL_NOCHANGE"  // do nothing
+
+// TV control commands
+val HashMap<String, String> g_tvCommandCodes = newHashMap(
+     "CONTROL_TV_VOL_MINUS"   ->  "SONY_W5500_VOLUME_DOWN_X3"
+    ,"CONTROL_TV_VOL_PLUS"    ->  "SONY_W5500_VOLUME_UP_X3"
+    ,"CONTROL_TV_VOL_MUTE"    ->  "SONY_W5500_MUTE_TOGGLE_X5"
+    ,"CONTROL_TV_VOL_MINUS70" ->  "SONY_W5500_VOLUME_DOWN_X155"
+    ,"CONTROL_TV_VOL_PLUS70"  ->  "SONY_W5500_VOLUME_UP_X155"
+    ,"CONTROL_TV_DISP_THMODE" ->  "SONY_W5500_THEATER_MODE_X5"
+    ,"CONTROL_TV_DIGIT_1"     ->  "SONY_W5500_DIGIT_1_X5"
+    ,"CONTROL_TV_INPUT_HDMI1" ->  "SONY_W5500_INPUT_HDMI_1_X5"
+    ,"CONTROL_TV_INPUT_HDMI3" ->  "SONY_W5500_INPUT_HDMI_3_X5"
+    ,"CONTROL_TV_INPUT_HDMI4" ->  "SONY_W5500_INPUT_HDMI_4_X5"
+    ,"CONTROL_TV_POWER_ON"    ->  "SONY_W5500_POWER_ON_X5"
+    ,"CONTROL_TV_POWER_OFF"   ->  "SONY_W5500_POWER_OFF_X5"
+)
+
+// Audio cotrol commands
+val HashMap<String, String> g_audioCommandCodes = newHashMap(
+     "CONTROL_AUDIO_VOL_MINUS"          -> "LOGITECH_Z5500_VOLUMEDOWN_X2"
+    ,"CONTROL_AUDIO_VOL_PLUS"           -> "LOGITECH_Z5500_VOLUMEUP_X2"
+    ,"CONTROL_AUDIO_VOL_DEF_CC"         -> "LOGITECH_Z5500_VOLUMEUP_X13"
+    ,"CONTROL_AUDIO_VOL_DEF_COMPUTER"   -> "LOGITECH_Z5500_VOLUMEUP_X18"
+    ,"CONTROL_AUDIO_VOL_ZERO"           -> "LOGITECH_Z5500_VOLUME_BURST_TO_ZERO"
+    ,"CONTROL_AUDIO_VOL_MAX"            -> "LOGITECH_Z5500_VOLUME_BURST_TO_MAX"
+    ,"CONTROL_AUDIO_VOL_MUTE"           -> "LOGITECH_Z5500_MUTE"
+    ,"CONTROL_AUDIO_INPUT_COAX"         -> "LOGITECH_Z5500_SOURCE_COAX"
+    ,"CONTROL_AUDIO_INPUT_DIRECT"       -> "LOGITECH_Z5500_SOURCE_DIRECT"
+    ,"CONTROL_AUDIO_INPUT_OPTICAL"      -> "LOGITECH_Z5500_SOURCE_OPTICAL"
+    ,"CONTROL_AUDIO_POWER_TOGGLE"       -> "LOGITECH_Z5500_POWER_X4"
+)
+
+// Globals
+
+
+// Lambdas
+/*
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".stateChange"
+    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
+        itemChanged.state.toString())
+    true
+]
+*/
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
+    logInfo(LOGGER, "Item '{}' received update '{}'",
+        itemUpdated.name,
+        itemUpdated.state)
+    true
+]
+val Functions$Function4<String, String, String, GenericItem, Boolean> postIrCommandToItem = [
+    loggerName,
+    irMapfile,
+    irCommand,
+    IrBlasterItem |
+    val String LOGGER = loggerName + ".postIrCommandToItem"
+    logDebug(LOGGER, "Transforming IR command '{}' using map file '{}'", irCommand, irMapfile)
+    val cmd = transform("MAP", irMapfile, irCommand)
+    logDebug(LOGGER, "Transformed command: {}", cmd)
+    logDebug(LOGGER, "Posting command '{}' to item '{}'",irCommand, IrBlasterItem.name)
+    IrBlasterItem.sendCommand(irCommand)
+    true
+]
+
+// Handle echo items
+rule "Computer room scene, echo item update, chromecast"
+when
+    Item Echo_Scene_GF_ComputerRoom_Chromecast received update ON
+then
+    val String LOGGER = LOGGER_NAME + ".echoSceneCc"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_CHROMECAST)
+    triggeringItem.postUpdate(OnOffType::OFF)
+end
+rule "Computer room scene, echo item update, computer"
+when
+    Item Echo_Scene_GF_ComputerRoom_Computer received update ON
+then
+    val String LOGGER = LOGGER_NAME + ".echoSceneComputer"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_COMPUTER)
+    triggeringItem.postUpdate(OnOffType::OFF)
+end
+rule "Computer room scene, echo item update, all off"
+when
+    Item Echo_Scene_GF_ComputerRoom_AllOff received update ON
+then
+    val String LOGGER = LOGGER_NAME + ".echoSceneAllOff"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_ALLOFF)
+    triggeringItem.postUpdate(OnOffType::OFF)
+end
+
+// When the Computer room IR blaster scenes control element receives update
+//  Issue associated commands
+//  Reset UI element to non-pressed state
+rule "Computer room IR, scenes control command"
+when
+    Item ComputerRoom_IrBlaster_scenes_control received update
+then
+    val String LOGGER = LOGGER_NAME + ".sceneCtl"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+
+    val StringItem TvControlItem = ComputerRoom_IrBlaster_TV_control
+    val StringItem AudioControlItem = ComputerRoom_IrBlaster_Audio_control
+
+    val NumberItem ControlItem = (triggeringItem as NumberItem)
+    val int receivedCommand = (ControlItem.state as DecimalType).intValue
+    logInfo(LOGGER, "Scenes control received command code {}.", receivedCommand)
+    if( receivedCommand != CONTROL_SCENE_NOCHANGE ) {
+
+// TODO need som kind of lock for this, one at a time
+
+        switch receivedCommand {
+            case CONTROL_SCENE_ALLOFF: {
+                logInfo(LOGGER_NAME, "Received all off scene command")
+
+                // Turn off tv
+                TvControlItem.sendCommand("CONTROL_TV_POWER_OFF")
+                Thread::sleep(4000)
+
+                // Turn off receiver
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")
+
+            }
+            case CONTROL_SCENE_CHROMECAST: {
+                logInfo(LOGGER_NAME, "Received chromecast scene command")
+
+                // Tv
+                //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
+                TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
+                Thread::sleep(5000)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_MUTE")
+                Thread::sleep(1000)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS70")
+                Thread::sleep(7000)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_PLUS")
+                Thread::sleep(500)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS")
+                Thread::sleep(500)
+                TvControlItem.sendCommand("CONTROL_TV_INPUT_HDMI3")
+                Thread::sleep(5000)
+
+                // Receiver
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")
+                Thread::sleep(3000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
+                Thread::sleep(3000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
+                Thread::sleep(7000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_OPTICAL")
+                Thread::sleep(5000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_DEF_CC")
+            }
+            case CONTROL_SCENE_COMPUTER: {
+                logInfo(LOGGER_NAME, "Received computer scene command")
+
+                // Tv
+                //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
+                TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
+                Thread::sleep(5000)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_MUTE")
+                Thread::sleep(1000)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS70")
+                Thread::sleep(7000)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_PLUS")
+                Thread::sleep(500)
+                TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS")
+                Thread::sleep(500)
+                TvControlItem.sendCommand("CONTROL_TV_INPUT_HDMI1")
+                Thread::sleep(5000)
+
+                // Receiver
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")
+                Thread::sleep(3000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
+                Thread::sleep(3000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
+                Thread::sleep(7000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_DIRECT")
+                Thread::sleep(5000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_DEF_COMPUTER")
+            }
+            default:{
+                logWarn(LOGGER_NAME, "Unexpected control signal {}", receivedCommand)
+            }
+        }
+
+        // To prevent the UI showing button in "pressed" state
+        ControlItem.postUpdate(CONTROL_SCENE_NOCHANGE)
+    }
+end
+
+// When computer room TV Ir blaster control element receives update
+//  Issue associated IR command
+//  Reset UI element to non-pressed state
+rule "Computer room IR, TV control command"
+when
+    Item ComputerRoom_IrBlaster_TV_control received update
+then
+    val String LOGGER = LOGGER_NAME + ".tvCtl"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+
+    val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+    var HashMap<String, String> irCommandsMap = new HashMap<String, String>(g_tvCommandCodes)
+
+    val StringItem ControlItem = (triggeringItem as StringItem)
+    val String receivedCommand = ControlItem.state
+    logInfo(LOGGER, "TV control received command code {}.", receivedCommand)
+    if( receivedCommand != CONTROL_NOCHANGE ) {
+        try {
+            val String irCommand = irCommandsMap.get(receivedCommand)
+            logInfo(LOGGER_NAME, "TV command code {} corresponds to ir command named {}",receivedCommand,irCommand)
+            postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, irCommand, IrBlasterItem)
+        } catch(Throwable t) {
+            logError(LOGGER, "Exception caught when handling control command.The exception was: {}",t.toString())
+        }
+
+        // To prevent the UI showing button in "pressed" state
+        ControlItem.postUpdate(CONTROL_NOCHANGE)
+    }
+end
+
+// When computer room Audio Ir blaster control element receives update
+//  Issue associated IR command
+//  Reset UI element to non-pressed state
+rule "Computer room IR, Audio control command"
+when
+    Item ComputerRoom_IrBlaster_Audio_control received update
+then
+    val String LOGGER = LOGGER_NAME + ".audioCtl"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+
+    val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+    var HashMap<String, String> irCommandsMap = new HashMap<String, String>(g_audioCommandCodes)
+
+    val StringItem ControlItem = (triggeringItem as StringItem)
+    val String receivedCommand = ControlItem.state
+    logInfo(LOGGER, "Audio control received command code {}.", receivedCommand)
+    if( receivedCommand != CONTROL_NOCHANGE ) {
+        try {
+            val String irCommand = irCommandsMap.get(receivedCommand)
+            logInfo(LOGGER_NAME, "Audio command code {} corresponds to ir command named {}",receivedCommand,irCommand)
+            postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, irCommand, IrBlasterItem)
+        } catch(Throwable t) {
+            logError(LOGGER, "Exception caught when handling control command.The exception was: {}",t.toString())
+        }
+
+        // To prevent the UI showing button in "pressed" state
+        ControlItem.postUpdate(CONTROL_NOCHANGE)
+    }
+end
+

@@ -1,4 +1,4 @@
-sitemap lights label="Computer room"
+sitemap computer_room label="Computer room"
 {
     Frame label="IR blaster for TV/Audio control is offline!" visibility=[Network_GF_ComputerRoom_IrBlaster=="OFF"] {
         Text
@@ -6,7 +6,7 @@ sitemap lights label="Computer room"
     }
     Frame label="TV/Audio automation" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
         Switch
-            item=ComputerRoom_IrBlaster_control
+            item=ComputerRoom_IrBlaster_scenes_control
             label="Scenes[]"
             mappings=[
                 0="All OFF",
@@ -16,54 +16,55 @@ sitemap lights label="Computer room"
     }
     Frame label="TV control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
         Switch
-            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label="Volume"
+            item=ComputerRoom_IrBlaster_TV_control
+            label="Volume[]"
             mappings=[
-                SONY_W5500_VOLUME_DOWN_X3="-",
-                SONY_W5500_VOLUME_UP_X3="+",
-                SONY_W5500_VOLUME_DOWN_X155="-70%",
-                SONY_W5500_VOLUME_UP_X155="+70%",
-                SONY_W5500_MUTE_TOGGLE_X5="mute"
+                 CONTROL_TV_VOL_MINUS="-"
+                ,CONTROL_TV_VOL_PLUS="+"
+                ,CONTROL_TV_VOL_MUTE="mute"
+                ,CONTROL_TV_VOL_MINUS70="-70%"
+                ,CONTROL_TV_VOL_PLUS70="+70%"
                 ]
         Switch
-            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label="Display"
+            item=ComputerRoom_IrBlaster_TV_control
+            label="Display[]"
             mappings=[
-                SONY_W5500_THEATER_MODE_X5="Teater mode",
-                SONY_W5500_INPUT_HDMI_3_X5="hdmi 3",
-                SONY_W5500_INPUT_HDMI_4_X5="hdmi 4"
+                CONTROL_TV_DISP_THMODE="Teater mode",
+                CONTROL_TV_INPUT_HDMI1="hdmi 1",
+                CONTROL_TV_INPUT_HDMI3="hdmi 3",
+                CONTROL_TV_INPUT_HDMI4="hdmi 4"
                 ]
         Switch
-            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label="Power"
+            item=ComputerRoom_IrBlaster_TV_control
+            label="Power[]"
             mappings=[
-                SONY_W5500_POWER_ON_X5="on",
-                SONY_W5500_POWER_OFF_X5="off"
+                CONTROL_TV_POWER_ON="on",
+                CONTROL_TV_POWER_OFF="off"
                 ]
     }
     Frame label="Audio control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
         Switch
-            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label="Volume"
+            item=ComputerRoom_IrBlaster_Audio_control
+            label="Volume[]"
             mappings=[
-                LOGITECH_Z5500_VOLUMEDOWN_X2="-",
-                LOGITECH_Z5500_VOLUMEUP_X2="+",
-                LOGITECH_Z5500_VOLUME_BURST_TO_ZERO="0",
-                LOGITECH_Z5500_VOLUME_BURST_TO_MAX="max",
-                LOGITECH_Z5500_MUTE="mute"
+                CONTROL_AUDIO_VOL_MINUS="-",
+                CONTROL_AUDIO_VOL_PLUS="+",
+                CONTROL_AUDIO_VOL_ZERO="0",
+                CONTROL_AUDIO_VOL_MAX="max",
+                CONTROL_AUDIO_VOL_MUTE="mute"
             ]
         Switch
-            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label="Input"
+            item=ComputerRoom_IrBlaster_Audio_control
+            label="Input[]"
             mappings=[
-                LOGITECH_Z5500_SOURCE_COAX="Coax",
-                LOGITECH_Z5500_SOURCE_DIRECT="Direct",
-                LOGITECH_Z5500_SOURCE_OPTICAL="Optical"
+                CONTROL_AUDIO_INPUT_COAX="Coax",
+                CONTROL_AUDIO_INPUT_DIRECT="Direct",
+                CONTROL_AUDIO_INPUT_OPTICAL="Optical"
             ]
         Switch
-            item=IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-            label="Power"
-            mappings=[LOGITECH_Z5500_POWER_X2="power"]
+            item=ComputerRoom_IrBlaster_Audio_control
+            label="Power[]"
+            mappings=[CONTROL_AUDIO_POWER_TOGGLE="power"]
     }
     Frame label="TV backlight" visibility=[Network_GF_ComputerRoom_LedStrip!="ON"]
     {
