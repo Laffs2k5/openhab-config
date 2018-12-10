@@ -40,7 +40,7 @@ Color
 /* Computer room: Audio/TV control */
 Switch
     Echo_Scene_GF_ComputerRoom_Chromecast
-    "TV"
+    "Chromecast"
     <irblaster>
     (gEchoItems)
     ["Switchable"]

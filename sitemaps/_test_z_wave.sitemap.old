@@ -2,10 +2,10 @@ sitemap test_z_wave label="Testing Z-Wave stuff"
 {
     /*
     Frame label="Laundry room multisensor" icon="whitegood" {
-        Default item=Sensor_CL_LaundryRoom_alarmBurglar 
-        Default item=Sensor_CL_LaundryRoom_batteryLevel 
-        //Default item=Sensor_CL_LaundryRoom_sensorBinary 
-        Default item=Sensor_CL_LaundryRoom_sensorLuminance 
+        Default item=Sensor_CL_LaundryRoom_alarmBurglar
+        Default item=Sensor_CL_LaundryRoom_batteryLevel
+        //Default item=Sensor_CL_LaundryRoom_sensorBinary
+        Default item=Sensor_CL_LaundryRoom_sensorLuminance
         Default item=Sensor_CL_LaundryRoom_sensorTemperature
     }
     */
@@ -36,7 +36,7 @@ sitemap test_z_wave label="Testing Z-Wave stuff"
     Frame label="Everspring" {
         Switch
             item=Wallplug_CL_Stairwell_Dimmer
-        Default 
+        Default
             item=Wallplug_CL_Stairwell_Dimmer
             label="Dimmer"
         Text
@@ -50,24 +50,28 @@ sitemap test_z_wave label="Testing Z-Wave stuff"
     */
     /*
     Frame label="Hauppauge" {
-        Switch
-            item=Hauppauge_WallplugItem
-        Text
-            item=Hauppauge_WallplugItem
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_SwitchBinary
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterPowerfactor
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterCurrent
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterKwh
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterVoltage
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterWatts
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterReset
+        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_AlarmGeneral
     }
     */
     /*
     Frame label="Laundry room main lights" icon="whitegood" {
-        Default 
+        Default
             item=Relay_CL_LaundryRoom_switchBinary
             label="Laundry room main lights switch state is"
-        Default 
+        Default
             item=Relay_CL_LaundryRoom_sensorBinary
             label="Laundry room main lights binary sensor state is"
-        Default 
+        Default
             item=Relay_CL_LaundryRoom_meterWatts
             label="Laundry room main lights power consumption"
-        Default 
+        Default
             item=Relay_CL_LaundryRoom_meterKwh
             label="Laundry room main lights power consumption"
     }

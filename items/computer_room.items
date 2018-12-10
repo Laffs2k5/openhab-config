@@ -11,6 +11,16 @@ String
     ComputerRoom_IrBlaster_Audio_control
     "Computer room IR blaster Audio control state is [%d]"
     <irblaster>
+/* END Virtual items */
+
+/* Haupage PAN11 wallplug: Computer room receiver power */
+Switch
+    Wallplug_GF_ComputerRoom_ReceiverPower_switch
+    "Computer room receiver wallplug state is [%s]"
+    <receiver>
+    (gRoomLivingRoom)
+    { channel="zwave:device:2c3b27f3:node4:switch_binary" }
+/* END Haupage PAN11 wallplug */
 
 /* Yeelight strip #1: Computer room TV backlight */
 Dimmer

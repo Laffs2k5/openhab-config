@@ -1,21 +1,13 @@
 // To unplug Aeon stick:
 //  log in to karaf
 //      bash -c "ssh openhab@192.168.0.200 -p 8101"
-// 
+//
 //  run prior to unplug
 //      bundle:stop org.openhab.binding.zwave
-// 
+//
 //  unplug then plug
-// 
+//
 // run after plugging
 //      bundle:start org.openhab.binding.zwave
 //      bundle:status org.openhab.binding.zwave
-// 
-Switch
-    Hauppauge_WallplugItem
-    "Hauppauge wallplug state is [%s]"
-    <receiver>
-    (gRoomLivingRoom)
-    { channel="zwave:device:2c3b27f3:node4:switch_binary" }
-    
-
+//

@@ -4,7 +4,8 @@ sitemap computer_room label="Computer room"
         Text
             item=Network_GF_ComputerRoom_IrBlaster
     }
-    Frame label="TV/Audio automation" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+    //Frame label="TV/Audio automation" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+    Frame label="TV/Audio automation" {
         Switch
             item=ComputerRoom_IrBlaster_scenes_control
             label="Scenes[]"
@@ -14,7 +15,8 @@ sitemap computer_room label="Computer room"
                 2="Computer"
                 ]
     }
-    Frame label="TV control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+    //Frame label="TV control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+    Frame label="TV control" {
         Switch
             item=ComputerRoom_IrBlaster_TV_control
             label="Volume[]"
@@ -42,7 +44,8 @@ sitemap computer_room label="Computer room"
                 CONTROL_TV_POWER_OFF="off"
                 ]
     }
-    Frame label="Audio control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+    //Frame label="Audio control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
+    Frame label="Audio control" {
         Switch
             item=ComputerRoom_IrBlaster_Audio_control
             label="Volume[]"
@@ -64,7 +67,11 @@ sitemap computer_room label="Computer room"
         Switch
             item=ComputerRoom_IrBlaster_Audio_control
             label="Power[]"
-            mappings=[CONTROL_AUDIO_POWER_TOGGLE="power"]
+            mappings=[
+                CONTROL_AUDIO_POWER_TOGGLE="toggle",
+                CONTROL_AUDIO_POWER_ON="On",
+                CONTROL_AUDIO_POWER_OFF="Off"
+            ]
     }
     Frame label="TV backlight" visibility=[Network_GF_ComputerRoom_LedStrip!="ON"]
     {

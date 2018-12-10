@@ -1,10 +1,12 @@
 // Imports
 import java.util.HashMap
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import java.util.concurrent.locks.ReentrantLock // Needed to block rules from triggering in paralell
+import java.util.concurrent.TimeUnit
 
 // Constants
-val String  LOGGER_NAME = "cmpterRoom"
-val String  IR_MAPFILE = "broadlink.map"
+val String LOGGER_NAME = "cmpterRoom"
+val String IR_MAPFILE = "broadlink.map"
 
 // Scene control commands
 val int CONTROL_SCENE_NOCHANGE   = -1
@@ -15,7 +17,7 @@ val int CONTROL_SCENE_COMPUTER   = 2  // Turn off receiver + TV and set to chrom
 // Common control commands
 val String CONTROL_NOCHANGE = "CONTROL_NOCHANGE"  // do nothing
 
-// TV control commands
+// TV control commands to ir commands
 val HashMap<String, String> g_tvCommandCodes = newHashMap(
      "CONTROL_TV_VOL_MINUS"   ->  "SONY_W5500_VOLUME_DOWN_X3"
     ,"CONTROL_TV_VOL_PLUS"    ->  "SONY_W5500_VOLUME_UP_X3"
@@ -31,7 +33,12 @@ val HashMap<String, String> g_tvCommandCodes = newHashMap(
     ,"CONTROL_TV_POWER_OFF"   ->  "SONY_W5500_POWER_OFF_X5"
 )
 
-// Audio cotrol commands
+// Special audio control commands
+//  These requires more action than just issuing an IR command
+val String CONTROL_AUDIO_POWER_ON = "CONTROL_AUDIO_POWER_ON"
+val String CONTROL_AUDIO_POWER_OFF = "CONTROL_AUDIO_POWER_OFF"
+
+// Audio cotrol commands to ir commands
 val HashMap<String, String> g_audioCommandCodes = newHashMap(
      "CONTROL_AUDIO_VOL_MINUS"          -> "LOGITECH_Z5500_VOLUMEDOWN_X2"
     ,"CONTROL_AUDIO_VOL_PLUS"           -> "LOGITECH_Z5500_VOLUMEUP_X2"
@@ -40,14 +47,16 @@ val HashMap<String, String> g_audioCommandCodes = newHashMap(
     ,"CONTROL_AUDIO_VOL_ZERO"           -> "LOGITECH_Z5500_VOLUME_BURST_TO_ZERO"
     ,"CONTROL_AUDIO_VOL_MAX"            -> "LOGITECH_Z5500_VOLUME_BURST_TO_MAX"
     ,"CONTROL_AUDIO_VOL_MUTE"           -> "LOGITECH_Z5500_MUTE"
-    ,"CONTROL_AUDIO_INPUT_COAX"         -> "LOGITECH_Z5500_SOURCE_COAX"
-    ,"CONTROL_AUDIO_INPUT_DIRECT"       -> "LOGITECH_Z5500_SOURCE_DIRECT"
-    ,"CONTROL_AUDIO_INPUT_OPTICAL"      -> "LOGITECH_Z5500_SOURCE_OPTICAL"
+    ,"CONTROL_AUDIO_INPUT_COAX"         -> "LOGITECH_Z5500_SOURCE_COAX_X2"
+    ,"CONTROL_AUDIO_INPUT_DIRECT"       -> "LOGITECH_Z5500_SOURCE_DIRECT_X2"
+    ,"CONTROL_AUDIO_INPUT_OPTICAL"      -> "LOGITECH_Z5500_SOURCE_OPTICAL_X2"
     ,"CONTROL_AUDIO_POWER_TOGGLE"       -> "LOGITECH_Z5500_POWER_X4"
 )
 
 // Globals
-
+var ReentrantLock   g_computerRoomLockTvUpdates = new ReentrantLock()
+var ReentrantLock   g_computerRoomLockScenesUpdates = new ReentrantLock()
+var ReentrantLock   g_computerRoomLockReceiverUpdates = new ReentrantLock()
 
 // Lambdas
 /*
@@ -135,18 +144,20 @@ then
 
         switch receivedCommand {
             case CONTROL_SCENE_ALLOFF: {
-                logInfo(LOGGER_NAME, "Received all off scene command")
+                logInfo(LOGGER, "Received all off scene command")
 
                 // Turn off tv
                 TvControlItem.sendCommand("CONTROL_TV_POWER_OFF")
-                Thread::sleep(4000)
 
                 // Turn off receiver
-                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_OFF")
 
             }
             case CONTROL_SCENE_CHROMECAST: {
-                logInfo(LOGGER_NAME, "Received chromecast scene command")
+                logInfo(LOGGER, "Received chromecast scene command")
+
+                // In case recveiver is on, turn volume down
+                AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
 
                 // Tv
                 //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
@@ -164,8 +175,16 @@ then
                 Thread::sleep(5000)
 
                 // Receiver
-                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")
-                Thread::sleep(3000)
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_ON")
+                Thread::sleep(500)
+                try {
+                    g_computerRoomLockReceiverUpdates.tryLock(10,TimeUnit.SECONDS)
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when attempting to wait for receiver power toggle. Exception was: {}", t.toString())
+                }
+                g_computerRoomLockReceiverUpdates.unlock()
+                Thread::sleep(3500)
+
                 AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
                 Thread::sleep(3000)
                 AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
@@ -175,7 +194,10 @@ then
                 AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_DEF_CC")
             }
             case CONTROL_SCENE_COMPUTER: {
-                logInfo(LOGGER_NAME, "Received computer scene command")
+                logInfo(LOGGER, "Received computer scene command")
+
+                // In case recveiver is on, turn volume down
+                AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
 
                 // Tv
                 //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
@@ -193,8 +215,16 @@ then
                 Thread::sleep(5000)
 
                 // Receiver
-                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_ON")
+                Thread::sleep(500)
+                try {
+                    g_computerRoomLockReceiverUpdates.tryLock(10,TimeUnit.SECONDS)
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when attempting to wait for receiver power toggle. Exception was: {}", t.toString())
+                }
+                g_computerRoomLockReceiverUpdates.unlock()
                 Thread::sleep(3000)
+
                 AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
                 Thread::sleep(3000)
                 AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
@@ -204,7 +234,7 @@ then
                 AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_DEF_COMPUTER")
             }
             default:{
-                logWarn(LOGGER_NAME, "Unexpected control signal {}", receivedCommand)
+                logWarn(LOGGER, "Unexpected control signal {}", receivedCommand)
             }
         }
 
@@ -230,12 +260,16 @@ then
     val String receivedCommand = ControlItem.state
     logInfo(LOGGER, "TV control received command code {}.", receivedCommand)
     if( receivedCommand != CONTROL_NOCHANGE ) {
+
+        g_computerRoomLockTvUpdates.lock()
         try {
             val String irCommand = irCommandsMap.get(receivedCommand)
-            logInfo(LOGGER_NAME, "TV command code {} corresponds to ir command named {}",receivedCommand,irCommand)
-            postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, irCommand, IrBlasterItem)
+            logInfo(LOGGER, "TV command code {} corresponds to ir command named {}",receivedCommand,irCommand)
+            postIrCommandToItem.apply(LOGGER, IR_MAPFILE, irCommand, IrBlasterItem)
         } catch(Throwable t) {
-            logError(LOGGER, "Exception caught when handling control command.The exception was: {}",t.toString())
+            logError(LOGGER, "Exception caught when handling control command. The exception was: {}", t.toString())
+        } finally {
+            g_computerRoomLockTvUpdates.unlock()
         }
 
         // To prevent the UI showing button in "pressed" state
@@ -255,17 +289,88 @@ then
 
     val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
     var HashMap<String, String> irCommandsMap = new HashMap<String, String>(g_audioCommandCodes)
+    val SwitchItem ReceiverWallplugItem = Wallplug_GF_ComputerRoom_ReceiverPower_switch
 
     val StringItem ControlItem = (triggeringItem as StringItem)
     val String receivedCommand = ControlItem.state
-    logInfo(LOGGER, "Audio control received command code {}.", receivedCommand)
+    //logInfo(LOGGER, "Audio control received command code {}.", receivedCommand)
     if( receivedCommand != CONTROL_NOCHANGE ) {
-        try {
-            val String irCommand = irCommandsMap.get(receivedCommand)
-            logInfo(LOGGER_NAME, "Audio command code {} corresponds to ir command named {}",receivedCommand,irCommand)
-            postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, irCommand, IrBlasterItem)
-        } catch(Throwable t) {
-            logError(LOGGER, "Exception caught when handling control command.The exception was: {}",t.toString())
+        // Some commands are not discrete IR commands
+        switch receivedCommand {
+            case CONTROL_AUDIO_POWER_ON: {
+                logInfo(LOGGER, "Audio control received power ON command.")
+/*
+                // Ensure receiver is off using physical wallplug
+                triggeringItem.sendCommand(CONTROL_AUDIO_POWER_OFF)
+
+                // Wait until off command completes, successfull lock means it did
+                Thread::sleep(500) // ensures the off command has started
+                try {
+                    //g_computerRoomLockReceiverUpdates.lock() // indicates that off command has completed
+                    g_computerRoomLockReceiverUpdates.tryLock(3,TimeUnit.SECONDS)
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when attempting to wait for receiver power off. Exception was: {}", t.toString())
+                }
+                g_computerRoomLockReceiverUpdates.unlock()
+
+                // Power on using IR
+                triggeringItem.postUpdate("CONTROL_AUDIO_POWER_TOGGLE")
+                Thread::sleep(500) // ensures the command has started
+                try {
+                    //g_computerRoomLockReceiverUpdates.lock() // indicates that off command has completed
+                    g_computerRoomLockReceiverUpdates.tryLock(3,TimeUnit.SECONDS)
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when attempting to wait for receiver power toggle. Exception was: {}", t.toString())
+                }
+                g_computerRoomLockReceiverUpdates.unlock()
+*/
+                g_computerRoomLockReceiverUpdates.lock()
+                try {
+                    // Wallplug: Toggle power receiver
+                    ReceiverWallplugItem.sendCommand(OnOffType::OFF)
+                    Thread::sleep(2500)
+                    ReceiverWallplugItem.sendCommand(OnOffType::ON)
+                    Thread::sleep(4500)
+
+                    // Turn on receiver by ir
+                    val String irCommand = irCommandsMap.get("CONTROL_AUDIO_POWER_TOGGLE")
+                    logInfo(LOGGER, "Sending audio ir command named {}",irCommand)
+                    postIrCommandToItem.apply(LOGGER, IR_MAPFILE, irCommand, IrBlasterItem)
+
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when attempting enable receiver power. Exception was: {}", t.toString())
+                } finally {
+                    g_computerRoomLockReceiverUpdates.unlock()
+                }
+
+            }
+            case CONTROL_AUDIO_POWER_OFF: {
+                logInfo(LOGGER, "Audio control received power OFF command.")
+                g_computerRoomLockReceiverUpdates.lock()
+                try {
+                    // Wallplug: Toggle power receiver
+                    ReceiverWallplugItem.sendCommand(OnOffType::OFF)
+                    Thread::sleep(2500)
+                    ReceiverWallplugItem.sendCommand(OnOffType::ON)
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when attempting to toggle receiver power. Exception was: {}", t.toString())
+                } finally {
+                    g_computerRoomLockReceiverUpdates.unlock()
+                }
+            }
+            default: {
+                logInfo(LOGGER, "Audio control received IR command {}.", receivedCommand)
+                g_computerRoomLockReceiverUpdates.lock()
+                try {
+                    val String irCommand = irCommandsMap.get(receivedCommand)
+                    logInfo(LOGGER, "Audio command code {} corresponds to ir command named {}",receivedCommand,irCommand)
+                    postIrCommandToItem.apply(LOGGER, IR_MAPFILE, irCommand, IrBlasterItem)
+                } catch(Throwable t) {
+                    logError(LOGGER, "Exception caught when handling control command. The exception was: {}", t.toString())
+                } finally {
+                    g_computerRoomLockReceiverUpdates.unlock()
+                }
+            }
         }
 
         // To prevent the UI showing button in "pressed" state

@@ -5,7 +5,7 @@
     ref.: http://docs.openhab.org/addons/ios/openhabcloud/readme.html#configuration
         Note: The exposed items will show up after they receive an update to their state.
 */
-sitemap setup_echo_items label="Trigger one time state change of items exposed to Amazon Echo through myopenhab.org"
+sitemap _setup_echo_items label="Trigger one time state change of items exposed to Amazon Echo through myopenhab.org"
 {
     Switch
         item=Echo_LedStrip_GF_ComputerRoom_brightness
