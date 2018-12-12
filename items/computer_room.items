@@ -5,12 +5,20 @@ Number
     <irblaster>
 String
     ComputerRoom_IrBlaster_TV_control
-    "Computer room IR blaster TV control state is [%d]"
+    "Computer room IR blaster TV control state is [%s]"
     <irblaster>
 String
     ComputerRoom_IrBlaster_Audio_control
-    "Computer room IR blaster Audio control state is [%d]"
+    "Computer room IR blaster Audio control state is [%s]"
     <irblaster>
+Switch
+    ComputerRoom_TvBacklight_DimDown_trigger
+    "Computer room TV backlight dim down trigger state is [%s]"
+    (gRoomLivingRoom)
+Switch
+    ComputerRoom_TvBacklight_DimUp_trigger
+    "Computer room TV backlight dim up trigger state is [%s]"
+    (gRoomLivingRoom)
 /* END Virtual items */
 
 /* Haupage PAN11 wallplug: Computer room receiver power */

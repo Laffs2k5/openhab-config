@@ -5,7 +5,11 @@ import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
 val String  LOGGER_NAME = "cmpterRoom"
 
 // Globals
-
+var int     g_tvBacklight_percent = 0
+var int     g_tvBacklight_percent_maxVal = 100
+var int     g_tvBacklight_percent_steps = 2
+var int     g_tvBacklight_delay_pr_step_millis = 200
+var Timer   g_tvBacklight_fade_Timer = null
 
 // Lambdas
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
@@ -17,7 +21,68 @@ val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
         itemChanged.state.toString())
     true
 ]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
+    logInfo(LOGGER, "Item '{}' received update '{}'",
+        itemUpdated.name,
+        itemUpdated.state)
+    true
+]
 
+// Dim up/down of baclight is triggered by separate items in order to
+// be able to trigger dimming frmo elsewhere as well as by rules in this file
+rule "Computer room TV backlight, dim down triggered"
+when
+    Item ComputerRoom_TvBacklight_DimDown_trigger received update ON
+then
+    val String LOGGER = LOGGER_NAME + ".tvLightDownTrg"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    triggeringItem.postUpdate(OnOffType::OFF)
+
+    val LightBrightnessItem = LedStrip_GF_ComputerRoom_brightness
+
+    logDebug("TvBacklight","Dimmming down")
+    if (LightBrightnessItem.state instanceof DecimalType) {
+        g_tvBacklight_percent = ((LightBrightnessItem.state as DecimalType) / g_tvBacklight_percent_steps).intValue * g_tvBacklight_percent_steps //round
+        g_tvBacklight_fade_Timer = createTimer(now.plusMillis(g_tvBacklight_delay_pr_step_millis)) [|
+            LightBrightnessItem.sendCommand(g_tvBacklight_percent)
+            if (g_tvBacklight_percent > 0) {
+                g_tvBacklight_percent = g_tvBacklight_percent - g_tvBacklight_percent_steps
+                logDebug("TvBacklight","Dimmming, decrease {} to {}", g_tvBacklight_percent_steps, g_tvBacklight_percent)
+                g_tvBacklight_fade_Timer.reschedule(now.plusMillis(g_tvBacklight_delay_pr_step_millis))
+            } else {
+                logDebug("TvBacklight","Done dimmming, final brightness is {}", g_tvBacklight_percent)
+            }
+        ]
+    }
+end
+rule "Computer room TV backlight, dim up triggered"
+when
+    Item ComputerRoom_TvBacklight_DimUp_trigger received update ON
+then
+    val String LOGGER = LOGGER_NAME + ".tvLightUpTrg"
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    triggeringItem.postUpdate(OnOffType::OFF)
+
+    val LightBrightnessItem = LedStrip_GF_ComputerRoom_brightness
+
+    logDebug("TvBacklight","Dimmming up")
+    if (LightBrightnessItem.state instanceof DecimalType) {
+        g_tvBacklight_percent = ((LightBrightnessItem.state as DecimalType) / g_tvBacklight_percent_steps).intValue * g_tvBacklight_percent_steps //round
+        g_tvBacklight_fade_Timer = createTimer(now.plusMillis(g_tvBacklight_delay_pr_step_millis)) [|
+            LightBrightnessItem.sendCommand(g_tvBacklight_percent)
+            if (g_tvBacklight_percent < g_tvBacklight_percent_maxVal) {
+                g_tvBacklight_percent = g_tvBacklight_percent + g_tvBacklight_percent_steps
+                logDebug("TvBacklight","Dimmming, increase {} to {}", g_tvBacklight_percent_steps, g_tvBacklight_percent)
+                g_tvBacklight_fade_Timer.reschedule(now.plusMillis(g_tvBacklight_delay_pr_step_millis))
+            } else {
+                logDebug("TvBacklight","Done dimmming, final brightness is {}", g_tvBacklight_percent)
+            }
+        ]
+    }
+end
 
 rule "TV backlight controlled by tv online state"
 when
@@ -25,52 +90,18 @@ when
     Item Network_GF_ComputerRoom_TV changed from ON to OFF
 then
     val String LOGGER = LOGGER_NAME + ".tvState"
-    val GenericItem itemChanged = Network_GF_ComputerRoom_TV
-    val LightBrightnessItem = LedStrip_GF_ComputerRoom_brightness
 
-    var int percent = 0
-    var int percent_maxVal = 100
-    var int percent_steps = 2
-    var int delay_pr_step_millis = 200
-    var Timer fade_Timer = null
+    val GenericItem itemChanged = Network_GF_ComputerRoom_TV
+    val SwitchItem dimDownItem = ComputerRoom_TvBacklight_DimDown_trigger
+    val SwitchItem dimUpItem = ComputerRoom_TvBacklight_DimUp_trigger
 
     logStateChange.apply(LOGGER, itemChanged)
 
     if (itemChanged.state==OFF) {
-
         //  Dim down gently when TV goes offline
-        //logInfo("TvBacklight","Dimmming down")
-        if (LightBrightnessItem.state instanceof DecimalType) {
-            percent = ((LightBrightnessItem.state as DecimalType) / percent_steps).intValue * percent_steps //round
-            fade_Timer = createTimer(now.plusMillis(delay_pr_step_millis)) [|
-                LightBrightnessItem.sendCommand(percent)
-                if (percent > 0) {
-                    percent = percent - percent_steps
-                    //logInfo("TvBacklight","Dimmming, decrease {} to {}", percent_steps, percent)
-                    fade_Timer.reschedule(now.plusMillis(delay_pr_step_millis))
-                } else {
-                    //logInfo("TvBacklight","Done dimmming, final brightness is {}", percent)
-                }
-            ]
-        }
-
+        dimDownItem.postUpdate(OnOffType::ON)
     } else if (itemChanged.state==ON) {
-
         // Dim up gently when TV goes online
-        //logInfo("TvBacklight","Dimmming up")
-        if (LightBrightnessItem.state instanceof DecimalType) {
-            percent = ((LightBrightnessItem.state as DecimalType) / percent_steps).intValue * percent_steps //round
-            fade_Timer = createTimer(now.plusMillis(delay_pr_step_millis)) [|
-                LightBrightnessItem.sendCommand(percent)
-                if (percent < percent_maxVal) {
-                    percent = percent + percent_steps
-                    //logInfo("TvBacklight","Dimmming, increase {} to {}", percent_steps, percent)
-                    fade_Timer.reschedule(now.plusMillis(delay_pr_step_millis))
-                } else {
-                    //logInfo("TvBacklight","Done dimmming, final brightness is {}", percent)
-                }
-            ]
-        }
-
+        dimUpItem.postUpdate(OnOffType::ON)
     }
 end

@@ -134,6 +134,8 @@ then
 
     val StringItem TvControlItem = ComputerRoom_IrBlaster_TV_control
     val StringItem AudioControlItem = ComputerRoom_IrBlaster_Audio_control
+    val SwitchItem dimDownItem = ComputerRoom_TvBacklight_DimDown_trigger
+    val SwitchItem dimUpItem = ComputerRoom_TvBacklight_DimUp_trigger
 
     val NumberItem ControlItem = (triggeringItem as NumberItem)
     val int receivedCommand = (ControlItem.state as DecimalType).intValue
@@ -146,10 +148,15 @@ then
             case CONTROL_SCENE_ALLOFF: {
                 logInfo(LOGGER, "Received all off scene command")
 
+                // Dim down tv backlight
+                dimDownItem.postUpdate(OnOffType::ON)
+
                 // Turn off tv
                 TvControlItem.sendCommand("CONTROL_TV_POWER_OFF")
 
                 // Turn off receiver
+                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE") // to mininmize noise during power off
+                Thread::sleep(4000)
                 AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_OFF")
 
             }
@@ -158,6 +165,9 @@ then
 
                 // In case recveiver is on, turn volume down
                 AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
+
+                // Dim up tv backlight
+                dimUpItem.postUpdate(OnOffType::ON)
 
                 // Tv
                 //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
@@ -199,6 +209,9 @@ then
                 // In case recveiver is on, turn volume down
                 AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
 
+                // Dim up tv backlight
+                dimUpItem.postUpdate(OnOffType::ON)
+
                 // Tv
                 //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
                 TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
@@ -223,7 +236,7 @@ then
                     logError(LOGGER, "Exception caught when attempting to wait for receiver power toggle. Exception was: {}", t.toString())
                 }
                 g_computerRoomLockReceiverUpdates.unlock()
-                Thread::sleep(3000)
+                Thread::sleep(3500)
 
                 AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
                 Thread::sleep(3000)
@@ -257,7 +270,7 @@ then
     var HashMap<String, String> irCommandsMap = new HashMap<String, String>(g_tvCommandCodes)
 
     val StringItem ControlItem = (triggeringItem as StringItem)
-    val String receivedCommand = ControlItem.state
+    val String receivedCommand = ControlItem.state.toString()
     logInfo(LOGGER, "TV control received command code {}.", receivedCommand)
     if( receivedCommand != CONTROL_NOCHANGE ) {
 
@@ -292,7 +305,7 @@ then
     val SwitchItem ReceiverWallplugItem = Wallplug_GF_ComputerRoom_ReceiverPower_switch
 
     val StringItem ControlItem = (triggeringItem as StringItem)
-    val String receivedCommand = ControlItem.state
+    val String receivedCommand = ControlItem.state.toString()
     //logInfo(LOGGER, "Audio control received command code {}.", receivedCommand)
     if( receivedCommand != CONTROL_NOCHANGE ) {
         // Some commands are not discrete IR commands
