@@ -18,7 +18,7 @@ val int CONTROL_SCENE_COMPUTER   = 2  // Turn off receiver + TV and set to chrom
 val String CONTROL_NOCHANGE = "CONTROL_NOCHANGE"  // do nothing
 
 // TV control commands to commands definition (ir command name and time the ir command takes to transmit)
-val HashMap<String, HashMap<String,String>> g_tvCommands = newHashMap(
+val HashMap<String, HashMap<String,String>> g_tvIrCommandsDefMap = newHashMap(
      "CONTROL_TV_VOL_MINUS"   ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_DOWN_X3",      "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_TV_VOL_PLUS"    ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_UP_X3",        "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_TV_VOL_MUTE"    ->  (newHashMap("irCommand" ->  "SONY_W5500_MUTE_TOGGLE_X5",      "irTransmitTimeMs" ->  "100"))
@@ -40,7 +40,7 @@ val String CONTROL_AUDIO_POWER_ON = "CONTROL_AUDIO_POWER_ON"
 val String CONTROL_AUDIO_POWER_OFF = "CONTROL_AUDIO_POWER_OFF"
 
 // Audio control commands to commands definition (ir command name and time the ir command takes to transmit)
-val HashMap<String, HashMap<String,String>> g_audioCommands = newHashMap(
+val HashMap<String, HashMap<String,String>> g_audioIrCommandsDefMap = newHashMap(
      "CONTROL_AUDIO_VOL_MINUS"          ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEDOWN_X2",         "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_PLUS"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X2",           "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_DEF_CC"         ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X13",          "irTransmitTimeMs" ->  "100"))
@@ -57,7 +57,6 @@ val HashMap<String, HashMap<String,String>> g_audioCommands = newHashMap(
 // Globals
 var ReentrantLock   g_computerRoomLockIrCommands = new ReentrantLock()
 var ReentrantLock   g_computerRoomLockTvUpdates = new ReentrantLock()
-//var ReentrantLock   g_computerRoomLockScenesUpdates = new ReentrantLock()
 var ReentrantLock   g_computerRoomLockReceiverUpdates = new ReentrantLock()
 
 // Lambdas
@@ -70,58 +69,6 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState
         itemUpdated.state)
     true
 ]
-/*
-val Functions$Function4<String, String, String, GenericItem, Boolean> postIrCommandToItem = [
-    loggerName,
-    irMapfile,
-    irCommand,
-    IrBlasterItem |
-    val String LOGGER = loggerName + ".postIrCmd"
-    logDebug(LOGGER, "Transforming IR command '{}' using map file '{}'", irCommand, irMapfile)
-    val cmd = transform("MAP", irMapfile, irCommand)
-    logDebug(LOGGER, "Transformed command: {}", cmd)
-    logDebug(LOGGER, "Posting command '{}' to item '{}'",irCommand, IrBlasterItem.name)
-    IrBlasterItem.sendCommand(irCommand)
-    true
-]
-*/
-/*
-val Functions$Function6<String, String, String, ReentrantLock, Integer, GenericItem, Boolean> postIrCommandToItemWithLockAndWait = [
-    loggerName,
-    irMapfile,
-    irCommand,
-    irCommandLock,
-    irCommandBlockTime,
-    IrBlasterItem |
-    val String LOGGER = loggerName + ".postIrCmdWLock"
-    logDebug(LOGGER, "Transforming IR command '{}' using map file '{}'", irCommand, irMapfile)
-    val cmd = transform("MAP", irMapfile, irCommand)
-    logDebug(LOGGER, "Transformed command: {}", cmd)
-
-    logDebug(LOGGER, "Aquire lock...")
-    irCommandLock.lock()
-    try {
-        logDebug(LOGGER, "Lock aquired.")
-        logDebug(LOGGER, "Posting command '{}' to item '{}'", irCommand, IrBlasterItem.name)
-        IrBlasterItem.sendCommand(irCommand)
-        Thread::sleep(irCommandBlockTime)
-    } catch(Throwable t) {
-        logError(LOGGER, "Exception caught while posting ir command. Exception was: {}", t.toString())
-    } finally {
-        irCommandLock.unlock()
-        logDebug(LOGGER, "Lock released.")
-    }
-    true
-]
-val Functions$Function1<HashMap<String,String>, String> getIrCommandFromDef = [
-    irCommandDef |
-    return irCommandDef.get("irCommand")
-]
-val Functions$Function1<HashMap<String,String>, Integer> getIrTransmitTimeFromDef = [
-    irCommandDef |
-    return Integer.parseInt(irCommandDef.get("irTransmitTimeMs"))
-]
-*/
 
 // Utility function
 // Post given ir command code to given IR blaster
@@ -135,7 +82,6 @@ val Functions$Function5<String, String, ReentrantLock, HashMap<String, HashMap<S
 
     // Constants
     val String LOGGER = loggerName + ".postIrCmdWLock"
-    val String IR_MAPFILE = "broadlink.map"
     val String IR_DEF_CMD_KEY = "irCommand"
     val String IR_DEF_TRANSMIT_TIME_KEY = "irTransmitTimeMs"
 
@@ -149,6 +95,7 @@ val Functions$Function5<String, String, ReentrantLock, HashMap<String, HashMap<S
     logInfo(LOGGER, "IR command code {} corresponds to ir command named {} with transmit time of {} ms", irCommandCode, irCommand, irTransmitTime)
 
     // Just for debug
+    //val String IR_MAPFILE = "broadlink.map"
     //logInfo(LOGGER, "Transforming IR command '{}' using map file '{}' to raw IR command.", irCommand, IR_MAPFILE)
     //val irRawCommand = transform("MAP", IR_MAPFILE, irCommand)
     //logInfo(LOGGER, "Raw IR command is: {}", irRawCommand)
@@ -209,177 +156,91 @@ then
     val String LOGGER = LOGGER_NAME + ".sceneCtl"
     logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
 
-    val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-    //val StringItem TvControlItem = ComputerRoom_IrBlaster_TV_control
-    val StringItem AudioControlItem = ComputerRoom_IrBlaster_Audio_control
-    val SwitchItem dimDownItem = ComputerRoom_TvBacklight_DimDown_trigger
-    val SwitchItem dimUpItem = ComputerRoom_TvBacklight_DimUp_trigger
+    val GenericItem IrBlasterItem                   = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
+    val StringItem  AudioControlItem                = ComputerRoom_IrBlaster_Audio_control
+    val SwitchItem  TvBacklightDimDownTriggerItem   = ComputerRoom_TvBacklight_DimDown_trigger
+    val SwitchItem  TvBacklightDimUpTriggerItem     = ComputerRoom_TvBacklight_DimUp_trigger
 
-    val HashMap<String, HashMap<String,String>> tvIrCommandsMap = new HashMap<String, HashMap<String,String>>(g_tvCommands)
-    val HashMap<String, HashMap<String,String>> audioIrCommandsMap = new HashMap<String, HashMap<String,String>>(g_audioCommands)
-
-    val NumberItem ControlItem = (triggeringItem as NumberItem)
+    val NumberItem  ControlItem = (triggeringItem as NumberItem)
     val int receivedCommand = (ControlItem.state as DecimalType).intValue
     logInfo(LOGGER, "Scenes control received command code {}.", receivedCommand)
     if( receivedCommand != CONTROL_SCENE_NOCHANGE ) {
-
-// TODO need som kind of lock for this, one at a time
-
         switch receivedCommand {
             case CONTROL_SCENE_ALLOFF: {
                 logInfo(LOGGER, "Received all off scene command")
 
                 // Dim down tv backlight
-                dimDownItem.postUpdate(OnOffType::ON)
+                TvBacklightDimDownTriggerItem.postUpdate(OnOffType::ON)
 
                 // Turn off tv
-                //TvControlItem.sendCommand("CONTROL_TV_POWER_OFF")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_POWER_OFF", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_POWER_OFF", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
 
                 // Turn off receiver
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")      // to mininmize noise during power off
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_TOGGLE")  // to mininmize noise during power off
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_POWER_TOGGLE", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(4000)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_POWER_TOGGLE", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
                 AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_OFF")
 
             }
-            case CONTROL_SCENE_CHROMECAST: {
-                logInfo(LOGGER, "Received chromecast scene command")
-
-                // In case recveiver is on, turn volume down
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-
-                // Dim up tv backlight
-                dimUpItem.postUpdate(OnOffType::ON)
-
-                // Tv
-                //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
-                //TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
-                //TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_DIGIT_1", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                Thread::sleep(5000) // extra wait in case tv was powered down
-
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_MUTE")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MUTE", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(1000)
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS70")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS70", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(7000)
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_PLUS")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_PLUS", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(500)
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(500)
-                //TvControlItem.sendCommand("CONTROL_TV_INPUT_HDMI3")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_INPUT_HDMI3", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(5000)
-
-                // Receiver
-                //Thread::sleep(8000) // wait for tv commands to complete and ir blaster to be availble
-                AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_ON")
-                logInfo(LOGGER,"Call power on")
-                Thread::sleep(2000) // wait for power on sequence to get started, takes up to 8500 to complete
-                logInfo(LOGGER,"Start wait for power on")
-                try {
-                    // Wait until power on sequence completes
-                    g_computerRoomLockReceiverUpdates.tryLock(15,TimeUnit.SECONDS)
-                    logInfo(LOGGER,"Power on lock aquired")
-                } catch(Throwable t) {
-                    logInfo(LOGGER,"Wait for power on failed")
-                    logError(LOGGER, "Exception caught when attempting to wait for receiver power toggle. Exception was: {}", t.toString())
-                }
-                finally {
-                    g_computerRoomLockReceiverUpdates.unlock()
-                    logInfo(LOGGER,"Power on lock released")
-                }
-                logInfo(LOGGER,"Done wait for power on")
-                //Thread::sleep(3500)
-
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_INPUT_COAX", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(3000)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(7000)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_OPTICAL")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_INPUT_OPTICAL", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(5000)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_DEF_CC")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_DEF_CC", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-            }
+            case CONTROL_SCENE_CHROMECAST,
             case CONTROL_SCENE_COMPUTER: {
-                logInfo(LOGGER, "Received computer scene command")
+                var String tvInputCommand
+                var String audioInputCommand
+                var String audioVolumeCommand
+                if(receivedCommand == CONTROL_SCENE_CHROMECAST) {
+                    logInfo(LOGGER, "Received chromecast scene command")
+                    tvInputCommand      = "CONTROL_TV_INPUT_HDMI3"
+                    audioInputCommand   = "CONTROL_AUDIO_INPUT_OPTICAL"
+                    audioVolumeCommand  = "CONTROL_AUDIO_VOL_DEF_CC"
+                }
+                else if(receivedCommand == CONTROL_SCENE_CHROMECAST) {
+                    logInfo(LOGGER, "Received computer scene command")
+                    tvInputCommand      = "CONTROL_TV_INPUT_HDMI1"
+                    audioInputCommand   = "CONTROL_AUDIO_INPUT_DIRECT"
+                    audioVolumeCommand  = "CONTROL_AUDIO_VOL_DEF_COMPUTER"
+                }
 
 
                 // In case recveiver is on, turn volume down
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
 
                 // Dim up tv backlight
-                dimUpItem.postUpdate(OnOffType::ON)
+                TvBacklightDimUpTriggerItem.postUpdate(OnOffType::ON)
 
                 // Tv
-                //TvControlItem.sendCommand("CONTROL_TV_POWER_ON")
-                //TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
-                //TvControlItem.sendCommand("CONTROL_TV_DIGIT_1")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_DIGIT_1", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_DIGIT_1", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
                 Thread::sleep(5000) // extra wait in case tv was powered down
 
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_MUTE")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MUTE", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(1000)
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS70")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS70", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(7000)
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_PLUS")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_PLUS", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(500)
-                //TvControlItem.sendCommand("CONTROL_TV_VOL_MINUS")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(500)
-                //TvControlItem.sendCommand("CONTROL_TV_INPUT_HDMI3")
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_INPUT_HDMI1", g_computerRoomLockIrCommands, tvIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(5000)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MUTE", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS70", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_PLUS", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, tvInputCommand, g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
 
                 // Receiver
-                //Thread::sleep(8000) // wait for tv commands to complete and ir blaster to be availble
                 AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_ON")
-                logInfo(LOGGER,"Call power on")
                 Thread::sleep(2000) // wait for power on sequence to get started, takes up to 8500 to complete
-                logInfo(LOGGER,"Start wait for power on")
+                //logInfo(LOGGER,"Start wait for power on")
                 try {
                     // Wait until power on sequence completes
-                    g_computerRoomLockReceiverUpdates.tryLock(15,TimeUnit.SECONDS)
-                    logInfo(LOGGER,"Power on lock aquired")
+                    g_computerRoomLockReceiverUpdates.tryLock(20,TimeUnit.SECONDS)
+                    //logInfo(LOGGER,"Power on lock aquired")
                 } catch(Throwable t) {
-                    logInfo(LOGGER,"Wait for power on failed")
+                    //logInfo(LOGGER,"Wait for power on failed")
                     logError(LOGGER, "Exception caught when attempting to wait for receiver power toggle. Exception was: {}", t.toString())
                 }
                 finally {
                     g_computerRoomLockReceiverUpdates.unlock()
-                    logInfo(LOGGER,"Power on lock released")
+                    //logInfo(LOGGER,"Power on lock released")
                 }
-                logInfo(LOGGER,"Done wait for power on")
-                //Thread::sleep(3500)
+                //logInfo(LOGGER,"Done wait for power on")
 
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_COAX")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_INPUT_COAX", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(3000)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_ZERO")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(7000)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_INPUT_DIRECT")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_INPUT_DIRECT", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
-                //Thread::sleep(5000)
-                //AudioControlItem.sendCommand("CONTROL_AUDIO_VOL_DEF_COMPUTER")
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_DEF_COMPUTER", g_computerRoomLockIrCommands, audioIrCommandsMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_INPUT_COAX", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, audioInputCommand, g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, audioVolumeCommand, g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
             }
             default:{
-                logWarn(LOGGER, "Unexpected control signal {}", receivedCommand)
+                logWarn(LOGGER, "Unexpected scene command received: {}", receivedCommand)
             }
         }
 
@@ -399,7 +260,7 @@ then
     logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
 
     val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-    val HashMap<String, HashMap<String,String>> irCommandsMap = new HashMap<String, HashMap<String,String>>(g_tvCommands)
+    val HashMap<String, HashMap<String,String>> irCommandsMap = new HashMap<String, HashMap<String,String>>(g_tvIrCommandsDefMap)
 
     val StringItem ControlItem = (triggeringItem as StringItem)
     val String receivedCommand = ControlItem.state.toString()
@@ -408,13 +269,6 @@ then
 
         g_computerRoomLockTvUpdates.lock()
         try {
-            /*
-            val HashMap<String,String> irCommandDef = new HashMap<String,String>(irCommandsMap.get(receivedCommand))
-            val String irCommand = getIrCommandFromDef.apply(irCommandDef)
-            val Integer irTransmitTime = getIrTransmitTimeFromDef.apply(irCommandDef)
-            logInfo(LOGGER, "TV command code {} corresponds to ir command named {} with transmit time of {} ms",receivedCommand,irCommand,irTransmitTime)
-            postIrCommandToItemWithLockAndWait.apply(LOGGER, IR_MAPFILE, irCommand, g_computerRoomLockIrCommands, irTransmitTime, IrBlasterItem)
-            */
             transmitIrCommand.apply(LOGGER, receivedCommand, g_computerRoomLockIrCommands, irCommandsMap, IrBlasterItem)
         } catch(Throwable t) {
             logError(LOGGER, "Exception caught when handling control command. The exception was: {}", t.toString())
@@ -438,7 +292,7 @@ then
     logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
 
     val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
-    val HashMap<String, HashMap<String,String>> irCommandsMap = new HashMap<String, HashMap<String,String>>(g_audioCommands)
+    val HashMap<String, HashMap<String,String>> irCommandsMap = new HashMap<String, HashMap<String,String>>(g_audioIrCommandsDefMap)
     val SwitchItem ReceiverWallplugItem = Wallplug_GF_ComputerRoom_ReceiverPower_switch
 
     val StringItem ControlItem = (triggeringItem as StringItem)
@@ -458,13 +312,6 @@ then
                     Thread::sleep(4500)
 
                     // Turn on receiver by ir
-                    /*
-                    val HashMap<String,String> irCommandDef = new HashMap<String,String>(irCommandsMap.get("CONTROL_AUDIO_POWER_TOGGLE"))
-                    val String irCommand = getIrCommandFromDef.apply(irCommandDef)
-                    val Integer irTransmitTime = getIrTransmitTimeFromDef.apply(irCommandDef)
-                    logInfo(LOGGER, "Sending audio command named {} with transmit time of {} ms",irCommand,irTransmitTime)
-                    postIrCommandToItemWithLockAndWait.apply(LOGGER, IR_MAPFILE, irCommand, g_computerRoomLockIrCommands, irTransmitTime, IrBlasterItem)
-                    */
                     transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_POWER_TOGGLE", g_computerRoomLockIrCommands, irCommandsMap, IrBlasterItem)
 
                 } catch(Throwable t) {
@@ -493,13 +340,6 @@ then
                 logInfo(LOGGER, "Audio control received IR command {}.", receivedCommand)
                 g_computerRoomLockReceiverUpdates.lock()
                 try {
-                    /*
-                    val HashMap<String,String> irCommandDef = new HashMap<String,String>(irCommandsMap.get(receivedCommand))
-                    val String irCommand = getIrCommandFromDef.apply(irCommandDef)
-                    val Integer irTransmitTime = getIrTransmitTimeFromDef.apply(irCommandDef)
-                    logInfo(LOGGER, "Audio command code {} corresponds to ir command named {} with transmit time of {} ms",receivedCommand,irCommand,irTransmitTime)
-                    postIrCommandToItemWithLockAndWait.apply(LOGGER, IR_MAPFILE, irCommand, g_computerRoomLockIrCommands, irTransmitTime, IrBlasterItem)
-                    */
                     transmitIrCommand.apply(LOGGER, receivedCommand, g_computerRoomLockIrCommands, irCommandsMap, IrBlasterItem)
                 } catch(Throwable t) {
                     logError(LOGGER, "Exception caught when handling control command. The exception was: {}", t.toString())
