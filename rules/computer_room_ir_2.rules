@@ -85,6 +85,11 @@ val Functions$Function5<String, String, ReentrantLock, HashMap<String, HashMap<S
     val String IR_DEF_CMD_KEY = "irCommand"
     val String IR_DEF_TRANSMIT_TIME_KEY = "irTransmitTimeMs"
 
+    if (irCommandCode === null) logError(LOGGER, "Missing IR command code!")
+    if (irCommandLock === null) logError(LOGGER, "Missing IR command lock!")
+    if (irCommandsMap === null) logError(LOGGER, "Missing IR commands map!")
+    if (IrBlasterItem === null) logError(LOGGER, "Missing IR blaster item!")
+
     logInfo(LOGGER, "Going to transmit IR command code '{}'.", irCommandCode)
 
     // Vars
@@ -117,33 +122,33 @@ val Functions$Function5<String, String, ReentrantLock, HashMap<String, HashMap<S
     true
 ]
 
-// Handle echo items
-rule "Computer room scene, echo item update, chromecast"
+// Handle cloud items
+rule "Computer room scene, cloud item update, chromecast"
 when
-    Item Echo_Scene_GF_ComputerRoom_Chromecast received update ON
+    Item Cloud_Scene_GF_ComputerRoom_chromecast received update ON
 then
-    val String LOGGER = LOGGER_NAME + ".echoSceneCc"
+    val String LOGGER = LOGGER_NAME + ".sceneCc"
     logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
     ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_CHROMECAST)
-    triggeringItem.postUpdate(OnOffType::OFF)
+    //triggeringItem.postUpdate(OnOffType::OFF)
 end
-rule "Computer room scene, echo item update, computer"
+rule "Computer room scene, cloud item update, computer"
 when
-    Item Echo_Scene_GF_ComputerRoom_Computer received update ON
+    Item Cloud_Scene_GF_ComputerRoom_computer received update ON
 then
-    val String LOGGER = LOGGER_NAME + ".echoSceneComputer"
+    val String LOGGER = LOGGER_NAME + ".sceneComputer"
     logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
     ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_COMPUTER)
-    triggeringItem.postUpdate(OnOffType::OFF)
+    //triggeringItem.postUpdate(OnOffType::OFF)
 end
-rule "Computer room scene, echo item update, all off"
+rule "Computer room scene, cloud item update, all off"
 when
-    Item Echo_Scene_GF_ComputerRoom_AllOff received update ON
+    Item Cloud_Scene_GF_ComputerRoom_allOff received update ON
 then
-    val String LOGGER = LOGGER_NAME + ".echoSceneAllOff"
+    val String LOGGER = LOGGER_NAME + ".sceneAllOff"
     logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
     ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_ALLOFF)
-    triggeringItem.postUpdate(OnOffType::OFF)
+    //triggeringItem.postUpdate(OnOffType::OFF)
 end
 
 // When the Computer room IR blaster scenes control element receives update
@@ -192,13 +197,15 @@ then
                     audioInputCommand   = "CONTROL_AUDIO_INPUT_OPTICAL"
                     audioVolumeCommand  = "CONTROL_AUDIO_VOL_DEF_CC"
                 }
-                else if(receivedCommand == CONTROL_SCENE_CHROMECAST) {
+                else if(receivedCommand == CONTROL_SCENE_COMPUTER) {
                     logInfo(LOGGER, "Received computer scene command")
                     tvInputCommand      = "CONTROL_TV_INPUT_HDMI1"
                     audioInputCommand   = "CONTROL_AUDIO_INPUT_DIRECT"
                     audioVolumeCommand  = "CONTROL_AUDIO_VOL_DEF_COMPUTER"
                 }
-
+                else {
+                    logWarn(LOGGER, "Unable to handle scene command: {}", receivedCommand)
+                }
 
                 // In case recveiver is on, turn volume down
                 transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
@@ -309,7 +316,7 @@ then
                     ReceiverWallplugItem.sendCommand(OnOffType::OFF)
                     Thread::sleep(2500)
                     ReceiverWallplugItem.sendCommand(OnOffType::ON)
-                    Thread::sleep(4500)
+                    Thread::sleep(5000)
 
                     // Turn on receiver by ir
                     transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_POWER_TOGGLE", g_computerRoomLockIrCommands, irCommandsMap, IrBlasterItem)
