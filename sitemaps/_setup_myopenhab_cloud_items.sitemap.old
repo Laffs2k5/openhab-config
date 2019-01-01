@@ -1,0 +1,21 @@
+/*
+    The sitemap is used to trigger changes to items exposed to cloud services like Amazon
+    Echo and Google Home through myopenhab.org. A state change is required in order for
+    OH to make the item visible on myopenhab.org.
+
+    ref.: http://docs.openhab.org/addons/ios/openhabcloud/readme.html#configuration
+        Note: The exposed items will show up after they receive an update to their state.
+*/
+sitemap _setup_myopenhab_cloud_items label="Trigger one time state change of items exposed to cloud services through myopenhab.org"
+{
+    Switch
+        item=Cloud_LedStrip_GF_ComputerRoom_brightness
+    Colorpicker
+        item=Cloud_LedStrip_GF_ComputerRoom_color
+    Switch
+        item=Cloud_Scene_GF_ComputerRoom_chromecast
+    Switch
+        item=Cloud_Scene_GF_ComputerRoom_computer
+    Switch
+        item=Cloud_Scene_GF_ComputerRoom_allOff
+}

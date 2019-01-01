@@ -1,4 +1,4 @@
-sitemap test_ir label="Testing IR stuff"
+sitemap _test_ir label="Testing IR stuff"
 {
     Frame label="Computer room ir blaster  rm3 mini #1" {
         Switch

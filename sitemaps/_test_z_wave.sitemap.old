@@ -1,4 +1,4 @@
-sitemap test_z_wave label="Testing Z-Wave stuff"
+sitemap _test_z_wave label="Testing Z-Wave stuff"
 {
     /*
     Frame label="Laundry room multisensor" icon="whitegood" {
@@ -48,18 +48,19 @@ sitemap test_z_wave label="Testing Z-Wave stuff"
             item=Wallplug_CL_Stairwell_Alarm
     }
     */
-    /*
+
     Frame label="Hauppauge" {
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_SwitchBinary
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterPowerfactor
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterCurrent
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterKwh
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterVoltage
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterWatts
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterReset
-        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_AlarmGeneral
+        Default item=Wallplug_GF_ComputerRoom_ReceiverPower_switch
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_SwitchBinary
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterPowerfactor
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterCurrent
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterKwh
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterVoltage
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterWatts
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_MeterReset
+//        Default item=WallplugHauppaugePOP123658Node4PAN11SmartEnergyPlugInSwitch_AlarmGeneral
     }
-    */
+
     /*
     Frame label="Laundry room main lights" icon="whitegood" {
         Default

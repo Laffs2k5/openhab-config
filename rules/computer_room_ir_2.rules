@@ -11,8 +11,9 @@ val String IR_MAPFILE = "broadlink.map"
 // Scene control commands
 val int CONTROL_SCENE_NOCHANGE   = -1
 val int CONTROL_SCENE_ALLOFF     = 0  // Turn off receiver + TV
-val int CONTROL_SCENE_CHROMECAST = 1  // Turn off receiver + TV and set to chromecast input
-val int CONTROL_SCENE_COMPUTER   = 2  // Turn off receiver + TV and set to chromecast input
+val int CONTROL_SCENE_CHROMECAST = 1  // Turn on receiver + TV and set to chromecast input
+val int CONTROL_SCENE_COMPUTER   = 2  // Turn on receiver + TV and set to computer input
+val int CONTROL_SCENE_NINTENDO   = 3  // Turn on receiver + TV and set to nintendo input
 
 // Common control commands
 val String CONTROL_NOCHANGE = "CONTROL_NOCHANGE"  // do nothing
@@ -33,7 +34,6 @@ val HashMap<String, HashMap<String,String>> g_tvIrCommandsDefMap = newHashMap(
     ,"CONTROL_TV_POWER_OFF"   ->  (newHashMap("irCommand" ->  "SONY_W5500_POWER_OFF_X5",        "irTransmitTimeMs" ->  "100"))
 )
 
-
 // Special audio control commands
 //  These requires more action than just issuing an IR command
 val String CONTROL_AUDIO_POWER_ON = "CONTROL_AUDIO_POWER_ON"
@@ -45,13 +45,13 @@ val HashMap<String, HashMap<String,String>> g_audioIrCommandsDefMap = newHashMap
     ,"CONTROL_AUDIO_VOL_PLUS"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X2",           "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_DEF_CC"         ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X13",          "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_DEF_COMPUTER"   ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X18",          "irTransmitTimeMs" ->  "100"))
-    ,"CONTROL_AUDIO_VOL_ZERO"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_ZERO",  "irTransmitTimeMs" ->  "7000"))
-    ,"CONTROL_AUDIO_VOL_MAX"            ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_MAX",   "irTransmitTimeMs" ->  "7000"))
+    ,"CONTROL_AUDIO_VOL_ZERO"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_ZERO",  "irTransmitTimeMs" ->  "7500"))
+    ,"CONTROL_AUDIO_VOL_MAX"            ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_MAX",   "irTransmitTimeMs" ->  "7500"))
     ,"CONTROL_AUDIO_VOL_MUTE"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_MUTE",                  "irTransmitTimeMs" ->  "100"))
-    ,"CONTROL_AUDIO_INPUT_COAX"         ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_COAX_X2",        "irTransmitTimeMs" ->  "1500"))
-    ,"CONTROL_AUDIO_INPUT_DIRECT"       ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_DIRECT_X2",      "irTransmitTimeMs" ->  "1500"))
-    ,"CONTROL_AUDIO_INPUT_OPTICAL"      ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_OPTICAL_X2",     "irTransmitTimeMs" ->  "1500"))
-    ,"CONTROL_AUDIO_POWER_TOGGLE"       ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_POWER_X4",              "irTransmitTimeMs" ->  "1500"))
+    ,"CONTROL_AUDIO_INPUT_COAX"         ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_COAX_X2",        "irTransmitTimeMs" ->  "2000"))
+    ,"CONTROL_AUDIO_INPUT_DIRECT"       ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_DIRECT_X2",      "irTransmitTimeMs" ->  "2000"))
+    ,"CONTROL_AUDIO_INPUT_OPTICAL"      ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_OPTICAL_X2",     "irTransmitTimeMs" ->  "2000"))
+    ,"CONTROL_AUDIO_POWER_TOGGLE"       ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_POWER_X4",              "irTransmitTimeMs" ->  "3000"))
 )
 
 // Globals
@@ -187,7 +187,8 @@ then
 
             }
             case CONTROL_SCENE_CHROMECAST,
-            case CONTROL_SCENE_COMPUTER: {
+            case CONTROL_SCENE_COMPUTER,
+            case CONTROL_SCENE_NINTENDO: {
                 var String tvInputCommand
                 var String audioInputCommand
                 var String audioVolumeCommand
@@ -202,6 +203,12 @@ then
                     tvInputCommand      = "CONTROL_TV_INPUT_HDMI1"
                     audioInputCommand   = "CONTROL_AUDIO_INPUT_DIRECT"
                     audioVolumeCommand  = "CONTROL_AUDIO_VOL_DEF_COMPUTER"
+                }
+                else if(receivedCommand == CONTROL_SCENE_NINTENDO) {
+                    logInfo(LOGGER, "Received Nintendo scene command")
+                    tvInputCommand      = "CONTROL_TV_INPUT_HDMI4"
+                    audioInputCommand   = "CONTROL_AUDIO_INPUT_OPTICAL"
+                    audioVolumeCommand  = "CONTROL_AUDIO_VOL_DEF_CC"
                 }
                 else {
                     logWarn(LOGGER, "Unable to handle scene command: {}", receivedCommand)
@@ -316,7 +323,7 @@ then
                     ReceiverWallplugItem.sendCommand(OnOffType::OFF)
                     Thread::sleep(2500)
                     ReceiverWallplugItem.sendCommand(OnOffType::ON)
-                    Thread::sleep(5000)
+                    Thread::sleep(7000)
 
                     // Turn on receiver by ir
                     transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_POWER_TOGGLE", g_computerRoomLockIrCommands, irCommandsMap, IrBlasterItem)

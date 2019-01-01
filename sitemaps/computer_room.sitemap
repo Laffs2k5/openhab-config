@@ -10,9 +10,10 @@ sitemap computer_room label="Computer room"
             item=ComputerRoom_IrBlaster_scenes_control
             label="Scenes[]"
             mappings=[
-                0="All OFF",
-                1="Chromecast",
-                2="Computer"
+                0="OFF",
+                1="Cast",
+                3="Switch",
+                2="PC"
                 ]
     }
     //Frame label="TV control" visibility=[Network_GF_ComputerRoom_IrBlaster=="ON"] {
