@@ -57,29 +57,35 @@ pijuice package requires Python >=3.5 and this is not availble on current raspbi
   - Example config
     ```
     {
-    "system_task": {
-        "watchdog": {
-        "period": 4,
-        "enabled": true
+        "system_events": {
+            "low_charge": {
+                "function": "SYS_FUNC_HALT_POW_OFF",
+                "enabled": true
+            }
         },
-        "wakeup_on_charge": {
-        "trigger_level": 30,
-        "enabled": true
-        },
-        "min_bat_voltage": {
-        "threshold": 3.3,
-        "enabled": false
-        },
-        "enabled": true,
-        "ext_halt_power_off": {
-        "period": 60,
-        "enabled": true
-        },
-        "min_charge": {
-        "threshold": 20,
-        "enabled": true
+        "system_task": {
+            "watchdog": {
+                "period": 4,
+                "enabled": true
+            },
+            "wakeup_on_charge": {
+                "trigger_level": 50,
+                "enabled": true
+            },
+            "min_bat_voltage": {
+                "threshold": 3.3,
+                "enabled": false
+            },
+            "enabled": true,
+            "ext_halt_power_off": {
+                "period": 60,
+                "enabled": true
+            },
+            "min_charge": {
+                "threshold": 20,
+                "enabled": true
+            }
         }
-    }
     }
     ```
 - pijuice service should be able to run at this point
