@@ -26,7 +26,7 @@ Dimmer
     "Staircase light brightness [%d %%]"
     <dimmablelight>
     (gRoomStaircase)
-    {channel="zwave:device:2c3b27f3:node5:switch_dimmer"}
+    {channel="zwave:device:2c3b27f3:node5:switch_dimmer1"}
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Dimmer_GF_Staircase_SensorPower
@@ -54,7 +54,7 @@ Dimmer
     "Dining room light brightness [%d %%]"
     <dimmablelight>
     (gRoomDiningRoom)
-    {channel="zwave:device:2c3b27f3:node10:switch_dimmer"}
+    {channel="zwave:device:2c3b27f3:node10:switch_dimmer1"}
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Dimmer_GF_DiningRoom_SensorPower

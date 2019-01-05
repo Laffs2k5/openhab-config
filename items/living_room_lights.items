@@ -26,7 +26,7 @@ Switch
     Sensor_GF_LivingRoomWall_sensorBinary
     "Living room Binary Sensor state is [%s]"
     (gRoomLivingRoom)
-    {channel="zwave:device:2c3b27f3:node18:sensor_binary"}
+    {channel="zwave:device:2c3b27f3:node18:alarm_motion"}
 /* Not used
 Switch
     Sensor_GF_LivingRoomWall_alarmBurglar
