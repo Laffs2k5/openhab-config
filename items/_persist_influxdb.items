@@ -109,3 +109,20 @@ Number
     (gRoomLivingRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node18:battery-level"}
 /* END Shenzhen multisensor Z-Wave: Living room */
+
+/* Fibaro Wallplug Z-Wave: Laundry room tumbler */
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_MeterWatts
+    "Laundry room tumble dryer power consumption [%.0f W]"
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node21:meter_watts"}
+/* END Fibaro Wallplug */
+
+/* Fibaro Wallplug Z-Wave: Laundry room tumbler */
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_MeterWatts
+    "Laundry room washing machine power consumption [%.0f W]"
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node20:meter_watts"}
+/* END Fibaro Wallplug */
+

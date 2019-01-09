@@ -95,3 +95,98 @@ Switch
     (gRoomLaundryRoom)
     { channel="zwave:device:2c3b27f3:node9:sensor_binary" } */
 /* END TELLDUS Multisensor */
+
+/* Fibaro Wallplug Z-Wave: Laundry room tumbler */
+/* Not used
+Switch
+    Wallplug_CL_LaudryRoom_TumbleDryer_SwitchBinary
+    "Laundry room tumble dryer Switch"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:switch_binary"} */
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_SensorPower
+    "Laundry room tumble dryer Sensor (power)"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:sensor_power"}
+/* Not used
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_MeterKwh
+    "Laundry room tumble dryer Electric meter (kWh)"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:meter_kwh"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_MeterWatts
+    "Laundry room tumble dryer power consumption [%.0f W]"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:meter_watts"} */
+/* Not used
+Switch
+    Wallplug_CL_LaudryRoom_TumbleDryer_MeterReset
+    "Laundry room tumble dryer Reset the total power consumption"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:meter_reset"}
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_ConfigDecimalParam61
+    "Laundry room tumble dryer LED color when device is on"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:config_decimal_param61"}
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_ConfigDecimalParam62
+    "Laundry room tumble dryer LED color when device is off"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:config_decimal_param62"}
+Number
+    Wallplug_CL_LaudryRoom_TumbleDryer_NotificationSend
+    "Laundry room tumble dryer Start Alarm LED Illumination"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node21:notification_send"} */
+/* END Fibaro Wallplug */
+
+/* Fibaro Wallplug Z-Wave: Laundry room tumbler */
+/* Not used
+Switch
+    Wallplug_CL_LaundryRoom_WashingMachine_SwitchBinary
+    "Laundry room washing machine Switch"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:switch_binary"} */
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_SensorPower
+    "Laundry room washing machine Sensor (power)"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:sensor_power"}
+/* Not used
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_MeterKwh
+    "Laundry room washing machine Electric meter (kWh)"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:meter_kwh"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_MeterWatts
+    "Laundry room washing machine Electric meter (watts)"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:meter_watts"}
+*/
+/* Not used
+Switch
+    Wallplug_CL_LaundryRoom_WashingMachine_MeterReset
+    "Laundry room washing machine Reset the total power consumption"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:meter_reset"}
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_ConfigDecimalParam61
+    "Laundry room washing machine LED color when device is on"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:config_decimal_param61"}
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_ConfigDecimalParam62
+    "Laundry room washing machine LED color when device is off"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:config_decimal_param62"}
+Number
+    Wallplug_CL_LaundryRoom_WashingMachine_NotificationSend
+    "Laundry room washing machine Start Alarm LED Illumination"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node20:notification_send"} */
+/* END Fibaro Wallplug */
