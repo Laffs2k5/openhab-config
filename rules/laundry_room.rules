@@ -24,7 +24,7 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdate = [
     loggerName,
     itemUpdated |
     val String LOGGER = loggerName //+ ".logReceivedUpdate"
-    logInfo(LOGGER, "Item '{}' received update",
+    logDebug(LOGGER, "Item '{}' received update",
         itemUpdated.name)
     true
 ]
@@ -32,7 +32,7 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState
     loggerName,
     itemUpdated |
     val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
-    logInfo(LOGGER, "Item '{}' received update '{}'",
+    logDebug(LOGGER, "Item '{}' received update '{}'",
         itemUpdated.name,
         itemUpdated.state)
     true
@@ -42,7 +42,7 @@ val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand
     itemCommanded,
     command |
     val String LOGGER = loggerName //+ ".logReceivedCommand"
-    logInfo(LOGGER, "Item '{}' received command '{}'",
+    logDebug(LOGGER, "Item '{}' received command '{}'",
         itemCommanded.name,
         command)
     true
@@ -56,6 +56,104 @@ val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
         itemChanged.name)
     true
 ]
+
+// When tumbple dryer power sensor receives update
+// Perform check if machine is now running/stopped
+rule "Laundry room, tumble dryer power updated"
+when
+    Item Wallplug_CL_LaudryRoom_TumbleDryer_SensorPower received update
+    or
+    Item Wallplug_CL_LaundryRoom_WashingMachine_SensorPower received update
+then
+    val String LOGGER = LOGGER_NAME + ".machinePwrUpd"
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    var SwitchItem MachineStateItem
+    if( triggeringItem.name.toString.contains('Washing') ) {
+        MachineStateItem = LaudryRoom_WashingMachine_RunningState
+    } else if( triggeringItem.name.toString.contains('Tumble') ) {
+        MachineStateItem = LaudryRoom_TumbleDryer_RunningState
+    } else {
+        logError(LOGGER, "The item '{}' cannot be handled by this rule!", triggeringItem.name)
+    }
+
+    logDebug(LOGGER, "Machine state item to update: {}",MachineStateItem.name)
+
+    val int MACHINE_STATE_LOOKBACKWARDS_MINUTES = 5       // Time look backwards when determinning if machine is running
+    val int MACHINE_RUNNING_WHEN_POWER_IS_MORE_THAN = 100 // Watts, below this for configured minutes means machine is stopped
+    val int MACHINE_STOPPED_WHEN_POWER_IS_LESS_THAN = 10  // Watts, above this for configured minutes means machine is running
+
+    val int maxValue = (triggeringItem.maximumSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").state as DecimalType).intValue
+    val int minValue = (triggeringItem.minimumSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").state as DecimalType).intValue
+    logDebug(LOGGER, "maxVal={0},minVal={0}",maxValue,minValue)
+
+    if( minValue > MACHINE_RUNNING_WHEN_POWER_IS_MORE_THAN ) {
+        logDebug(LOGGER, "Posting running state to {}", MachineStateItem.name)
+        MachineStateItem.postUpdate(OnOffType::ON)
+    } else if( maxValue < MACHINE_STOPPED_WHEN_POWER_IS_LESS_THAN ) {
+        logDebug(LOGGER, "Posting stopped state to {}", MachineStateItem.name)
+        MachineStateItem.postUpdate(OnOffType::OFF)
+    }
+end
+
+// When machine changes state
+// Notify by pushbullet
+// Notify on computer room speaker
+rule "Laundry room, washing machine running state changed"
+when
+    Item LaudryRoom_WashingMachine_RunningState changed
+then
+    val String LOGGER = LOGGER_NAME + ".washStateChg"
+    val String machineName = "washing machine"
+    val GenericItem itemChanged = LaudryRoom_WashingMachine_RunningState
+
+    logStateChange.apply(LOGGER, itemChanged)
+    val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
+
+    // Notify on pushbullet
+    val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at " + now.toString("HH:mm") + " on " + now.toString("dd MMMM yyyy") + "."
+    logInfo(LOGGER, "Sending notification: {}", notifyMsg)
+    sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+
+    // Notify on computer room speaker
+    val int notifyVolume = 20 // percent
+    val String notifyMp3 = "sncf-france-jingle.mp3"
+    val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
+    val String notifyVoice = "picotts:enUS"
+    val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+    playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
+    say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+
+end
+
+// When machine changes state
+// Notify by pushbullet
+// Notify on computer room speaker
+rule "Laundry room, tumble dryer running state changed"
+when
+    Item LaudryRoom_TumbleDryer_RunningState changed
+then
+    val String LOGGER = LOGGER_NAME + ".tmblrStateChg"
+    val String machineName = "tumble dryer"
+    val GenericItem itemChanged = LaudryRoom_TumbleDryer_RunningState
+
+    logStateChange.apply(LOGGER, itemChanged)
+    val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
+
+    // Notify on pushbullet
+    val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at " + now.toString("HH:mm") + " on " + now.toString("dd MMMM yyyy") + "."
+    logInfo(LOGGER, "Sending notification: {}", notifyMsg)
+    sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+
+    // Notify on computer room speaker
+    val int notifyVolume = 20 // percent
+    val String notifyMp3 = "sncf-france-jingle.mp3"
+    val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
+    val String notifyVoice = "picotts:enUS"
+    val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+    playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
+    say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+end
 
 // When set time changes configure the zwave relay with the update value
 rule "Laundry room lights, Auto off time changed"
@@ -191,134 +289,3 @@ then
     logReceivedUpdate.apply(LOGGER, triggeringItem)
     Sensor_CL_LaundryRoom_sensorLuminance_LastReadout.postUpdate(new DateTimeType())
 end
-
-/*
-rule "Laundry room main lights, switch received command"
-when
-    Item Relay_CL_LaundryRoom_MainLights_switch received command
-then
-    val GenericItem itemCommanded = Relay_CL_LaundryRoom_MainLights_switch
-    logReceivedCommand.apply(LOGGER_NAME, itemCommanded, receivedCommand.toString())
-end
-
-*/
-/*
-val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
-    loggerName,
-    timerToStop,
-    timerName |
-    val String LOGGER = loggerName + ".stopTimer"
-    var String dispName = "unknown"
-    if( timerName !== null ) {dispName = timerName}
-    if( timerToStop !== null ) {
-        logInfo(LOGGER,"Stopping timer '{}', was running: {}", timerName, timerToStop.isRunning())
-        timerToStop.cancel()
-    } else {
-        logInfo(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
-    }
-    true
-]
-*/
-
-/*
-// When motion is detected AND not night (23-05)
-//  - Enable main lights
-//  - Start auto off timer (if configured)
-rule "Motion sensor triggered"
-when
-    Item Sensor_CL_LaundryRoom_alarmBurglar received update ON
-then
-    val String LOGGER = LOGGER_NAME + ".motionDetected"
-    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
-
-    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    //val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
-    //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
-
-    val Boolean isDay = now.getHourOfDay > 5 && now.getHourOfDay < 23
-
-    logInfo(LOGGER, "Motion detected, hourOfDay={}, isDay={}", now.getHourOfDay, isDay)
-
-    if( isDay ) {
-        logDebug(LOGGER, "Enabling main lights...")
-        MainSwitch.sendCommand(OnOffType::ON)
-    }
-end
-*/
-/*
-// When main lights are updated:
-//  - Start/restart auto off timer (if configured)
-rule "Laundry room main lights, switch received update"
-when
-    Item Relay_CL_LaundryRoom_MainLights_switch received update
-then
-    val String LOGGER = LOGGER_NAME + ".mainLightsUpdate"
-    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
-
-    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
-    //val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
-
-    // Start/restart auto off timer (if configured)
-    if( MainSwitch.state == OnOffType::ON ) {
-        // Tell the control item to start auto off timer
-        AutoOffControlItem.postUpdate(CONTROL_MODE_START)
-    } else if( MainSwitch.state == OnOffType::OFF ) {
-        // Tell the control item to stop the timer
-        // TODO
-    } else {
-        logUnexpectedState.apply(LOGGER, MainSwitch)
-    }
-end
-*/
-/*
-// When the set time changes
-rule "Auto off set time state change"
-when
-    Item LaundryRoom_MainLights_AutoOff_setTime received update
-then
-    val String LOGGER = LOGGER_NAME + ".setTimeChange"
-    //val GenericItem itemUpdated = LaundryRoom_MainLights_AutoOff_setTime
-    //logReceivedUpdate.apply(LOGGER, itemUpdated)
-    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
-
-    val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
-    val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
-    val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
-
-    // Kill timer if exists
-//    stopTimer.apply(LOGGER, g_laudryRoomOffTimer, "Auto off")
-    if( g_laudryRoomOffTimer !== null ) {
-        logInfo(LOGGER,"Cancel auto off timer")
-        g_laudryRoomOffTimer.cancel
-    } else {
-        logInfo(LOGGER,"Not cancelling auto off timer as it was not instantiated")
-    }
-
-    // Failsafe default to timer off in case of problems
-    if( AutoOffSetTimeItem.state == NULL || AutoOffSetTimeItem.state == UNDEF ) {
-        logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffControlItem.name)
-        AutoOffControlItem.postUpdate(CONTROL_MODE_DISABLE)
-    } else {
-        // > 0 means auto off is enabled
-        val int setTimeValue = (AutoOffSetTimeItem.state as DecimalType).intValue
-        if( setTimeValue > 0 ) {
-            // Set timer to turn off physical wallplug
-            logInfo(LOGGER, "Starting/restarting auto off timer, setTimeValue={}",setTimeValue)
-            g_laudryRoomOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
-                logInfo(LOGGER, "Auto off timer triggered")
-                MainSwitch.sendCommand(OnOffType::OFF)
-            ]
-//            if( g_laudryRoomOffTimer !== null ) {
-//                logInfo(LOGGER,"Reschedule auto off timer")
-//                g_laudryRoomOffTimer.reschedule(now.plusMinutes(setTimeValue))
-//            } else {
-//                logInfo(LOGGER,"Instantiating new auto off timer")
-//                g_laudryRoomOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
-//                    MainSwitch.sendCommand(OnOffType::OFF)
-//                ]
-//            }
-        }
-    }
-end
-*/

@@ -61,7 +61,7 @@ then
         // Notify?
         if( lastNotifiedTime.plusHours(ALERT_MIN_HOURS_THRESHOLD) < triggeredTime ) {
             logDebug(LOGGER, "Sending notification as last notification was not sent within the threshold of {} hours.", ALERT_MIN_HOURS_THRESHOLD)
-            sendPushbulletNote("Openhab Efergy status check", notifyMsg)
+            sendPushbulletNote("Openhab: Efergy status check", notifyMsg)
             // Record last notification datetime
             LastNotifiedItem.postUpdate(new DateTimeType())
         }

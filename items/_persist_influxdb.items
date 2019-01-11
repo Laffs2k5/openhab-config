@@ -112,17 +112,18 @@ Number
 
 /* Fibaro Wallplug Z-Wave: Laundry room tumbler */
 Number
-    Wallplug_CL_LaudryRoom_TumbleDryer_MeterWatts
+    Wallplug_CL_LaudryRoom_TumbleDryer_SensorPower
     "Laundry room tumble dryer power consumption [%.0f W]"
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node21:meter_watts"}
+    {channel="zwave:device:2c3b27f3:node21:sensor_power"}
+
 /* END Fibaro Wallplug */
 
 /* Fibaro Wallplug Z-Wave: Laundry room tumbler */
 Number
-    Wallplug_CL_LaundryRoom_WashingMachine_MeterWatts
+    Wallplug_CL_LaundryRoom_WashingMachine_SensorPower
     "Laundry room washing machine power consumption [%.0f W]"
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node20:meter_watts"}
+    {channel="zwave:device:2c3b27f3:node20:sensor_power"}
 /* END Fibaro Wallplug */
 

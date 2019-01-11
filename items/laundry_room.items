@@ -27,6 +27,16 @@ DateTime
     "Laundry room light sensor last readout at [%1$td.%1$tm.%1$tY]"
     <updatedate>
 
+// For recording machine state
+Switch
+    LaudryRoom_TumbleDryer_RunningState
+    "The tumble dryer is [MAP(houshold_items.map):%s]"
+    <tumbledryer>
+Switch
+    LaudryRoom_WashingMachine_RunningState
+    "The washing machine is [MAP(houshold_items.map):%s]"
+    <washingmachine>
+
 /* END Virtual items */
 
 /* Qubino Flush 1 Relay Z-wave: Laundry room main lights */
@@ -103,23 +113,23 @@ Switch
     "Laundry room tumble dryer Switch"
     (gRoomLaundryRoom)
     {channel="zwave:device:2c3b27f3:node21:switch_binary"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Wallplug_CL_LaudryRoom_TumbleDryer_SensorPower
     "Laundry room tumble dryer Sensor (power)"
     (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node21:sensor_power"}
+    {channel="zwave:device:2c3b27f3:node21:sensor_power"} */
 /* Not used
 Number
     Wallplug_CL_LaudryRoom_TumbleDryer_MeterKwh
     "Laundry room tumble dryer Electric meter (kWh)"
     (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node21:meter_kwh"} */
-/* Moved to file _persist_influxdb.items to persisted for charting
+    {channel="zwave:device:2c3b27f3:node21:meter_kwh"}
 Number
     Wallplug_CL_LaudryRoom_TumbleDryer_MeterWatts
     "Laundry room tumble dryer power consumption [%.0f W]"
     (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node21:meter_watts"} */
+    {channel="zwave:device:2c3b27f3:node21:meter_watts"}
 /* Not used
 Switch
     Wallplug_CL_LaudryRoom_TumbleDryer_MeterReset
@@ -143,31 +153,30 @@ Number
     {channel="zwave:device:2c3b27f3:node21:notification_send"} */
 /* END Fibaro Wallplug */
 
-/* Fibaro Wallplug Z-Wave: Laundry room tumbler */
+/* Fibaro Wallplug Z-Wave: Laundry room washing machine */
 /* Not used
 Switch
     Wallplug_CL_LaundryRoom_WashingMachine_SwitchBinary
     "Laundry room washing machine Switch"
     (gRoomLaundryRoom)
     {channel="zwave:device:2c3b27f3:node20:switch_binary"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Wallplug_CL_LaundryRoom_WashingMachine_SensorPower
     "Laundry room washing machine Sensor (power)"
     (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node20:sensor_power"}
+    {channel="zwave:device:2c3b27f3:node20:sensor_power"} */
 /* Not used
 Number
     Wallplug_CL_LaundryRoom_WashingMachine_MeterKwh
     "Laundry room washing machine Electric meter (kWh)"
     (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node20:meter_kwh"} */
-/* Moved to file _persist_influxdb.items to persisted for charting
+    {channel="zwave:device:2c3b27f3:node20:meter_kwh"}
 Number
     Wallplug_CL_LaundryRoom_WashingMachine_MeterWatts
     "Laundry room washing machine Electric meter (watts)"
     (gRoomLaundryRoom)
     {channel="zwave:device:2c3b27f3:node20:meter_watts"}
-*/
 /* Not used
 Switch
     Wallplug_CL_LaundryRoom_WashingMachine_MeterReset

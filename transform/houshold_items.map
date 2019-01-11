@@ -1,0 +1,4 @@
+ON=running
+OFF=stopped
+NULL=unknown
+UNDEF=unknown
