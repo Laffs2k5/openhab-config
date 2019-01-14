@@ -80,17 +80,18 @@ then
     logDebug(LOGGER, "Machine state item to update: {}",MachineStateItem.name)
 
     val int MACHINE_STATE_LOOKBACKWARDS_MINUTES = 5       // Time look backwards when determinning if machine is running
-    val int MACHINE_RUNNING_WHEN_POWER_IS_MORE_THAN = 100 // Watts, below this for configured minutes means machine is stopped
+    val int MACHINE_RUNNING_WHEN_POWER_IS_MORE_THAN = 25  // Watts, below this for configured minutes means machine is stopped
     val int MACHINE_STOPPED_WHEN_POWER_IS_LESS_THAN = 10  // Watts, above this for configured minutes means machine is running
 
-    val int maxValue = (triggeringItem.maximumSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").state as DecimalType).intValue
-    val int minValue = (triggeringItem.minimumSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").state as DecimalType).intValue
-    logDebug(LOGGER, "maxVal={0},minVal={0}",maxValue,minValue)
+    //val int maxValue = (triggeringItem.maximumSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").state as DecimalType).intValue
+    //val int minValue = (triggeringItem.minimumSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").state as DecimalType).intValue
+    val int avgValue = triggeringItem.averageSince(now.minusMinutes(MACHINE_STATE_LOOKBACKWARDS_MINUTES),"influxdb").intValue
+    //logDebug(LOGGER, "maxVal={},minVal={},avgValue={}",maxValue,minValue,avgValue)
 
-    if( minValue > MACHINE_RUNNING_WHEN_POWER_IS_MORE_THAN ) {
+    if( avgValue > MACHINE_RUNNING_WHEN_POWER_IS_MORE_THAN ) {
         logDebug(LOGGER, "Posting running state to {}", MachineStateItem.name)
         MachineStateItem.postUpdate(OnOffType::ON)
-    } else if( maxValue < MACHINE_STOPPED_WHEN_POWER_IS_LESS_THAN ) {
+    } else if( avgValue < MACHINE_STOPPED_WHEN_POWER_IS_LESS_THAN ) {
         logDebug(LOGGER, "Posting stopped state to {}", MachineStateItem.name)
         MachineStateItem.postUpdate(OnOffType::OFF)
     }
@@ -110,20 +111,27 @@ then
     logStateChange.apply(LOGGER, itemChanged)
     val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
 
-    // Notify on pushbullet
+    // Log state and machine
     val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at " + now.toString("HH:mm") + " on " + now.toString("dd MMMM yyyy") + "."
-    logInfo(LOGGER, "Sending notification: {}", notifyMsg)
-    sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+    logInfo(LOGGER, "{}", notifyMsg)
 
-    // Notify on computer room speaker
-    val int notifyVolume = 20 // percent
-    val String notifyMp3 = "sncf-france-jingle.mp3"
-    val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
-    val String notifyVoice = "picotts:enUS"
-    val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
-    playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
-    say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+    if( itemChanged.state == OnOffType::OFF) {
+        // Notify on pushbullet
+        logInfo(LOGGER, "Sending notification: {}", notifyMsg)
+        sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
 
+        // Notify on computer room speaker
+        val int notifyVolume = 20 // percent
+        val String notifyMp3 = "sncf-france-jingle.mp3"
+        val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
+        val String notifyVoice = "picotts:enUS"
+        val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+        playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
+        Thread::sleep(2000)
+        say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+    } else {
+        logInfo(LOGGER, "No notification will be sent.")
+    }
 end
 
 // When machine changes state
@@ -140,19 +148,27 @@ then
     logStateChange.apply(LOGGER, itemChanged)
     val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
 
-    // Notify on pushbullet
+    // Log state and machine
     val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at " + now.toString("HH:mm") + " on " + now.toString("dd MMMM yyyy") + "."
-    logInfo(LOGGER, "Sending notification: {}", notifyMsg)
-    sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+    logInfo(LOGGER, "{}", notifyMsg)
 
-    // Notify on computer room speaker
-    val int notifyVolume = 20 // percent
-    val String notifyMp3 = "sncf-france-jingle.mp3"
-    val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
-    val String notifyVoice = "picotts:enUS"
-    val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
-    playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
-    say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+    if( itemChanged.state == OnOffType::OFF) {
+        // Notify on pushbullet
+        logInfo(LOGGER, "Sending notification: {}", notifyMsg)
+        sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+
+        // Notify on computer room speaker
+        val int notifyVolume = 20 // percent
+        val String notifyMp3 = "sncf-france-jingle.mp3"
+        val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
+        val String notifyVoice = "picotts:enUS"
+        val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+        playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
+        Thread::sleep(2000)
+        say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+    } else {
+        logInfo(LOGGER, "No notification will be sent.")
+    }
 end
 
 // When set time changes configure the zwave relay with the update value
