@@ -32,7 +32,7 @@ val Functions$Function4<String, DateTimeItem, GenericItem, NumberItem, Boolean> 
     NumberItemToUpdate |
 
     // Constants
-    val Number  VALID_MAX_READING = 19000 // 50A x 240V + 7000w margin
+    val Number  VALID_MAX_READING = 25000 // New: saw usage up to 21k, had to adjust this up. Old: 50A x 240V + 7000w margin
     val Number  VALID_MIN_READING = 0
 
     var Number valueRead
