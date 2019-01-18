@@ -22,11 +22,12 @@ sitemap computer_room label="Computer room"
             item=ComputerRoom_IrBlaster_TV_control
             label="Volume[]"
             mappings=[
-                 CONTROL_TV_VOL_MINUS="-"
+                 CONTROL_TV_VOL_MINUS_40="--"
+                ,CONTROL_TV_VOL_MINUS="-"
                 ,CONTROL_TV_VOL_PLUS="+"
                 ,CONTROL_TV_VOL_MUTE="mute"
-                ,CONTROL_TV_VOL_MINUS70="-70%"
-                ,CONTROL_TV_VOL_PLUS70="+70%"
+                //,CONTROL_TV_VOL_MINUS70="-70%"
+                //,CONTROL_TV_VOL_PLUS70="+70%"
                 ]
         Switch
             item=ComputerRoom_IrBlaster_TV_control
@@ -51,11 +52,12 @@ sitemap computer_room label="Computer room"
             item=ComputerRoom_IrBlaster_Audio_control
             label="Volume[]"
             mappings=[
-                CONTROL_AUDIO_VOL_MINUS="-",
-                CONTROL_AUDIO_VOL_PLUS="+",
-                CONTROL_AUDIO_VOL_ZERO="0",
-                CONTROL_AUDIO_VOL_MAX="max",
-                CONTROL_AUDIO_VOL_MUTE="mute"
+                 CONTROL_AUDIO_VOL_MINUS_30="--"
+                ,CONTROL_AUDIO_VOL_MINUS="-"
+                ,CONTROL_AUDIO_VOL_PLUS="+"
+                //,CONTROL_AUDIO_VOL_ZERO="0"
+                //,CONTROL_AUDIO_VOL_MAX="max"
+                ,CONTROL_AUDIO_VOL_MUTE="mute"
             ]
         Switch
             item=ComputerRoom_IrBlaster_Audio_control

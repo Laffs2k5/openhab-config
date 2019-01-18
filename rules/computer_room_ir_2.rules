@@ -20,11 +20,12 @@ val String CONTROL_NOCHANGE = "CONTROL_NOCHANGE"  // do nothing
 
 // TV control commands to commands definition (ir command name and time the ir command takes to transmit)
 val HashMap<String, HashMap<String,String>> g_tvIrCommandsDefMap = newHashMap(
-     "CONTROL_TV_VOL_MINUS"   ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_DOWN_X3",      "irTransmitTimeMs" ->  "100"))
+     "CONTROL_TV_VOL_MINUS_40"->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_DOWN_X80",     "irTransmitTimeMs" ->  "3500"))
+    ,"CONTROL_TV_VOL_MINUS"   ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_DOWN_X3",      "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_TV_VOL_PLUS"    ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_UP_X3",        "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_TV_VOL_MUTE"    ->  (newHashMap("irCommand" ->  "SONY_W5500_MUTE_TOGGLE_X5",      "irTransmitTimeMs" ->  "100"))
-    ,"CONTROL_TV_VOL_MINUS70" ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_DOWN_X155",    "irTransmitTimeMs" ->  "7000"))
-    ,"CONTROL_TV_VOL_PLUS70"  ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_UP_X155",      "irTransmitTimeMs" ->  "7000"))
+//    ,"CONTROL_TV_VOL_MINUS70" ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_DOWN_X155",    "irTransmitTimeMs" ->  "7000"))
+//    ,"CONTROL_TV_VOL_PLUS70"  ->  (newHashMap("irCommand" ->  "SONY_W5500_VOLUME_UP_X155",      "irTransmitTimeMs" ->  "7000"))
     ,"CONTROL_TV_DISP_THMODE" ->  (newHashMap("irCommand" ->  "SONY_W5500_THEATER_MODE_X5",     "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_TV_DIGIT_1"     ->  (newHashMap("irCommand" ->  "SONY_W5500_DIGIT_1_X5",          "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_TV_INPUT_HDMI1" ->  (newHashMap("irCommand" ->  "SONY_W5500_INPUT_HDMI_1_X5",     "irTransmitTimeMs" ->  "100"))
@@ -41,12 +42,13 @@ val String CONTROL_AUDIO_POWER_OFF = "CONTROL_AUDIO_POWER_OFF"
 
 // Audio control commands to commands definition (ir command name and time the ir command takes to transmit)
 val HashMap<String, HashMap<String,String>> g_audioIrCommandsDefMap = newHashMap(
-     "CONTROL_AUDIO_VOL_MINUS"          ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEDOWN_X2",         "irTransmitTimeMs" ->  "100"))
+     "CONTROL_AUDIO_VOL_MINUS_30"       ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEDOWN_X30",        "irTransmitTimeMs" ->  "4000"))
+    ,"CONTROL_AUDIO_VOL_MINUS"          ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEDOWN_X2",         "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_PLUS"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X2",           "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_DEF_CC"         ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X13",          "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_VOL_DEF_COMPUTER"   ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUMEUP_X18",          "irTransmitTimeMs" ->  "100"))
-    ,"CONTROL_AUDIO_VOL_ZERO"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_ZERO",  "irTransmitTimeMs" ->  "7500"))
-    ,"CONTROL_AUDIO_VOL_MAX"            ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_MAX",   "irTransmitTimeMs" ->  "7500"))
+//    ,"CONTROL_AUDIO_VOL_ZERO"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_ZERO",  "irTransmitTimeMs" ->  "7500"))
+//    ,"CONTROL_AUDIO_VOL_MAX"            ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_VOLUME_BURST_TO_MAX",   "irTransmitTimeMs" ->  "7500"))
     ,"CONTROL_AUDIO_VOL_MUTE"           ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_MUTE",                  "irTransmitTimeMs" ->  "100"))
     ,"CONTROL_AUDIO_INPUT_COAX"         ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_COAX_X2",        "irTransmitTimeMs" ->  "2000"))
     ,"CONTROL_AUDIO_INPUT_DIRECT"       ->  (newHashMap("irCommand" ->  "LOGITECH_Z5500_SOURCE_DIRECT_X2",      "irTransmitTimeMs" ->  "2000"))
@@ -64,7 +66,7 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState
     loggerName,
     itemUpdated |
     val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
-    logInfo(LOGGER, "Item '{}' received update '{}'",
+    logDebug(LOGGER, "Item '{}' received update '{}'",
         itemUpdated.name,
         itemUpdated.state)
     true
@@ -90,14 +92,14 @@ val Functions$Function5<String, String, ReentrantLock, HashMap<String, HashMap<S
     if (irCommandsMap === null) logError(LOGGER, "Missing IR commands map!")
     if (IrBlasterItem === null) logError(LOGGER, "Missing IR blaster item!")
 
-    logInfo(LOGGER, "Going to transmit IR command code '{}'.", irCommandCode)
+    logDebug(LOGGER, "Going to transmit IR command code '{}'.", irCommandCode)
 
     // Vars
     val HashMap<String,String> irCommandDef = new HashMap<String,String>(irCommandsMap.get(irCommandCode))
     val String irCommand = irCommandDef.get(IR_DEF_CMD_KEY)
     val Integer irTransmitTime = Integer.parseInt(irCommandDef.get(IR_DEF_TRANSMIT_TIME_KEY))
 
-    logInfo(LOGGER, "IR command code {} corresponds to ir command named {} with transmit time of {} ms", irCommandCode, irCommand, irTransmitTime)
+    logDebug(LOGGER, "IR command code {} corresponds to ir command named {} with transmit time of {} ms", irCommandCode, irCommand, irTransmitTime)
 
     // Just for debug
     //val String IR_MAPFILE = "broadlink.map"
@@ -105,18 +107,18 @@ val Functions$Function5<String, String, ReentrantLock, HashMap<String, HashMap<S
     //val irRawCommand = transform("MAP", IR_MAPFILE, irCommand)
     //logInfo(LOGGER, "Raw IR command is: {}", irRawCommand)
 
-    logInfo(LOGGER, "Waiting for lock...") // makes sure only one IR command is issued at a time
+    logDebug(LOGGER, "Waiting for lock...") // makes sure only one IR command is issued at a time
     irCommandLock.lock()
     try {
-        logInfo(LOGGER, "Lock aquired.")
-        logInfo(LOGGER, "Posting command '{}' to item '{}'", irCommand, IrBlasterItem.name)
+        logDebug(LOGGER, "Lock aquired.")
+        logDebug(LOGGER, "Posting command '{}' to item '{}'", irCommand, IrBlasterItem.name)
         IrBlasterItem.sendCommand(irCommand)
         Thread::sleep(irTransmitTime)
     } catch(Throwable t) {
         logError(LOGGER, "Exception caught while posting ir command. Exception was: {}", t.toString())
     } finally {
         irCommandLock.unlock()
-        logInfo(LOGGER, "Lock released.")
+        logDebug(LOGGER, "Lock released.")
     }
 
     true
@@ -181,7 +183,7 @@ then
                 transmitIrCommand.apply(LOGGER, "CONTROL_TV_POWER_OFF", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
 
                 // Turn off receiver
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_MINUS_30", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
                 transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_POWER_TOGGLE", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
                 AudioControlItem.sendCommand("CONTROL_AUDIO_POWER_OFF")
 
@@ -215,7 +217,7 @@ then
                 }
 
                 // In case recveiver is on, turn volume down
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_MINUS_30", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
 
                 // Dim up tv backlight
                 TvBacklightDimUpTriggerItem.postUpdate(OnOffType::ON)
@@ -225,7 +227,7 @@ then
                 Thread::sleep(5000) // extra wait in case tv was powered down
 
                 transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MUTE", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
-                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS70", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS_40", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
                 transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_PLUS", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
                 transmitIrCommand.apply(LOGGER, "CONTROL_TV_VOL_MINUS", g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
                 transmitIrCommand.apply(LOGGER, tvInputCommand, g_computerRoomLockIrCommands, g_tvIrCommandsDefMap, IrBlasterItem)
@@ -249,7 +251,7 @@ then
                 //logInfo(LOGGER,"Done wait for power on")
 
                 transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_INPUT_COAX", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
-                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_ZERO", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
+                transmitIrCommand.apply(LOGGER, "CONTROL_AUDIO_VOL_MINUS_30", g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
                 transmitIrCommand.apply(LOGGER, audioInputCommand, g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
                 transmitIrCommand.apply(LOGGER, audioVolumeCommand, g_computerRoomLockIrCommands, g_audioIrCommandsDefMap, IrBlasterItem)
             }
@@ -278,7 +280,7 @@ then
 
     val StringItem ControlItem = (triggeringItem as StringItem)
     val String receivedCommand = ControlItem.state.toString()
-    logInfo(LOGGER, "TV control received command code {}.", receivedCommand)
+    logDebug(LOGGER, "TV control received command code {}.", receivedCommand)
     if( receivedCommand != CONTROL_NOCHANGE ) {
 
         g_computerRoomLockTvUpdates.lock()
@@ -315,7 +317,7 @@ then
         // Some commands are not discrete IR commands
         switch receivedCommand {
             case CONTROL_AUDIO_POWER_ON: {
-                logInfo(LOGGER, "Audio control received power ON command.")
+                logDebug(LOGGER, "Audio control received power ON command.")
 
                 g_computerRoomLockReceiverUpdates.lock()
                 try {
@@ -336,7 +338,7 @@ then
 
             }
             case CONTROL_AUDIO_POWER_OFF: {
-                logInfo(LOGGER, "Audio control received power OFF command.")
+                logDebug(LOGGER, "Audio control received power OFF command.")
                 g_computerRoomLockReceiverUpdates.lock()
                 try {
                     // Wallplug: Toggle power receiver
@@ -351,7 +353,7 @@ then
                 }
             }
             default: {
-                logInfo(LOGGER, "Audio control received IR command {}.", receivedCommand)
+                logDebug(LOGGER, "Audio control received IR command {}.", receivedCommand)
                 g_computerRoomLockReceiverUpdates.lock()
                 try {
                     transmitIrCommand.apply(LOGGER, receivedCommand, g_computerRoomLockIrCommands, irCommandsMap, IrBlasterItem)

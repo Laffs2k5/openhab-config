@@ -35,7 +35,7 @@ pijuice package requires Python >=3.5 and this is not availble on current raspbi
     ```
 - Check i2c coms using:
     ```
-    # Verify i2c sriver is loaded, should show the '/dev/i2c-1'
+    # Verify i2c driver is loaded, should show the '/dev/i2c-1'
     ls -l /dev/i2c-1
 
     # Verify modules, should list both i2c_bcm2835 and i2c_dev
