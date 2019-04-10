@@ -36,23 +36,23 @@ Dimmer
     "TV backlight brightness [%d %%]"
     <dimmablelight>
     (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
+    {channel="yeelight:stripe:0x0000000003427b02:color"}
 Switch
     LedStrip_GF_ComputerRoom_switch
     "TV backlight"
     <switch>
     (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
+    {channel="yeelight:stripe:0x0000000003427b02:color"}
 Color
     LedStrip_GF_ComputerRoom_color
     "TV backlight color"
     <colorlight>
     (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Color"}
+    {channel="yeelight:stripe:0x0000000003427b02:color"}
 Dimmer
     LedStrip_GF_ComputerRoom_color_temperature
     "TV backlight color temperature"
     <colortemperature>
     (gRoomComputerRoom)
-    {channel="yeelight:Stripe:0x0000000003427b02:Color_Temperature"}
+    {channel="yeelight:stripe:0x0000000003427b02:colorTemperature"}
 /* END Yeelight strip #1 */

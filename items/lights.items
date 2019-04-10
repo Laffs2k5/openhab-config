@@ -5,19 +5,19 @@ Dimmer
     "Stairwell light brightness [%d %%]"
     <dimmablelight>
     (gRoomStairwell)
-    {channel="yeelight:Stripe:0x000000000361c9e7:Brightness"}
+    {channel="yeelight:stripe:0x000000000361c9e7:color"}
 Color
     LedStrip_CL_Stairwell_color
     "Stairwell light color"
     <colorlight>
     (gRoomStairwell)
-    {channel="yeelight:Stripe:0x000000000361c9e7:Color"}
+    {channel="yeelight:stripe:0x000000000361c9e7:color"}
 Dimmer
     LedStrip_CL_Stairwell_temperature
     "Stairwell light color temperature"
     <colortemperature>
     (gRoomStairwell)
-    {channel="yeelight:Stripe:0x000000000361c9e7:Color_Temperature"}
+    {channel="yeelight:stripe:0x000000000361c9e7:colorTemperature"}
 /* END Yeelight strip #2 */
 
 /* Fibaro FGD212 Dimmer 2: Staircase light */
