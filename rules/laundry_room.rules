@@ -122,13 +122,13 @@ then
 
         // Notify on computer room speaker
         val int notifyVolume = 20 // percent
-        val String notifyMp3 = "sncf-france-jingle.mp3"
+        val String notifyMp3 = "mario-1-up.mp3"
         val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
-        val String notifyVoice = "picotts:enUS"
-        val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+        //val String notifyVoice = "picotts:enUS"
+        //val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
         playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
-        Thread::sleep(2000)
-        say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+        //Thread::sleep(2000)
+        //say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
     } else {
         logInfo(LOGGER, "No notification will be sent.")
     }
@@ -159,13 +159,13 @@ then
 
         // Notify on computer room speaker
         val int notifyVolume = 20 // percent
-        val String notifyMp3 = "sncf-france-jingle.mp3"
+        val String notifyMp3 = "mario-1-up.mp3"
         val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
-        val String notifyVoice = "picotts:enUS"
-        val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+        //val String notifyVoice = "picotts:enUS"
+        //val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
         playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
-        Thread::sleep(2000)
-        say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+        //Thread::sleep(2000)
+        //say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
     } else {
         logInfo(LOGGER, "No notification will be sent.")
     }
