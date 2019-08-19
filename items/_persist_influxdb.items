@@ -127,3 +127,11 @@ Number
     {channel="zwave:device:2c3b27f3:node20:sensor_power"}
 /* END Fibaro Wallplug */
 
+/* Fibaro FGD212 Dimmer 2: Bathroom */
+Number
+    Dimmer_CL_Bathroom_SensorPower
+    "Bathroom light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node25:sensor_power"}
+/* END Fibaro FGD212 Dimmer 2 */

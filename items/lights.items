@@ -93,3 +93,34 @@ Dimmer
 //    { channel="zwave:device:2c3b27f3:node6:alarm_general" }
 /* END Everspring Microplug Dimmer */
 
+/* Fibaro FGD212 Dimmer 2: Bathroom */
+Dimmer
+    Dimmer_CL_Bathroom_SwitchDimmer
+    "Bathroom light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomBathroom)
+    {channel="zwave:device:2c3b27f3:node25:switch_dimmer1"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Dimmer_CL_Bathroom_SensorPower
+    "Bathroom light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node25:sensor_power"} */
+//Number    Dimmer_CL_Bathroom_SceneNumber            "Scene Number"                        {channel="zwave:device:2c3b27f3:node25:scene_number"}
+//Number    Dimmer_CL_Bathroom_MeterKwh               "Electric meter (kWh)"                {channel="zwave:device:2c3b27f3:node25:meter_kwh"}
+//Number    Dimmer_CL_Bathroom_MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node25:meter_watts"}
+//Switch    Dimmer_CL_Bathroom_MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node25:meter_reset"}
+//Decimal   Dimmer_CL_Bathroom_ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node25:config_decimal_param19"}
+//Switch    Dimmer_CL_Bathroom_AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node25:alarm_heat"}
+//Switch    Dimmer_CL_Bathroom_AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node25:alarm_power"}
+//Switch    Dimmer_CL_Bathroom_AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node25:alarm_system"}
+//Dimmer    Dimmer_CL_Bathroom_SwitchDimmer1          "Dimmer 1"                            {channel="zwave:device:2c3b27f3:node25:switch_dimmer1"}
+//Number    Dimmer_CL_Bathroom_SensorPower1           "Sensor (power) 1"                    {channel="zwave:device:2c3b27f3:node25:sensor_power1"}
+//Number    Dimmer_CL_Bathroom_MeterKwh1              "Electric meter (kWh) 1"              {channel="zwave:device:2c3b27f3:node25:meter_kwh1"}
+//Number    Dimmer_CL_Bathroom_MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node25:meter_watts1"}
+//Switch    Dimmer_CL_Bathroom_AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node25:alarm_heat1"}
+//Switch    Dimmer_CL_Bathroom_AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node25:alarm_power1"}
+//Switch    Dimmer_CL_Bathroom_AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node25:alarm_system1"}
+//Dimmer    Dimmer_CL_Bathroom_SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node25:switch_dimmer2"}
+/* END Fibaro FGD212 Dimmer 2 */
