@@ -1,5 +1,20 @@
-sitemap lights label="Lights"
+sitemap lights_advanced label="Lights advanced"
 {
+    Frame label="The Staircase light"
+    {
+        Switch
+            item=Dimmer_GF_Staircase_SwitchDimmer
+            label="Power[]"
+            icon="switch"
+        Slider
+            item=Dimmer_GF_Staircase_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+        Setpoint
+            item=Dimmer_GF_Staircase_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+    }
     Frame label="The Living room light"
     {
         Switch
@@ -31,35 +46,6 @@ sitemap lights label="Lights"
         Switch
             item=Wallplug_GF_DiningRoom_CornerLight_switch
             label="Corner light[]"
-    }
-    Frame label="The Staircase light"
-    {
-        Switch
-            item=Dimmer_GF_Staircase_SwitchDimmer
-            label="Power[]"
-            icon="switch"
-        Slider
-            item=Dimmer_GF_Staircase_SwitchDimmer
-            label="Brightness"
-            icon="dimmable"
-        Setpoint
-            item=Dimmer_GF_Staircase_SwitchDimmer
-            label="Brightness"
-            icon="dimmable"
-    }
-    Frame label="Laundry room light"
-    {
-        Switch
-            item=Relay_CL_LaundryRoom_MainLights_switch
-            label="Main lights[]"
-        Switch
-            item=LaundryRoom_MainLights_MotionTrigger_control
-            label="Motion trigger[]"
-        Switch
-            item=LaundryRoom_MainLights_AutoOff_control
-            mappings=[0="OFF", -5="-5", 5="+5"]
-        Text
-            item=LaundryRoom_MainLights_AutoOff_setTime
     }
     Frame label="The Stairwell light" visibility=[Network_CL_Stairwell_LedStrip!="ON"]
     {
@@ -112,5 +98,34 @@ sitemap lights label="Lights"
         Colorpicker
             item=LedStrip_CL_Stairwell_color
             label="LED color"
+    }
+    Frame label="The bathroom light"
+    {
+        Switch
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Power[]"
+            icon="switch"
+        Slider
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+        Setpoint
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+    }
+    Frame label="Laundry room light"
+    {
+        Switch
+            item=Relay_CL_LaundryRoom_MainLights_switch
+            label="Main lights[]"
+        Switch
+            item=LaundryRoom_MainLights_MotionTrigger_control
+            label="Motion trigger[]"
+        Switch
+            item=LaundryRoom_MainLights_AutoOff_control
+            mappings=[0="OFF", -5="-5", 5="+5"]
+        Text
+            item=LaundryRoom_MainLights_AutoOff_setTime
     }
 }
