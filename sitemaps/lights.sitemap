@@ -1,0 +1,34 @@
+sitemap lights label="Lights"
+{
+    Frame label="Stairs"
+    {
+        Slider
+            item=Dimmer_GF_Staircase_SwitchDimmer
+            label="Up"
+            icon="dimmable"
+        Slider
+            item=Wallplug_CL_Stairwell_Dimmer
+            label="Downstairs"
+            icon="dimmable"
+    }
+    Frame label="1st floor"
+    {
+        Switch
+            item=gLightsLivingRoomWallLights
+            label="Wall lights living room[]"
+        Slider
+            item=Dimmer_GF_DiningRoom_SwitchDimmer
+            label="Dining room"
+            icon="dimmable"
+    }
+    Frame label="Cellar"
+    {
+        Slider
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Bathroom"
+            icon="dimmable"
+        Switch
+            item=Relay_CL_LaundryRoom_MainLights_switch
+            label="Laundry room[]"
+    }
+}
