@@ -38,39 +38,36 @@ sitemap energy_monitors label="Energy monitors"
             height=10
             visibility=[EnergyMonitor_Household_chartPeriod=="2"]
     }
-    Frame label="Staircase lights power consumption"
-    {
-        Text
-            item=Dimmer_GF_Staircase_SensorPower
-            label="Last readout [%.0f W]"
-        Webview
-            url="https://EXAMPLE.TLD/static/grafana/power_sensor_staircase_dimmer_last3Hours.html"
-            height=10
-            visibility=[EnergyMonitor_Household_chartPeriod=="0"]
-        Webview
-            url="https://EXAMPLE.TLD/static/grafana/power_sensor_staircase_dimmer_last24Hours.html"
-            height=10
-            visibility=[EnergyMonitor_Household_chartPeriod=="1"]
-        Webview
-            url="https://EXAMPLE.TLD/static/grafana/power_sensor_staircase_dimmer_lastWeek.html"
-            height=10
-            visibility=[EnergyMonitor_Household_chartPeriod=="2"]
-    }
     Frame label="Laundry room power consumption"
     {
         Text
-            item=Relay_CL_LaundryRoom_meterWatts
-            label="Main lights last readout [%.0f W]"
+            item=Wallplug_CL_LaundryRoom_WashingMachine_SensorPower
+            label="Washing machine last readout [%.0f W]"
         Webview
-            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_mainlights_relay_last3Hours.html"
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_washingmachine_wallplug_last3Hours.html"
             height=10
             visibility=[EnergyMonitor_Household_chartPeriod=="0"]
         Webview
-            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_mainlights_relay_last24Hours.html"
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_washingmachine_wallplug_last24Hours.html"
             height=10
             visibility=[EnergyMonitor_Household_chartPeriod=="1"]
         Webview
-            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_mainlights_relay_lastWeek.html"
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_washingmachine_wallplug_lastWeek.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="2"]
+        Text
+            item=Wallplug_CL_LaudryRoom_TumbleDryer_SensorPower
+            label="Tumble dryer last readout [%.0f W]"
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_tumbledryer_wallplug_last3Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="0"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_tumbledryer_wallplug_last24Hours.html"
+            height=10
+            visibility=[EnergyMonitor_Household_chartPeriod=="1"]
+        Webview
+            url="https://EXAMPLE.TLD/static/grafana/power_sensor_laundryroom_tumbledryer_wallplug_lastWeek.html"
             height=10
             visibility=[EnergyMonitor_Household_chartPeriod=="2"]
     }
