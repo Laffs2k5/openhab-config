@@ -1,5 +1,23 @@
 
 /* Yeelight strip #2: Stairwell light */
+/*  How to fix wifi issues with yeelight strips:
+      - Network router:
+        - Remove Parental rule in router preventing communication with internet
+      - Androind phone:
+        - Install yeelight app
+        - Check connectivity with strips in app
+        - If no connection: Boot strip
+        - Still no connection: Hold buton on strip whn plugging in to reset
+        - Set up strip in app, make sure to enable "LAN access"
+      - Openhab:
+        - No need to modify things or config
+        - Normally some part of Java has reached "Maximum number of datagrams"
+          - Can be seen in log by doing i Karaf: log:set DEBUG org.openhab.binding.yeelight
+        - To fix, restart openhab: sudo service openhab2 restart
+      - Network router:
+        - Re-enable parental rule
+            - Over time the strips will start to fail again because of no internet? Maybe on power outage?
+*/
 Dimmer
     LedStrip_CL_Stairwell_brightness
     "Stairwell light brightness [%d %%]"
