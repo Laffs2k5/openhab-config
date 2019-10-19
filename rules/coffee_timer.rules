@@ -18,25 +18,25 @@ var ReentrantLock   g_coffeeLockStateChanges  = new ReentrantLock()
 var ReentrantLock   g_coffeeLockScheduleChanges  = new ReentrantLock()
 
 // Lambdas
-val Functions$Function2<String, GenericItem, Boolean> logStateChange = [ 
-    loggerName, 
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
     itemChanged |
     val String LOGGER = loggerName + ".logStateChange"
-    logDebug(LOGGER, "State of item '{}' changed to '{}'", 
-        itemChanged.name, 
+    logDebug(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
         itemChanged.state.toString())
     true
 ]
-val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [ 
-    loggerName, 
+val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
+    loggerName,
     itemChanged |
     val String LOGGER = loggerName + ".logUnexpectedState"
-    logError(LOGGER, "The state '{}' of item '{}' was unexpected!", 
+    logError(LOGGER, "The state '{}' of item '{}' was unexpected!",
         itemChanged.state.toString(),
         itemChanged.name)
     true
 ]
-val Functions$Function3<String, Timer, String, Boolean> stopTimer = [ 
+val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
     loggerName,
     timerToStop,
     timerName |
@@ -44,14 +44,14 @@ val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
     var String dispName = "unknown"
     if( timerName !== null ) {dispName = timerName}
     if( timerToStop !== null ) {
-        logDebug(LOGGER,"Stopping timer '{}', was running: {}", timerName, timerToStop.isRunning())
+        logDebug(LOGGER,"Stopping timer '{}', was running: {}", dispName, timerToStop.isRunning())
         timerToStop.cancel()
     } else {
-        logDebug(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
+        logDebug(LOGGER,"Not stopping timer '{}' as it was not instantiated", dispName)
     }
     true
 ]
-val Functions$Function5<String, SwitchItem, GenericItem, GenericItem, Integer, Boolean> updateCoffeeStatusUi = [ 
+val Functions$Function5<String, SwitchItem, GenericItem, GenericItem, Integer, Boolean> updateCoffeeStatusUi = [
     loggerName,
     CoffeeSwitch,
     statusTextItem,
@@ -81,7 +81,7 @@ val Functions$Function5<String, SwitchItem, GenericItem, GenericItem, Integer, B
     logDebug(LOGGER, "done")
     true
 ]
-val Functions$Function4<String, ReentrantLock, SwitchItem, OnOffType, Boolean> operateCoffeePlug = [ 
+val Functions$Function4<String, ReentrantLock, SwitchItem, OnOffType, Boolean> operateCoffeePlug = [
     loggerName,
     reentrantLock,
     switchToOperate,
@@ -105,8 +105,8 @@ val Functions$Function4<String, ReentrantLock, SwitchItem, OnOffType, Boolean> o
     logDebug(LOGGER, "done")
     true
 ]
-val Functions$Function3<String, NumberItem, NumberItem, Integer> calculateScheduleMinutes = [ 
-    loggerName, 
+val Functions$Function3<String, NumberItem, NumberItem, Integer> calculateScheduleMinutes = [
+    loggerName,
     hourItem,
     minuteItem |
     val String LOGGER = loggerName + ".calculateScheduleMinutes"
@@ -122,7 +122,7 @@ val Functions$Function3<String, NumberItem, NumberItem, Integer> calculateSchedu
     // Calculate when to trigger
     // Add 24h if schedule time has already passed
     var int triggerInMinutes = triggerMinutes - now.getMinuteOfDay().intValue
-    if (triggerInMinutes < 0) { 
+    if (triggerInMinutes < 0) {
         logDebug(LOGGER, "minutes until trigger is less than zero '{}', adding 24 hours", triggerInMinutes)
         triggerInMinutes += (24 * 60)
     }
@@ -132,7 +132,7 @@ val Functions$Function3<String, NumberItem, NumberItem, Integer> calculateSchedu
 
 // When the physical wallplug change state
 rule "Coffee wallplug state change"
-when 
+when
     Item CoffeeTimer_wallplug changed
 then
     val String LOGGER = LOGGER_NAME + ".wallplugChange"
@@ -149,8 +149,8 @@ then
 
     try {
         logDebug(LOGGER, "gotLock={}",gotLock.toString())
-        
-        // If lock was aquired this indicates that the state change was 
+
+        // If lock was aquired this indicates that the state change was
         // initiated from the item itself aka. the physical plug. Otherwise
         // we assume the state change was done by internal code and thus
         // skipping calling the timer control item
@@ -203,9 +203,9 @@ then
         }
         if( controlValue == CONTROL_MODE_STOP ) {
             newTimeLeft = 0 // 0 will result in termination of timer and plug being switched off
-        }    
+        }
         logDebug(LOGGER, "setting newTimeLeft={}", newTimeLeft)
-        
+
         // Apply new timeout
         CoffeeSetTimeItem.postUpdate(newTimeLeft)
 
@@ -270,7 +270,7 @@ end
 
 // Scheduler: Disabled is default after startup
 rule "Coffee initialization"
-when 
+when
 	System started
 then
     val String LOGGER = LOGGER_NAME + ".init"
@@ -305,14 +305,14 @@ then
     try {
         if (ScheduleEnableItem.state == OnOffType::ON) {
             if(ScheduleHourItem.state == NULL || ScheduleHourItem.state == UNDEF ||
-               ScheduleMinuteItem.state == NULL || ScheduleMinuteItem.state == UNDEF 
+               ScheduleMinuteItem.state == NULL || ScheduleMinuteItem.state == UNDEF
             ) {
                 logError(LOGGER, "Unable to schedule coffee, either hour or minute is not set!")
             }
             else {
                 val int triggerInMinutes = calculateScheduleMinutes.apply(LOGGER, ScheduleHourItem, ScheduleMinuteItem)
                 logDebug(LOGGER, "minutes until trigger is '{}'", triggerInMinutes)
-                
+
                 // Set timer to tell timer code to turn off physical wallplug
                 g_coffeeSchedulerTimer = createTimer(now.plusMinutes(triggerInMinutes)) [| // for debug: now.plusSeconds(triggerInMinutes)
                     logInfo(LOGGER, "scheduled automatic start of coffee timer")
