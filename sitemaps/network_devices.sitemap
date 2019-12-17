@@ -14,7 +14,7 @@ sitemap network_devices label="Network devices"
     }
     Frame label="Computers" {
         Text
-            item=Network_CL_Stairroom_Server
+            item=Network_CL_Stairroom_Nas
         Text
             item=Network_GF_ComputerRoom_Peder_PC
         Text

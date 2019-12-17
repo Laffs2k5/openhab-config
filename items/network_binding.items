@@ -29,12 +29,20 @@ Switch
     { channel="network:device:some.ip.address.2:online" }
 
 // Computers
+/*
 Switch
     Network_CL_Stairroom_Server
     "The house`s server state is [MAP(network.map):%s]"
     <computer>
     (gNetwork)
     { channel="network:device:some.ip.address.100:online" }
+*/
+Switch
+    Network_CL_Stairroom_Nas
+    "The house`s NAS state is [MAP(network.map):%s]"
+    <nas>
+    (gNetwork)
+    { channel="network:servicedevice:a6d2fb2d:online" }
 Switch
     Network_GF_ComputerRoom_Peder_PC
     "Peder's PC state is [MAP(network.map):%s]"
