@@ -15,7 +15,7 @@ Dimmer
     (gChromeCasts)
     { channel="chromecast:audio:dc4090bdf1b19dd403b4b9ddd36c149d:volume" }
 Player
-    Chromecast_GF_LivingRoom_control             
+    Chromecast_GF_LivingRoom_control
     "Living room chromecast state is [%s]"
     <chromecast>
     (gChromeCasts)
@@ -34,16 +34,16 @@ Dimmer
     "Computer room chromecast volume is [%d %%]"
     <chromecast>
     (gChromeCasts)
-     { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:volume" }
+     { channel="chromecast:chromecast:431184fb17ba0d36896dc1db9b71cd03:volume" }
 Player
-    Chromecast_GF_ComputerRoom_control             
+    Chromecast_GF_ComputerRoom_control
     "Computer room chromecast state is [%s]"
     <chromecast>
     (gChromeCasts)
-    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:control" }
+    { channel="chromecast:chromecast:431184fb17ba0d36896dc1db9b71cd03:control" }
 String
     Chromecast_GF_ComputerRoom_playuri
     "Computer room chromecast URI is [%s]"
-    { channel="chromecast:chromecast:cb7ceeb42369e9aeff21b26d1ec603b3:playuri" }
+    { channel="chromecast:chromecast:431184fb17ba0d36896dc1db9b71cd03:playuri" }
 /* END Chromecast datarom */
 
