@@ -26,9 +26,9 @@ Number
 */
 Number
     LightSensor_CL_Guestroom_SqueezeboxRadio
-    "Guest room squeezebox light sensor value is [%d]"
+    "Oldest kid room squeezebox light sensor value is [%d]"
     <lightsensor>
-    (gRoomGuestRoom, gPersistInfluxEveryUpdate)
+    (gRoomKid1Room, gPersistInfluxEveryUpdate)
 Number
     LightSensor_FF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"

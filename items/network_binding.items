@@ -14,19 +14,19 @@ Switch
     "Cellar router state is [MAP(network.map):%s]"
     <wifirouter>
     (gNetwork)
-    { channel="network:device:some.ip.address.1:online" }
+    { channel="network:device:192_168_0_1:online" }
 Switch
     Network_GF_Router
     "Ground floor router state is [MAP(network.map):%s]"
     <wifirouter>
     (gNetwork)
-    { channel="network:device:some.ip.address.4:online" }
+    { channel="network:device:192_168_0_4:online" }
 Switch
     Network_FF_Router
     "First floor router state is [MAP(network.map):%s]"
     <wifirouter>
     (gNetwork)
-    { channel="network:device:some.ip.address.2:online" }
+    { channel="network:device:192_168_0_2:online" }
 
 // Computers
 /*
@@ -35,7 +35,7 @@ Switch
     "The house`s server state is [MAP(network.map):%s]"
     <computer>
     (gNetwork)
-    { channel="network:device:some.ip.address.100:online" }
+    { channel="network:device:192_168_0_100:online" }
 */
 Switch
     Network_CL_Stairroom_Nas
@@ -48,31 +48,31 @@ Switch
     "Peder's PC state is [MAP(network.map):%s]"
     <computer>
     (gNetwork)
-    { channel="network:device:some.ip.address.101:online" }
+    { channel="network:device:192_168_0_101:online" }
 Switch
     Network_GF_ComputerRoom_Stine_PC
     "Stine's PC state is [MAP(network.map):%s]"
     <computer>
     (gNetwork)
-    { channel="network:device:some.ip.address.102:online" }
+    { channel="network:device:192_168_0_102:online" }
 Switch
     Network_GF_ComputerRoom_openhab_RPi
     "Openhab RPi state is [MAP(network.map):%s]"
     <openhab>
     (gNetwork)
-    { channel="network:device:some.ip.address.200:online" }
+    { channel="network:device:192_168_0_200:online" }
 Switch
     Network_GF_ComputerRoom_efergy_RPi
     "efergy RPi state is [MAP(network.map):%s]"
     <efergy>
     (gNetwork)
-    { channel="network:pingdevice:some.ip.address.198:online" }
+    { channel="network:pingdevice:192_168_0_198:online" }
 Switch
     Network_GF_ComputerRoom_Mikkel_RPi
     "Mikel's RPi state is [MAP(network.map):%s]"
     <computer>
     (gNetwork)
-    { channel="network:device:some.ip.address.177:online" }
+    { channel="network:device:192_168_0_177:online" }
 
 // Devices
 Switch
@@ -80,19 +80,19 @@ Switch
     "Peder iPad state is [MAP(network.map):%s]"
     <ipad>
     (gNetwork)
-    { channel="network:device:some.ip.address.103:online" }
+    { channel="network:device:192_168_0_103:online" }
 Switch
     Network_Peder_Phone
     "Peder's phone state is [MAP(network.map):%s]"
     <mobilephone>
     (gNetwork)
-    { channel="network:device:some.ip.address.134:online" }
+    { channel="network:device:192_168_0_134:online" }
 Switch
     Network_Stine_Phone
     "Stine's phone state is [MAP(network.map):%s]"
     <mobilephone>
     (gNetwork)
-    { channel="network:pingdevice:some.ip.address.124:online" }
+    { channel="network:pingdevice:192_168_0_124:online" }
 Switch
     Network_Stine_NintendoSwitch
     "Stine's Nintendo switch state is [MAP(network.map):%s]"
@@ -106,31 +106,31 @@ Switch
     "Bathroom squeezebox state is [MAP(network.map):%s]"
     <pictureframe>
     (gNetwork)
-    { channel="network:device:some.ip.address.109:online" }
+    { channel="network:device:192_168_0_109:online" }
 Switch
     Network_CL_GuestRoom_Squeezebox
-    "Guest room squeezebox state is [MAP(network.map):%s]"
+    "Oldest kid room squeezebox state is [MAP(network.map):%s]"
     <squeezeboxradio>
     (gNetwork)
-    { channel="network:device:some.ip.address.113:online" }
+    { channel="network:device:192_168_0_113:online" }
 Switch
     Network_GF_LivingRoom_Squeezebox
     "Living room squeezebox state is [MAP(network.map):%s]"
     <squeezeboxclassic>
     (gNetwork)
-    { channel="network:device:some.ip.address.104:online" }
+    { channel="network:device:192_168_0_104:online" }
 Switch
     Network_FF_Bedroom_Squeezebox
     "Bedroom squeezebox state is [MAP(network.map):%s]"
     <squeezeboxradio>
     (gNetwork)
-    { channel="network:device:some.ip.address.106:online" }
+    { channel="network:device:192_168_0_106:online" }
 Switch
     Network_Shed_Squeezebox
     "Shed squeezebox state is [MAP(network.map):%s]"
     <mobilephone>
     (gNetwork)
-    { channel="network:device:some.ip.address.114:online" }
+    { channel="network:device:192_168_0_114:online" }
 
 // Living room
 Switch
@@ -138,25 +138,25 @@ Switch
     "Living room audio wallplug state is [MAP(network.map):%s]"
     <poweroutlet>
     (gNetwork)
-    { channel="network:device:some.ip.address.150:online" }
+    { channel="network:device:192_168_0_150:online" }
 Switch
     Network_GF_LivingRoom_ChromecastAudio
     "Living room chromecast state is [MAP(network.map):%s]"
     <chromecast>
     (gNetwork)
-    { channel="network:device:some.ip.address.110:online" }
+    { channel="network:device:192_168_0_110:online" }
 Switch
     Network_GF_LivingRoom_IrBlaster
     "Living room IR blaster state is [MAP(network.map):%s]"
     <irblaster>
     (gNetwork)
-    { channel="network:pingdevice:some.ip.address.154:online" }
+    { channel="network:pingdevice:192_168_0_154:online" }
 Switch
     Network_GF_LivingRoom_PictureFrame_Tablet
     "Living room picture frame state is [MAP(network.map):%s]"
     <pictureframe>
     (gNetwork)
-    { channel="network:device:some.ip.address.118:online" }
+    { channel="network:device:192_168_0_118:online" }
 
 // Computer room
 Switch
@@ -164,37 +164,37 @@ Switch
     "Computer room TV state is [MAP(network.map):%s]"
     <selftelevision>
     (gNetwork)
-    { channel="network:device:some.ip.address.152:online" }
+    { channel="network:device:192_168_0_152:online" }
 Switch
     Network_GF_ComputerRoom_Chromecast
     "Computer room chromecast state is [MAP(network.map):%s]"
     <chromecast>
     (gNetwork)
-    { channel="network:device:some.ip.address.111:online" }
+    { channel="network:device:192_168_0_111:online" }
 Switch
     Network_GF_ComputerRoom_LedStrip
     "Computer room TV backlight state is [MAP(network.map):%s]"
     <ledstrip>
     (gNetwork)
-    { channel="network:device:some.ip.address.151:online" }
+    { channel="network:device:192_168_0_151:online" }
 Switch
     Network_GF_ComputerRoom_Printer
     "Computer room printer state is [MAP(network.map):%s]"
     <printer>
     (gNetwork)
-    { channel="network:device:some.ip.address.128:online" }
+    { channel="network:device:192_168_0_128:online" }
 Switch
     Network_GF_ComputerRoom_IrBlaster
     "Computer room IR blaster state is [MAP(network.map):%s]"
     <irblaster>
     (gNetwork)
-    { channel="network:pingdevice:some.ip.address.156:online" }
+    { channel="network:pingdevice:192_168_0_156:online" }
 Switch
     Network_GF_ComputerRoom_GoogleHomeMini
     "Computer room Google home state is [MAP(network.map):%s]"
     <googlehomemini>
     (gNetwork)
-    { channel="network:pingdevice:some.ip.address.158:online" }
+    { channel="network:pingdevice:192_168_0_158:online" }
 Switch
     Network_GF_ComputerRoom_AmazonEchoDot
     "Computer room Echo state is [MAP(network.map):%s]"
@@ -208,4 +208,4 @@ Switch
     "Stairwell light strip state is [MAP(network.map):%s]"
     <ledstrip>
     (gNetwork)
-    { channel="network:device:some.ip.address.157:online" }
+    { channel="network:device:192_168_0_157:online" }
