@@ -6,36 +6,36 @@ import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
 val String  LOGGER_NAME = "squeezebox_light_sensors"
 
 // Lambdas
-val Functions$Function2<String, GenericItem, Boolean> logStateChange = [ 
-    loggerName, 
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
     itemChanged |
-    logDebug(loggerName, "State of item '{}' changed to '{}'", 
-        itemChanged.name, 
+    logDebug(loggerName, "State of item '{}' changed to '{}'",
+        itemChanged.name,
         itemChanged.state.toString())
     true
 ]
-val Functions$Function3<String, GenericItem, GenericItem, Boolean> postStringItemStateToIntegerItem = [ 
-    loggerName, 
+val Functions$Function3<String, GenericItem, GenericItem, Boolean> postStringItemStateToIntegerItem = [
+    loggerName,
     StringItem,
     NumberItem |
-    logDebug(loggerName, "Posting state '{}' of item '{}' as integer to item '{}'", 
-        StringItem.state.toString(), 
-        StringItem.name, 
+    logDebug(loggerName, "Posting state '{}' of item '{}' as integer to item '{}'",
+        StringItem.state.toString(),
+        StringItem.name,
         NumberItem.name)
     NumberItem.postUpdate(DecimalType.valueOf(StringItem.state.toString()))
     true
 ]
-val Functions$Function5<String, GenericItem, DateTimeItem, GenericItem, NumberItem, Boolean> storeReadoutIfValid = [ 
-    loggerName, 
+val Functions$Function5<String, GenericItem, DateTimeItem, GenericItem, NumberItem, Boolean> storeReadoutIfValid = [
+    loggerName,
     StringExitValue,
     DateTimeRecordValidReadout,
     StringReadValue,
     NumberItemToUpdate |
-    
+
     // Constants
     val Number  VALID_MAX_READING = 100000
     val Number  VALID_MIN_READING = 0
-    
+
     var int     exitCode = -1
     var Number valueRead
 
@@ -57,21 +57,21 @@ val Functions$Function5<String, GenericItem, DateTimeItem, GenericItem, NumberIt
         if( valueRead >= VALID_MIN_READING && valueRead <= VALID_MAX_READING ) {
             logDebug(loggerName, "Posting valid readout date to item {}", DateTimeRecordValidReadout.name)
             DateTimeRecordValidReadout.postUpdate(new DateTimeType())
-            logDebug(loggerName, "Posting state '{}' of item '{}' as Number to item '{}'", 
-                StringReadValue.state.toString(), 
-                StringReadValue.name, 
+            logDebug(loggerName, "Posting state '{}' of item '{}' as Number to item '{}'",
+                StringReadValue.state.toString(),
+                StringReadValue.name,
                 NumberItemToUpdate.name)
             NumberItemToUpdate.postUpdate(valueRead)
         }
         else {
-            logInfo(loggerName, "Value read out {} is outside valid limits [{}, {}], will not post update to item {}", 
+            logInfo(loggerName, "Value read out {} is outside valid limits [{}, {}], will not post update to item {}",
                 valueRead, VALID_MIN_READING, VALID_MAX_READING, NumberItemToUpdate.name)
         }
     }
     true
 ]
 
-rule "SqueezeboxRadio light sensor string to number, guest room"
+rule "SqueezeboxRadio light sensor string to number, oldest kid room"
 when
     Item LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString received update
 then
