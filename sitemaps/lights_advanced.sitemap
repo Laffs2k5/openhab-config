@@ -1,6 +1,8 @@
 sitemap lights_advanced label="Lights advanced"
 {
-    Frame label="The Staircase light"
+    Text
+        label="Staircase light"
+        icon="stairsup"
     {
         Switch
             item=Dimmer_GF_Staircase_SwitchDimmer
@@ -15,7 +17,9 @@ sitemap lights_advanced label="Lights advanced"
             label="Brightness"
             icon="dimmable"
     }
-    Frame label="The Living room light"
+    Text
+        label="Living room light"
+        icon="livingroom"
     {
         Switch
             item=gLightsLivingRoomWallLights
@@ -29,7 +33,9 @@ sitemap lights_advanced label="Lights advanced"
         Text
             item=LivingRoom_WallLights_AutoOff_setTime
     }
-    Frame label="The Dining room light"
+    Text
+        label="Dining room light"
+        icon="diningroom"
     {
         Switch
             item=Dimmer_GF_DiningRoom_SwitchDimmer
@@ -47,7 +53,10 @@ sitemap lights_advanced label="Lights advanced"
             item=Wallplug_GF_DiningRoom_CornerLight_switch
             label="Corner light[]"
     }
-    Frame label="The Stairwell light" visibility=[Network_CL_Stairwell_LedStrip!="ON"]
+    Text
+        label="Stairwell light"
+        icon="stairsdown"
+        visibility=[Network_CL_Stairwell_LedStrip!="ON"]
     {
         Switch
             item=Wallplug_CL_Stairwell_Dimmer
@@ -65,7 +74,10 @@ sitemap lights_advanced label="Lights advanced"
             item=Network_CL_Stairwell_LedStrip
             label="LED is [MAP(network.map):%s]"
     }
-    Frame label="The Stairwell light" visibility=[Network_CL_Stairwell_LedStrip=="ON"]
+    Text
+        label="Stairwell light"
+        icon="stairsdown"
+        visibility=[Network_CL_Stairwell_LedStrip=="ON"]
     {
         Switch
             item=Wallplug_CL_Stairwell_Dimmer
@@ -99,7 +111,9 @@ sitemap lights_advanced label="Lights advanced"
             item=LedStrip_CL_Stairwell_color
             label="LED color"
     }
-    Frame label="The bathroom light"
+    Text
+        label="Bathroom light"
+        icon="bathroom"
     {
         Switch
             item=Dimmer_CL_Bathroom_SwitchDimmer
@@ -114,7 +128,9 @@ sitemap lights_advanced label="Lights advanced"
             label="Brightness"
             icon="dimmable"
     }
-    Frame label="Laundry room light"
+    Text
+        label="Laundry room light"
+        icon="laundryroom"
     {
         Switch
             item=Relay_CL_LaundryRoom_MainLights_switch
