@@ -58,9 +58,6 @@ sitemap network_devices label="Network devices"
         Text
             item=Network_GF_LivingRoom_IrBlaster
             label="IR blaster state is [MAP(network.map):%s]"
-        Text
-            item=Network_GF_LivingRoom_PictureFrame_Tablet
-            label="Picture frame state is [MAP(network.map):%s]"
     }
     Frame label="Computer room" {
         Text
