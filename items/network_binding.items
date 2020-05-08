@@ -164,7 +164,7 @@ Switch
     "Computer room chromecast state is [MAP(network.map):%s]"
     <chromecast>
     (gNetwork)
-    { channel="network:device:192_168_0_111:online" }
+    { channel="network:pingdevice:3fc7de86:online" }
 Switch
     Network_GF_ComputerRoom_LedStrip
     "Computer room TV backlight state is [MAP(network.map):%s]"
