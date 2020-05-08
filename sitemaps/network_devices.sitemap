@@ -82,9 +82,4 @@ sitemap network_devices label="Network devices"
             item=Network_GF_ComputerRoom_AmazonEchoDot
             label="Echo state is [MAP(network.map):%s]"
     }
-    Frame label="Cellar" {
-        Text
-            item=Network_CL_Stairwell_LedStrip
-            label="Stairwell light state is [MAP(network.map):%s]"
-    }
 }

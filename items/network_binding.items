@@ -195,11 +195,3 @@ Switch
     <echodot>
     (gNetwork)
     { channel="network:servicedevice:bbc06d06:online" }
-
-// Cellar
-Switch
-    Network_CL_Stairwell_LedStrip
-    "Stairwell light strip state is [MAP(network.map):%s]"
-    <ledstrip>
-    (gNetwork)
-    { channel="network:device:192_168_0_157:online" }

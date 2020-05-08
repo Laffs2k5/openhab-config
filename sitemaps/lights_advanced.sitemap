@@ -56,7 +56,6 @@ sitemap lights_advanced label="Lights advanced"
     Text
         label="Stairwell light"
         icon="stairsdown"
-        visibility=[Network_CL_Stairwell_LedStrip!="ON"]
     {
         Switch
             item=Wallplug_CL_Stairwell_Dimmer
@@ -70,46 +69,6 @@ sitemap lights_advanced label="Lights advanced"
             item=Wallplug_CL_Stairwell_Dimmer
             label="Lamp brightness"
             icon="dimmable"
-        Text
-            item=Network_CL_Stairwell_LedStrip
-            label="LED is [MAP(network.map):%s]"
-    }
-    Text
-        label="Stairwell light"
-        icon="stairsdown"
-        visibility=[Network_CL_Stairwell_LedStrip=="ON"]
-    {
-        Switch
-            item=Wallplug_CL_Stairwell_Dimmer
-            label="Lamp power[]"
-            icon="switch"
-        Slider
-            item=Wallplug_CL_Stairwell_Dimmer
-            label="Lamp brightness"
-            icon="dimmable"
-        Setpoint
-            item=Wallplug_CL_Stairwell_Dimmer
-            label="Lamp brightness"
-            icon="dimmable"
-        Switch
-            item=LedStrip_CL_Stairwell_brightness
-            label="LED power[]"
-            icon="switch"
-        Slider
-            item=LedStrip_CL_Stairwell_brightness
-            label="LED brightness"
-            icon="dimmable"
-        Setpoint
-            item=LedStrip_CL_Stairwell_brightness
-            label="LED brightness"
-            icon="dimmable"
-        Switch
-            item=LedStrip_CL_Stairwell_temperature
-            label="LED temp"
-            mappings=[0="1700", 33="3300", 67="5000", 100="6500"]
-        Colorpicker
-            item=LedStrip_CL_Stairwell_color
-            label="LED color"
     }
     Text
         label="Bathroom light"
