@@ -86,7 +86,7 @@ Switch
     "Peder's phone state is [MAP(network.map):%s]"
     <mobilephone>
     (gNetwork)
-    { channel="network:device:192_168_0_134:online" }
+    { channel="network:pingdevice:f4c7c536:online" }
 Switch
     Network_Stine_Phone
     "Stine's phone state is [MAP(network.map):%s]"
