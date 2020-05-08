@@ -15,10 +15,14 @@ sitemap lights label="Lights"
     {
         Switch
             item=gLightsLivingRoomWallLights
-            label="Wall lights living room[]"
+            label="Living room wall lights[]"
         Slider
             item=Dimmer_GF_DiningRoom_SwitchDimmer
             label="Dining room"
+            icon="dimmable"
+        Slider
+            item=Dimmer_GF_Kid1Room_SwitchDimmer
+            label="Oldest kid room"
             icon="dimmable"
     }
     Frame label="Cellar"

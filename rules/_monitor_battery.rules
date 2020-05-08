@@ -15,6 +15,10 @@ val HashMap< String, LinkedHashMap<String, String>> DeviceData = newHashMap(
             "TYPE"      -> "Shenzhen multisensor Z-Wave",
             "BATTERY"   -> "CR123A lithium battery")),
 
+    "Sensor_GF_Kid1Room_BatteryLevel" -> (newLinkedHashMap(
+            "TYPE"      -> "Vision ZP3102 Z-Wave motion sensor",
+            "BATTERY"   -> "CR123A lithium battery")),
+
     "ITEM_NAME_HERE" -> (newLinkedHashMap(
             "TYPE"      -> "DETAILS ABOUT DEVICE TYPE HERE",
             "BATTERY"   -> "WHAT BATTERY TO ORDER"))

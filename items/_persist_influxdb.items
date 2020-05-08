@@ -135,3 +135,20 @@ Number
     (gRoomBathroom, gPersistInfluxEveryUpdate)
     {channel="zwave:device:2c3b27f3:node25:sensor_power"}
 /* END Fibaro FGD212 Dimmer 2 */
+
+/* Fibaro FGD212 Dimmer 2: Oldest kid room */
+Number
+    Dimmer_GF_Kid1Room_SensorPower
+    "Oldest kid room light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomKid1Room, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node30:sensor_power1"}
+/* END Fibaro FGD212 Dimmer 2 */
+
+/* Vision ZP3102 Z-Wave: motion sensor #1: Oldest kid room */
+Number
+    Sensor_GF_Kid1Room_BatteryLevel
+    "Oldest kid room battery Level is [%.0f %%]"
+    (gRoomKid1Room, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node29:battery-level"}
+/* END Vision ZP3102 Z-Wave: motion sensor #1 */
