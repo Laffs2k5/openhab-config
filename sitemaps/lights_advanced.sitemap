@@ -49,9 +49,6 @@ sitemap lights_advanced label="Lights advanced"
             item=Dimmer_GF_DiningRoom_SwitchDimmer
             label="Brightness"
             icon="dimmable"
-        Switch
-            item=Wallplug_GF_DiningRoom_CornerLight_switch
-            label="Corner light[]"
     }
     Text
         label="Stairwell light"
