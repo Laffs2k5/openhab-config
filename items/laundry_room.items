@@ -45,12 +45,11 @@ Switch
     "Laundry room main lights switch state is [%s]"
     (gRoomLaundryRoom)
     { channel="zwave:device:2c3b27f3:node7:switch_binary" }
-/* Not used
 Switch
     Relay_CL_LaundryRoom_MainLights_sensor
     "Laundry room main lights binary sensor state is [%s]"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node7:sensor_binary" } */
+    { channel="zwave:device:2c3b27f3:node7:sensor_binary" }
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Relay_CL_LaundryRoom_meterWatts
@@ -64,7 +63,11 @@ Number
     (gRoomLaundryRoom)
     { channel="zwave:device:2c3b27f3:node7:meter_kwh" } */
 //Switch   Relay_CL_LaundryRoom_alarmPower           "Alarm (power)"              {channel="zwave:device:2c3b27f3:node7:alarm_power"}
-//Switch   Relay_CL_LaundryRoom_switchBinary1        "Switch 1"                   {channel="zwave:device:2c3b27f3:node7:switch_binary1"}
+Switch
+    Relay_CL_LaundryRoom_switchBinary1
+    "Laundry room main lights switch 1 state is [%s]"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node7:switch_binary1"}
 //Number   Relay_CL_LaundryRoom_meterWatts1          "Electric meter (watts) 1"   {channel="zwave:device:2c3b27f3:node7:meter_watts1"}
 //Number   Relay_CL_LaundryRoom_meterKwh1            "Electric meter (kWh) 1"     {channel="zwave:device:2c3b27f3:node7:meter_kwh1"}
 //Switch   Relay_CL_LaundryRoom_sensorBinary2        "Binary Sensor I2"           {channel="zwave:device:2c3b27f3:node7:sensor_binary2"}
@@ -98,12 +101,12 @@ Number
     "Laundry room battery Level is [%.0f %%]"
     (gRoomLaundryRoom)
     { channel="zwave:device:2c3b27f3:node9:battery-level" } */
-/* Not used
+
 Switch
     Sensor_CL_LaundryRoom_sensorBinary
     "Binary Sensor"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node9:sensor_binary" } */
+    { channel="zwave:device:2c3b27f3:node9:sensor_binary" }
 /* END TELLDUS Multisensor */
 
 /* Fibaro Wallplug Z-Wave: Laundry room tumbler */
