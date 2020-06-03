@@ -22,7 +22,7 @@ String
     (gKid1RoomLightMotionAndAutoOff)
 Switch
     Kid1Room_Lights_MotionTrigger_control
-    label="Motion trigger[]"
+    "Motion trigger[]"
     <motion>
     (gKid1RoomLightMotionAndAutoOff)
 Number
