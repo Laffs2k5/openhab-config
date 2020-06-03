@@ -118,6 +118,7 @@ then
     if( itemChanged.state == OnOffType::OFF) {
         // Notify on pushbullet
         logInfo(LOGGER, "Sending notification: {}", notifyMsg)
+        // TODO replace with sendTelegram("peder", "message")
         sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
 
         // Notify on computer room speaker
@@ -155,6 +156,7 @@ then
     if( itemChanged.state == OnOffType::OFF) {
         // Notify on pushbullet
         logInfo(LOGGER, "Sending notification: {}", notifyMsg)
+        // TODO replace with sendTelegram("peder", "message")
         sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
 
         // Notify on computer room speaker
@@ -243,6 +245,7 @@ then
         msg = msg + ", setting motion trigger to 'DEFAULT'"
     }
 
+    // TODO replace with sendTelegram("peder", "message")
     //sendPushbulletNote("Motion trigger schedule", msg)
 end
 

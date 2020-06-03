@@ -62,6 +62,7 @@ then
     if (notifyMsg != "") {
         notifyMsg = "Please note that the following device(s) are reporting a battery level below the configured threshold of " + BATTERY_ALERT_THRESHOLD + "%:\n" + notifyMsg
         logWarn(LOGGER,notifyMsg)
+        // TODO replace with sendTelegram("peder", "message")
         sendPushbulletNote("Openhab: battery monitoring", notifyMsg)
     }
 end

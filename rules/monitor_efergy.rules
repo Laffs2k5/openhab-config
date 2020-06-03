@@ -50,7 +50,7 @@ then
             }
         }
         else {
-           logWarn(LOGGER,"The state of the last notified item {} is {}, defaulting to a long long time ago: {}", LastNotifiedItem.name, LastNotifiedItem.state, lastNotifiedTime.toString(dateFormat))
+            logWarn(LOGGER,"The state of the last notified item {} is {}, defaulting to a long long time ago: {}", LastNotifiedItem.name, LastNotifiedItem.state, lastNotifiedTime.toString(dateFormat))
         }
         logDebug(LOGGER, "Last notified DateTime: {}", lastNotifiedTime.toString(dateFormat))
 
@@ -61,6 +61,7 @@ then
         // Notify?
         if( lastNotifiedTime.plusHours(ALERT_MIN_HOURS_THRESHOLD) < triggeredTime ) {
             logDebug(LOGGER, "Sending notification as last notification was not sent within the threshold of {} hours.", ALERT_MIN_HOURS_THRESHOLD)
+            // TODO replace with sendTelegram("peder", "message")
             sendPushbulletNote("Openhab: Efergy status check", notifyMsg)
             // Record last notification datetime
             LastNotifiedItem.postUpdate(new DateTimeType())
