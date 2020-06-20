@@ -1,5 +1,16 @@
 sitemap lights label="Lights"
 {
+    Frame label="2nd floor"
+    {
+        Slider
+            item=Dimmer_FF_Bedroom_SwitchDimmer
+            label="Bedroom"
+            icon="dimmable"
+        Slider
+            item=Dimmer_FF_Kid2Room_SwitchDimmer
+            label="Youngest kid room"
+            icon="dimmable"
+    }
     Frame label="Stairs"
     {
         Slider

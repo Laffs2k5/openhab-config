@@ -152,3 +152,21 @@ Number
     (gRoomKid1Room, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node29:battery-level"}
 /* END Vision ZP3102 Z-Wave: motion sensor #1 */
+
+/* Fibaro FGD212 Dimmer 2: Bedroom */
+Number
+    Dimmer_FF_Bedroom_SensorPower
+    "Bedroom light power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomBedroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node31:sensor_power"}
+/* END Fibaro FGD212 Dimmer 2 */
+
+/* Fibaro FGD212 Dimmer 2: Youngest kid room */
+Number
+    Dimmer_FF_Kid2Room_SensorPower
+    "Youngest kid power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomKid2Room, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node32:sensor_power"}
+/* END Fibaro FGD212 Dimmer 2 */

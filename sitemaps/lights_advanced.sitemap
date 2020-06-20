@@ -141,4 +141,38 @@ sitemap lights_advanced label="Lights advanced"
             item=Kid1Room_Lights_AutoOff_setTime_config
             visibility=[Kid1Room_Lights_MotionTrigger_control=="ON"]
     }
+    Text
+        label="Youngest kid room"
+        icon="child2"
+    {
+        Switch
+            item=Dimmer_FF_Kid2Room_SwitchDimmer
+            label="Power[]"
+            icon="switch"
+        Slider
+            item=Dimmer_FF_Kid2Room_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+        Setpoint
+            item=Dimmer_FF_Kid2Room_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+    }
+    Text
+        label="Bedroom"
+        icon="bedroom"
+    {
+        Switch
+            item=Dimmer_FF_Bedroom_SwitchDimmer
+            label="Power[]"
+            icon="switch"
+        Slider
+            item=Dimmer_FF_Bedroom_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+        Setpoint
+            item=Dimmer_FF_Bedroom_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+    }
 }
