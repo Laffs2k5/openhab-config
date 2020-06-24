@@ -208,3 +208,16 @@ Number
 //Switch   Dimmer_FF_Kid2Room_AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node32:alarm_system1"}
 //Dimmer   Dimmer_FF_Kid2Room_SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node32:switch_dimmer2"}
 /* END Fibaro FGD212 Dimmer 2 */
+
+/* Everspring Microplug Dimmer Z-Wave: Computer room */
+Dimmer
+    Wallplug_GF_ComputerRoom_Wall_Dimmer
+    "Computer room wall light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomComputerRoom)
+    { channel="zwave:device:2c3b27f3:node33:switch_dimmer" }
+//Switch
+//    Wallplug_GF_ComputerRoom_Wall_Alarm
+//    "Computer room wall light alarm state is [%s]"
+//    { channel="zwave:device:2c3b27f3:node33:alarm_general" }
+/* END Everspring Microplug Dimmer */

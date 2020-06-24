@@ -45,5 +45,13 @@ sitemap lights label="Lights"
         Switch
             item=Relay_CL_LaundryRoom_MainLights_switch
             label="Laundry room[]"
+        Slider
+            item=Wallplug_GF_ComputerRoom_Wall_Dimmer
+            label="Computer room wall"
+            icon="dimmable"
+        Slider
+            item=LedStrip_GF_ComputerRoom_brightness
+            label="TV backlight"
+            icon="dimmable"
     }
 }

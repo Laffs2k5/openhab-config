@@ -175,4 +175,40 @@ sitemap lights_advanced label="Lights advanced"
             label="Brightness"
             icon="dimmable"
     }
+    Text
+        label="Computer room"
+        icon="computerroom"
+    {
+        Switch
+            item=Wallplug_GF_ComputerRoom_Wall_Dimmer
+            label="Wall light power[]"
+            icon="switch"
+        Slider
+            item=Wallplug_GF_ComputerRoom_Wall_Dimmer
+            label="Wall light brightness"
+            icon="dimmable"
+        Setpoint
+            item=Wallplug_GF_ComputerRoom_Wall_Dimmer
+            label="Wall light brightness"
+            icon="dimmable"
+        Switch
+            item=LedStrip_GF_ComputerRoom_switch
+            label="TV backlight power[]"
+            icon="switch"
+        Slider
+            item=LedStrip_GF_ComputerRoom_brightness
+            label="TV backlight brightness"
+            icon="dimmable"
+        Setpoint
+            item=LedStrip_GF_ComputerRoom_brightness
+            label="TV backlight brightness"
+            icon="dimmable"
+        Switch
+            item=LedStrip_GF_ComputerRoom_color_temperature
+            label="TV backlight temp"
+            mappings=[0="1700", 33="3300", 67="5000", 100="6500"]
+        Colorpicker
+            item=LedStrip_GF_ComputerRoom_color
+            label="TV backlight color"
+    }
 }
