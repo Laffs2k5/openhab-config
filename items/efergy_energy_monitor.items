@@ -6,7 +6,7 @@
         curl -X GET --header "Accept: text/plain" "http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state"
     PUT state
         curl -X PUT --header "Content-Type: text/plain" --header "Accept: application/json" -d "01/03/18,19:57:02,0.000000" "http://oh.host.ip.address:8080/rest/items/EnergyMonitor_Household_Efergy_ValueString/state"
-    
+
     Setup pi
         Image: 2017-11-29-raspbian-stretch-lite.zip
         add ssh file to boot
@@ -18,7 +18,7 @@
         sudo apt-get upgrade
         sudo apt-get install -y git libtool libusb-1.0.0-dev librtlsdr-dev rtl-sdr
         sudo shutdown -r now
-        
+
     Install
         ssh in: bash -c "ssh pi@efergy.pi.ip.address"
         git clone https://github.com/magellannh/RPI_Efergy.git
@@ -27,7 +27,7 @@
             // change voltage to 230
             replace
                 double current_adc = (bytes[4] * 256) + bytes[5];
-            with 
+            with
                 double current_adc = (((unsigned char*)bytes)[4] * 256) + ((unsigned char*)bytes)[5];
         gcc -O3 -lm -o EfergyRPI_log EfergyRPI_log.c
         rtl_fm -f 433.525e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log | perl -n -e'/^.*,(.*)/ && print "$1\n"'
@@ -53,9 +53,9 @@
 
         Use and tune
             rtl_fm -f 433.51e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log -d 2
-                This  level shows average plus and minus sample values and centering 
-                which can help with finding the best frequency. Adjust frequency to get 
-                wave center close to  0 .  If center is too high, lower frequency, 
+                This  level shows average plus and minus sample values and centering
+                which can help with finding the best frequency. Adjust frequency to get
+                wave center close to  0 .  If center is too high, lower frequency,
                 otherwise increase it.
 
             rtl_fm -f 433.5235e6 -s 200000 -r 96000 -A fast  | ./EfergyRPI_log -d 2
@@ -118,20 +118,20 @@
     //          sudo ps -aux | grep rtl
     //
     //      Cron: start 00:00 each day and run 23h59m
-    
+
     //
     // END DEV stuff
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 /* Chart period setting details sitemap */
-String 
+String
     EnergyMonitor_Household_chartPeriod
     "Chart period"
     <line>
 
 /* Household energy monitor */
-DateTime 
+DateTime
     EnergyMonitor_Household_Efergy_LastReadout
     "Household energy monitor last readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
@@ -139,7 +139,7 @@ String
     EnergyMonitor_Household_Efergy_ValueString
     "Household energy monitor string value is [%s]"
     <lastreading>
-DateTime 
+DateTime
     EnergyMonitor_Household_Efergy_LastValidReadout
     "Household energy monitor last valid readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
