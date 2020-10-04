@@ -71,32 +71,32 @@ val Functions$Function5<String, GenericItem, DateTimeItem, GenericItem, NumberIt
     true
 ]
 
-rule "SqueezeboxRadio light sensor string to number, oldest kid room"
+rule "SqueezeboxRadio light sensor string to number, bedroom"
 when
-    Item LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString received update
+    Item LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString received update
 then
-    val GenericItem ItemChanged = LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
+    val GenericItem ItemChanged = LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
     logStateChange.apply(LOGGER_NAME, ItemChanged)
     storeReadoutIfValid.apply(
         LOGGER_NAME,
-        LightSensor_CL_Guestroom_SqueezeboxRadio_ExitValue,
-        LightSensor_CL_Guestroom_SqueezeboxRadio_LastValidReadout,
+        LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue,
+        LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout,
         ItemChanged,
-        LightSensor_CL_Guestroom_SqueezeboxRadio
+        LightSensor_FF_Bedroom_SqueezeboxRadio
     )
 end
 
-rule "SqueezeboxRadio light sensor string to number, bedroom"
+rule "SqueezeboxRadio light sensor string to number, oldest kid room"
 when
-    Item LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString received update
+    Item LightSensor_FF_Kid1Room_SqueezeboxRadio_ValueString received update
 then
-    val GenericItem ItemChanged = LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString
+    val GenericItem ItemChanged = LightSensor_FF_Kid1Room_SqueezeboxRadio_ValueString
     logStateChange.apply(LOGGER_NAME, ItemChanged)
     storeReadoutIfValid.apply(
         LOGGER_NAME,
-        LightSensor_GF_Bedroom_SqueezeboxRadio_ExitValue,
-        LightSensor_GF_Bedroom_SqueezeboxRadio_LastValidReadout,
+        LightSensor_FF_Kid1Room_SqueezeboxRadio_ExitValue,
+        LightSensor_FF_Kid1Room_SqueezeboxRadio_LastValidReadout,
         ItemChanged,
-        LightSensor_GF_Bedroom_SqueezeboxRadio
+        LightSensor_FF_Kid1Room_SqueezeboxRadio
     )
 end

@@ -25,15 +25,15 @@ Number
     These numbers are updated by a rule that converts sensor data from string
 */
 Number
-    LightSensor_CL_Guestroom_SqueezeboxRadio
-    "Oldest kid room squeezebox light sensor value is [%d]"
-    <lightsensor>
-    (gRoomKid1Room, gPersistInfluxEveryUpdate)
-Number
-    LightSensor_GF_Bedroom_SqueezeboxRadio
+    LightSensor_FF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"
     <lightsensor>
     (gRoomBedroom, gPersistInfluxEveryUpdate)
+Number
+    LightSensor_FF_Kid1Room_SqueezeboxRadio
+    "Oldest kid room squeezebox light sensor value is [%d]"
+    <lightsensor>
+    (gRoomKid1Room, gPersistInfluxEveryUpdate)
 
 /* efergy household energy monitor
     This number is updated by a rule that converts sensor data from string

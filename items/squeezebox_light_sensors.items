@@ -28,8 +28,8 @@
             15
 
     Need extra virtual item to convert from String to Number
-        Thus String LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
-        and Number LightSensor_CL_Guestroom_SqueezeboxRadio
+        Thus String LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+        and Number LightSensor_FF_Bedroom_SqueezeboxRadio
 */
 
 /* Chart period setting for light sensor details */
@@ -38,66 +38,72 @@ String
     "Chart period"
     <line>
 
-/* Oldest kid room Squeeze radio light sensor */
-Switch
-    LightSensor_CL_Guestroom_SqueezeboxRadio_Run
-    "Oldest kid room squeezebox light sensor update"
-    {channel="exec:command:c74bf4cf:run"}
-Number
-    LightSensor_CL_Guestroom_SqueezeboxRadio_ExitValue
-    "Oldest kid room squeezebox light sensor last exit value [%d]"
-    <exitvalue>
-    {channel="exec:command:c74bf4cf:exit"}
-DateTime
-    LightSensor_CL_Guestroom_SqueezeboxRadio_LastExecution
-    "Oldest kid room squeezebox light sensor last readout [%1$td.%1$tm.%1$tY]"
-    <updatedate>
-    {channel="exec:command:c74bf4cf:lastexecution"}
-String
-    LightSensor_CL_Guestroom_SqueezeboxRadio_ValueString
-    "Oldest room squeezebox light sensor last readout value is [%s]"
-    <lastreading>
-    {channel="exec:command:c74bf4cf:output"}
-DateTime
-    LightSensor_CL_Guestroom_SqueezeboxRadio_LastValidReadout
-    "Oldest room squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
-    <updatedate>
-/* Moved to file _persist_influxdb.items to persisted for charting
-Number
-    LightSensor_CL_Guestroom_SqueezeboxRadio
-    "Oldest kid room squeezebox light sensor value is [%d]"
-    (gRoomKid1Room) */
-
 /* Bedroom Squeeze radio light sensor */
 Switch
-    LightSensor_GF_Bedroom_SqueezeboxRadio_Run
+    LightSensor_FF_Bedroom_SqueezeboxRadio_Run
     "Bedroom squeezebox light sensor update"
     (gRoomBedroom)
-    {channel="exec:command:2ba18d58:run"}
+    {channel="exec:command:c74bf4cf:run"}
 Number
-    LightSensor_GF_Bedroom_SqueezeboxRadio_ExitValue
+    LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue
     "Bedroom squeezebox light sensor last exit value [%d]"
     <exitvalue>
     (gRoomBedroom)
-    {channel="exec:command:2ba18d58:exit"}
+    {channel="exec:command:c74bf4cf:exit"}
 DateTime
-    LightSensor_GF_Bedroom_SqueezeboxRadio_LastExecution
-    "Bedroom squeezebox light sensor last updated [%1$td.%1$tm.%1$tY]"
+    LightSensor_FF_Bedroom_SqueezeboxRadio_LastExecution
+    "Bedroom squeezebox light sensor last readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
     (gRoomBedroom)
-    {channel="exec:command:2ba18d58:lastexecution"}
+    {channel="exec:command:c74bf4cf:lastexecution"}
 String
-    LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString
-    "Bedroom squeezebox light sensor string value is [%s]"
+    LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+    "Bedroom squeezebox light sensor last readout value is [%s]"
     <lastreading>
     (gRoomBedroom)
-    {channel="exec:command:2ba18d58:output"}
+    {channel="exec:command:c74bf4cf:output"}
 DateTime
-    LightSensor_GF_Bedroom_SqueezeboxRadio_LastValidReadout
-    "Oldest kid room squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
+    LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout
+    "Bedroom squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
+    (gRoomBedroom)
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
-    LightSensor_GF_Bedroom_SqueezeboxRadio
+    LightSensor_FF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"
     (gRoomBedroom) */
+
+/* Oldest kid room Squeeze radio light sensor */
+Switch
+    LightSensor_FF_Kid1Room_SqueezeboxRadio_Run
+    "Oldest kid room squeezebox light sensor update"
+    (gRoomKid1Room)
+    {channel="exec:command:2ba18d58:run"}
+Number
+    LightSensor_FF_Kid1Room_SqueezeboxRadio_ExitValue
+    "Oldest kid room squeezebox light sensor last exit value [%d]"
+    <exitvalue>
+    (gRoomKid1Room)
+    {channel="exec:command:2ba18d58:exit"}
+DateTime
+    LightSensor_FF_Kid1Room_SqueezeboxRadio_LastExecution
+    "Oldest kid room squeezebox light sensor last updated [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+    (gRoomKid1Room)
+    {channel="exec:command:2ba18d58:lastexecution"}
+String
+    LightSensor_FF_Kid1Room_SqueezeboxRadio_ValueString
+    "Oldest kid room squeezebox light sensor string value is [%s]"
+    <lastreading>
+    (gRoomKid1Room)
+    {channel="exec:command:2ba18d58:output"}
+DateTime
+    LightSensor_FF_Kid1Room_SqueezeboxRadio_LastValidReadout
+    "Oldest kid room squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+    (gRoomKid1Room)
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    LightSensor_FF_Kid1Room_SqueezeboxRadio
+    "Oldest kid room squeezebox light sensor value is [%d]"
+    (gRoomKid1Room) */

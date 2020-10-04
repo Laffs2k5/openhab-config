@@ -40,11 +40,11 @@ sitemap network_devices label="Network devices"
         Text
             item=Network_CL_Bathroom_Squeezebox
         Text
-            item=Network_CL_GuestRoom_Squeezebox
+            item=Network_FF_Bedroom_SqueezeboxRadio
         Text
             item=Network_GF_LivingRoom_Squeezebox
         Text
-            item=Network_GF_Bedroom_Squeezebox
+            item=Network_FF_Kid1Room_SqueezeboxRadio
         Text
             item=Network_Shed_Squeezebox
     }

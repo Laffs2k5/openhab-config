@@ -108,8 +108,8 @@ Switch
     (gNetwork)
     { channel="network:device:some.ip.address.109:online" }
 Switch
-    Network_CL_GuestRoom_Squeezebox
-    "Oldest kid room squeezebox state is [MAP(network.map):%s]"
+    Network_FF_Bedroom_SqueezeboxRadio
+    "Bedroom squeezebox state is [MAP(network.map):%s]"
     <squeezeboxradio>
     (gNetwork)
     { channel="network:device:some.ip.address.113:online" }
@@ -120,8 +120,8 @@ Switch
     (gNetwork)
     { channel="network:device:some.ip.address.104:online" }
 Switch
-    Network_GF_Bedroom_Squeezebox
-    "Bedroom squeezebox state is [MAP(network.map):%s]"
+    Network_FF_Kid1Room_SqueezeboxRadio
+    "Oldest kid room squeezebox state is [MAP(network.map):%s]"
     <squeezeboxradio>
     (gNetwork)
     { channel="network:device:some.ip.address.106:online" }
