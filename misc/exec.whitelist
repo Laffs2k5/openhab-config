@@ -1,0 +1,4 @@
+# For security reasons all commands that are used by the exec binding or transformation need to be whitelisted.
+# Every command needs to be listed on a separate line below.
+ssh root@squeeze.radio2.ip.address -n -i /openhab/userdata/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1 -o Ciphers=+aes128-cbc cat /sys/class/i2c-adapter/i2c-1/1-0010/ambient
+ssh root@squeeze.radio1.ip.address -n -i /openhab/userdata/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1 -o Ciphers=+aes128-cbc cat /sys/class/i2c-adapter/i2c-1/1-0010/ambient

@@ -9,9 +9,9 @@
         # Exec binding runs as openhab so create key pair for openhab to ssh to squeeze without password
         > ssh-keygen -t rsa -f /home/openhabian/id_rsa_for_squeezebox_ssh
 
-        # Copy key to squeeze radios, password is: 1234
-        > ssh-copy-id root@192.168.0.106 -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no
-        > ssh-copy-id root@192.168.0.113 -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no
+        # Copy key to squeeze radios, pwd is googlable on the inet
+        > ssh-copy-id root@squeeze.radio1.ip.address -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no
+        > ssh-copy-id root@squeeze.radio2.ip.address -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no
 
         # Set openhab as owner of the key file in order for exec binding to have acccess to it
         > sudo chown openhab:openhab /home/openhabian/id_rsa_for_squeezebox_ssh
@@ -19,7 +19,7 @@
 
     Exec binding Thing config
         Command:
-            ssh root@192.168.0.106 -n -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no cat /sys/class/i2c-adapter/i2c-1/1-0010/ambient
+            ssh root@squeeze.radio1.ip.address -n -i /home/openhabian/id_rsa_for_squeezebox_ssh -o StrictHostKeyChecking=no -o KexAlgorithms=+diffie-hellman-group1-sha1 -o Ciphers=+aes128-cbc cat /sys/class/i2c-adapter/i2c-1/1-0010/ambient
         Transform:
             REGEX((.*))
         Interval:
