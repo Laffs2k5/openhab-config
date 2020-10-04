@@ -76,7 +76,7 @@ val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
 // This is just debug
 rule "Oldest kid room lights, motion sensor, binary received update"
 when
-    Item Sensor_GF_Kid1Room_SensorBinary received update
+    Item Sensor_FF_Kid1Room_SensorBinary received update
 then
     val String LOGGER = LOGGER_NAME + ".mtnSensUpd"
     logReceivedUpdate.apply(LOGGER, triggeringItem)
@@ -87,10 +87,10 @@ end
 // This is just debug
 rule "Oldest kid room lights, motion sensor, binary received command"
 when
-    Item Sensor_GF_Kid1Room_SensorBinary received command
+    Item Sensor_FF_Kid1Room_SensorBinary received command
 then
     val String LOGGER = LOGGER_NAME + ".mtnSensCmd"
-    val GenericItem itemCommanded = Sensor_GF_Kid1Room_SensorBinary
+    val GenericItem itemCommanded = Sensor_FF_Kid1Room_SensorBinary
     logReceivedCommand.apply(LOGGER, itemCommanded, receivedCommand.toString())
 end
 */
@@ -99,11 +99,11 @@ end
 // Except when motion sensor trigger is disabled
 rule "Oldest kid room lights, motion received update"
 when
-    Item Sensor_GF_Kid1Room_SensorBinary received update
+    Item Sensor_FF_Kid1Room_SensorBinary received update
 then
     val String LOGGER = LOGGER_NAME + ".mtn"
-    val GenericItem itemChanged = Sensor_GF_Kid1Room_SensorBinary
-    val RoofLightDimmer = Dimmer_GF_Kid1Room_SwitchDimmer
+    val GenericItem itemChanged = Sensor_FF_Kid1Room_SensorBinary
+    val RoofLightDimmer = Dimmer_FF_Kid1Room_SwitchDimmer
     val SwitchItem MotionTriggerControlItem = Kid1Room_Lights_MotionTrigger_control
     val NumberItem MotionTriggerStartitem = Kid1Room_Lights_MotionTrigger_startHour
     val NumberItem MotionTriggerEnditem = Kid1Room_Lights_MotionTrigger_endHour
@@ -204,7 +204,7 @@ when
 then
     val String LOGGER = LOGGER_NAME + ".aOffTmeUpd"
     val GenericItem itemChanged = Kid1Room_Lights_AutoOff_setTime
-    val MotionTriggerSensorItem = Sensor_GF_Kid1Room_SensorBinary
+    val MotionTriggerSensorItem = Sensor_FF_Kid1Room_SensorBinary
     val StringItem AutoOffStatusItem = Kid1Room_Lights_AutoOff_setTime_config
     val int controlValue = (itemChanged.state as DecimalType).intValue
     var String statusText
@@ -240,7 +240,7 @@ when
 then
     val String LOGGER = LOGGER_NAME + ".aOffCtlChg"
     val GenericItem itemChanged = Kid1Room_Lights_MotionTrigger_control
-    val SwitchItem MotionTriggerSensorItem = Sensor_GF_Kid1Room_SensorBinary
+    val SwitchItem MotionTriggerSensorItem = Sensor_FF_Kid1Room_SensorBinary
     val NumberItem MotionTriggerStartitem = Kid1Room_Lights_MotionTrigger_startHour
     val NumberItem MotionTriggerEnditem = Kid1Room_Lights_MotionTrigger_endHour
     val StringItem MotionTriggerStatusItem = Kid1Room_Lights_MotionTrigger_config

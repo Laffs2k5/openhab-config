@@ -70,34 +70,34 @@ Number
 
 /* Bedroom Squeeze radio light sensor */
 Switch
-    LightSensor_FF_Bedroom_SqueezeboxRadio_Run
+    LightSensor_GF_Bedroom_SqueezeboxRadio_Run
     "Bedroom squeezebox light sensor update"
     (gRoomBedroom)
     {channel="exec:command:2ba18d58:run"}
 Number
-    LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue
+    LightSensor_GF_Bedroom_SqueezeboxRadio_ExitValue
     "Bedroom squeezebox light sensor last exit value [%d]"
     <exitvalue>
     (gRoomBedroom)
     {channel="exec:command:2ba18d58:exit"}
 DateTime
-    LightSensor_FF_Bedroom_SqueezeboxRadio_LastExecution
+    LightSensor_GF_Bedroom_SqueezeboxRadio_LastExecution
     "Bedroom squeezebox light sensor last updated [%1$td.%1$tm.%1$tY]"
     <updatedate>
     (gRoomBedroom)
     {channel="exec:command:2ba18d58:lastexecution"}
 String
-    LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+    LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString
     "Bedroom squeezebox light sensor string value is [%s]"
     <lastreading>
     (gRoomBedroom)
     {channel="exec:command:2ba18d58:output"}
 DateTime
-    LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout
+    LightSensor_GF_Bedroom_SqueezeboxRadio_LastValidReadout
     "Oldest kid room squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
-    LightSensor_FF_Bedroom_SqueezeboxRadio
+    LightSensor_GF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"
     (gRoomBedroom) */

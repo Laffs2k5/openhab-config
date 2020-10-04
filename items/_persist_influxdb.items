@@ -30,7 +30,7 @@ Number
     <lightsensor>
     (gRoomKid1Room, gPersistInfluxEveryUpdate)
 Number
-    LightSensor_FF_Bedroom_SqueezeboxRadio
+    LightSensor_GF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"
     <lightsensor>
     (gRoomBedroom, gPersistInfluxEveryUpdate)
@@ -138,16 +138,16 @@ Number
 
 /* Fibaro FGD212 Dimmer 2: Oldest kid room */
 Number
-    Dimmer_GF_Kid1Room_SensorPower
+    Dimmer_FF_Kid1Room_SensorPower
     "Oldest kid room light power consumption [%.0f W]"
     <energymonitor>
     (gRoomKid1Room, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node30:sensor_power1"}
+    {channel="zwave:device:2c3b27f3:node31:sensor_power1"}
 /* END Fibaro FGD212 Dimmer 2 */
 
 /* Vision ZP3102 Z-Wave: motion sensor #1: Oldest kid room */
 Number
-    Sensor_GF_Kid1Room_BatteryLevel
+    Sensor_FF_Kid1Room_BatteryLevel
     "Oldest kid room battery Level is [%.0f %%]"
     (gRoomKid1Room, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node29:battery-level"}
@@ -155,11 +155,11 @@ Number
 
 /* Fibaro FGD212 Dimmer 2: Bedroom */
 Number
-    Dimmer_FF_Bedroom_SensorPower
+    Dimmer_GF_Bedroom_SensorPower
     "Bedroom light power consumption [%.0f W]"
     <energymonitor>
     (gRoomBedroom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node31:sensor_power"}
+    {channel="zwave:device:2c3b27f3:node30:sensor_power"}
 /* END Fibaro FGD212 Dimmer 2 */
 
 /* Fibaro FGD212 Dimmer 2: Youngest kid room */

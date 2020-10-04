@@ -44,24 +44,24 @@ String
 
 /* Vision ZP3102 Z-Wave: motion sensor #1: Oldest kid room */
 Switch
-    Sensor_GF_Kid1Room_SensorBinary
+    Sensor_FF_Kid1Room_SensorBinary
     "Oldest kid room Binary Sensor state is [%s]"
     (gRoomKid1Room)
     {channel="zwave:device:2c3b27f3:node29:sensor_binary"}
 /* Not used
 Number
-    Sensor_GF_Kid1Room_SensorTemperature
+    Sensor_FF_Kid1Room_SensorTemperature
     "Oldest kid room temperature is [%.0f °C]"
     (gRoomKid1Room)
     {channel="zwave:device:2c3b27f3:node29:sensor_temperature"}
 Switch
-    Sensor_GF_Kid1Room_AlarmBurglar
+    Sensor_FF_Kid1Room_AlarmBurglar
     "Oldest kid room motion sensor state is [%s]"
     (gRoomKid1Room)
     {channel="zwave:device:2c3b27f3:node29:alarm_burglar"} */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
-    Sensor_GF_Kid1Room_BatteryLevel
+    Sensor_FF_Kid1Room_BatteryLevel
     "Oldest kid room battery Level is [%.0f %%]"
     (gRoomKid1Room)
     {channel="zwave:device:2c3b27f3:node29:battery-level"} */
@@ -69,31 +69,31 @@ Number
 
 /* Fibaro FGD212 Dimmer 2: Oldest kid room */
 Dimmer
-    Dimmer_GF_Kid1Room_SwitchDimmer
+    Dimmer_FF_Kid1Room_SwitchDimmer
     "Oldest kid room light brightness [%d %%]"
     <dimmablelight>
     (gRoomKid1Room)
-    {channel="zwave:device:2c3b27f3:node30:switch_dimmer1"}
+    {channel="zwave:device:2c3b27f3:node31:switch_dimmer1"}
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
-    Dimmer_GF_Kid1Room_SensorPower
+    Dimmer_FF_Kid1Room_SensorPower
     "Oldest kid room light power consumption [%.0f W]"
     <energymonitor>
     (gRoomKid1Room, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node30:sensor_power1"} */
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2SceneNumber            "Scene number"                        {channel="zwave:device:2c3b27f3:node30:scene_number"}
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2SensorPower            "Sensor (power)"                      {channel="zwave:device:2c3b27f3:node30:sensor_power"}
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterKwh               "Electric meter (k wh)"               {channel="zwave:device:2c3b27f3:node30:meter_kwh"}
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node30:meter_watts"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node30:meter_reset"}
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node30:config_decimal_param19"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node30:alarm_heat"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node30:alarm_power"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node30:alarm_system"}
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterKwh1              "Electric meter (k wh) 1"             {channel="zwave:device:2c3b27f3:node30:meter_kwh1"}
-//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node30:meter_watts1"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node30:alarm_heat1"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node30:alarm_power1"}
-//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node30:alarm_system1"}
-//Dimmer   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node30:switch_dimmer2"}
+    {channel="zwave:device:2c3b27f3:node31:sensor_power1"} */
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2SceneNumber            "Scene number"                        {channel="zwave:device:2c3b27f3:node31:scene_number"}
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2SensorPower            "Sensor (power)"                      {channel="zwave:device:2c3b27f3:node31:sensor_power"}
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterKwh               "Electric meter (k wh)"               {channel="zwave:device:2c3b27f3:node31:meter_kwh"}
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node31:meter_watts"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node31:meter_reset"}
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node31:config_decimal_param19"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node31:alarm_heat"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node31:alarm_power"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node31:alarm_system"}
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterKwh1              "Electric meter (k wh) 1"             {channel="zwave:device:2c3b27f3:node31:meter_kwh1"}
+//Number   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node31:meter_watts1"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node31:alarm_heat1"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node31:alarm_power1"}
+//Switch   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node31:alarm_system1"}
+//Dimmer   ZWaveDimmerZWaveNode30FibaroFGD212Dimmer2SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node31:switch_dimmer2"}
 /* END Fibaro FGD212 Dimmer 2 */

@@ -105,18 +105,15 @@ sitemap lights_advanced label="Lights advanced"
         icon="child"
     {
         Switch
-            //item=Dimmer_GF_Kid1Room_SwitchDimmer
-            item=Dimmer_GF_Kid1Room_SwitchDimmer
+            item=Dimmer_FF_Kid1Room_SwitchDimmer
             label="Power[]"
             icon="switch"
         Slider
-            //item=Dimmer_GF_Kid1Room_SwitchDimmer
-            item=Dimmer_GF_Kid1Room_SwitchDimmer
+            item=Dimmer_FF_Kid1Room_SwitchDimmer
             label="Brightness"
             icon="dimmable"
         Setpoint
-            //item=Dimmer_GF_Kid1Room_SwitchDimmer
-            item=Dimmer_GF_Kid1Room_SwitchDimmer
+            item=Dimmer_FF_Kid1Room_SwitchDimmer
             label="Brightness"
             icon="dimmable"
         Switch
@@ -163,15 +160,15 @@ sitemap lights_advanced label="Lights advanced"
         icon="bedroom"
     {
         Switch
-            item=Dimmer_FF_Bedroom_SwitchDimmer
+            item=Dimmer_GF_Bedroom_SwitchDimmer
             label="Power[]"
             icon="switch"
         Slider
-            item=Dimmer_FF_Bedroom_SwitchDimmer
+            item=Dimmer_GF_Bedroom_SwitchDimmer
             label="Brightness"
             icon="dimmable"
         Setpoint
-            item=Dimmer_FF_Bedroom_SwitchDimmer
+            item=Dimmer_GF_Bedroom_SwitchDimmer
             label="Brightness"
             icon="dimmable"
     }

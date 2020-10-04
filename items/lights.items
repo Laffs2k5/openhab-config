@@ -145,35 +145,35 @@ Number
 
 /* Fibaro FGD212 Dimmer 2: Bedroom */
 Dimmer
-    Dimmer_FF_Bedroom_SwitchDimmer
+    Dimmer_GF_Bedroom_SwitchDimmer
     "Bedroom light brightness [%d %%]"
     <dimmablelight>
     (gRoomBedroom)
-    {channel="zwave:device:2c3b27f3:node31:switch_dimmer1"}
+    {channel="zwave:device:2c3b27f3:node30:switch_dimmer1"}
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
-    Dimmer_FF_Bedroom_SensorPower
+    Dimmer_GF_Bedroom_SensorPower
     "Bedroom light power consumption [%.0f W]"
     <energymonitor>
     (gRoomBedroom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node31:sensor_power"} */
-//Number   Dimmer_FF_Bedroom_SceneNumber            "Scene number"                        {channel="zwave:device:2c3b27f3:node31:scene_number"}
-//Number   Dimmer_FF_Bedroom_SensorPower            "Sensor (power)"                      {channel="zwave:device:2c3b27f3:node31:sensor_power"}
-//Number   Dimmer_FF_Bedroom_MeterKwh               "Electric meter (k wh)"               {channel="zwave:device:2c3b27f3:node31:meter_kwh"}
-//Number   Dimmer_FF_Bedroom_MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node31:meter_watts"}
-//Switch   Dimmer_FF_Bedroom_MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node31:meter_reset"}
-//Number   Dimmer_FF_Bedroom_ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node31:config_decimal_param19"}
-//Switch   Dimmer_FF_Bedroom_AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node31:alarm_heat"}
-//Switch   Dimmer_FF_Bedroom_AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node31:alarm_power"}
-//Switch   Dimmer_FF_Bedroom_AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node31:alarm_system"}
-//Dimmer   Dimmer_FF_Bedroom_SwitchDimmer1          "Dimmer 1"                            {channel="zwave:device:2c3b27f3:node31:switch_dimmer1"}
-//Number   Dimmer_FF_Bedroom_SensorPower1           "Sensor (power) 1"                    {channel="zwave:device:2c3b27f3:node31:sensor_power1"}
-//Number   Dimmer_FF_Bedroom_MeterKwh1              "Electric meter (k wh) 1"             {channel="zwave:device:2c3b27f3:node31:meter_kwh1"}
-//Number   Dimmer_FF_Bedroom_MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node31:meter_watts1"}
-//Switch   Dimmer_FF_Bedroom_AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node31:alarm_heat1"}
-//Switch   Dimmer_FF_Bedroom_AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node31:alarm_power1"}
-//Switch   Dimmer_FF_Bedroom_AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node31:alarm_system1"}
-//Dimmer   Dimmer_FF_Bedroom_SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node31:switch_dimmer2"}
+    {channel="zwave:device:2c3b27f3:node30:sensor_power"} */
+//Number   Dimmer_GF_Bedroom_SceneNumber            "Scene number"                        {channel="zwave:device:2c3b27f3:node30:scene_number"}
+//Number   Dimmer_GF_Bedroom_SensorPower            "Sensor (power)"                      {channel="zwave:device:2c3b27f3:node30:sensor_power"}
+//Number   Dimmer_GF_Bedroom_MeterKwh               "Electric meter (k wh)"               {channel="zwave:device:2c3b27f3:node30:meter_kwh"}
+//Number   Dimmer_GF_Bedroom_MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node30:meter_watts"}
+//Switch   Dimmer_GF_Bedroom_MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node30:meter_reset"}
+//Number   Dimmer_GF_Bedroom_ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node30:config_decimal_param19"}
+//Switch   Dimmer_GF_Bedroom_AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node30:alarm_heat"}
+//Switch   Dimmer_GF_Bedroom_AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node30:alarm_power"}
+//Switch   Dimmer_GF_Bedroom_AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node30:alarm_system"}
+//Dimmer   Dimmer_GF_Bedroom_SwitchDimmer1          "Dimmer 1"                            {channel="zwave:device:2c3b27f3:node30:switch_dimmer1"}
+//Number   Dimmer_GF_Bedroom_SensorPower1           "Sensor (power) 1"                    {channel="zwave:device:2c3b27f3:node30:sensor_power1"}
+//Number   Dimmer_GF_Bedroom_MeterKwh1              "Electric meter (k wh) 1"             {channel="zwave:device:2c3b27f3:node30:meter_kwh1"}
+//Number   Dimmer_GF_Bedroom_MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node30:meter_watts1"}
+//Switch   Dimmer_GF_Bedroom_AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node30:alarm_heat1"}
+//Switch   Dimmer_GF_Bedroom_AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node30:alarm_power1"}
+//Switch   Dimmer_GF_Bedroom_AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node30:alarm_system1"}
+//Dimmer   Dimmer_GF_Bedroom_SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node30:switch_dimmer2"}
 /* END Fibaro FGD212 Dimmer 2 */
 
 /* Fibaro FGD212 Dimmer 2: Youngest kid room */

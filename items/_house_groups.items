@@ -8,7 +8,7 @@ Group   gLocGF              "Ground Floor"  <groundfloor>
 Group   gLocCL              "Cellar Floor"  <cellar>
 
 /* First floor */
-Group   gRoomBedroom        "Bedroom"           <guestroom> (gLocFF)
+Group   gRoomKid1Room       "Oldest kid room"   <guestroom> (gLocFF)
 Group   gRoomKid2Room       "Youngest kid room" <guestroom> (gLocFF)
 
 /* Ground floor */
@@ -16,7 +16,7 @@ Group   gRoomKitchen        "Kitchen"           <kitchen>    (gLocGF)
 Group   gRoomLivingRoom     "Living room"       <computer>   (gLocGF)
 Group   gRoomStaircase      "Staircase"         <staircase>  (gLocGF)
 Group   gRoomDiningRoom     "Dining room"       <diningroom> (gLocGF)
-Group   gRoomKid1Room       "Oldest kid room"   <guestroom>  (gLocGF)
+Group   gRoomBedroom        "Bedroom"           <guestroom>  (gLocGF)
 
 /* Cellar */
 Group   gRoomStairwell      "Stairwell"     <stairwell> (gLocCL)

@@ -120,7 +120,7 @@ Switch
     (gNetwork)
     { channel="network:device:some.ip.address.104:online" }
 Switch
-    Network_FF_Bedroom_Squeezebox
+    Network_GF_Bedroom_Squeezebox
     "Bedroom squeezebox state is [MAP(network.map):%s]"
     <squeezeboxradio>
     (gNetwork)
