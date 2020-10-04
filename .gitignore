@@ -42,3 +42,4 @@ $RECYCLE.BIN/
 .personalStuff
 services/influxdb.cfg
 services/pushbullet.cfg
+services/telegram.cfg

@@ -23,26 +23,26 @@ val int     CONTROL_VOL_60 = 11
 var ReentrantLock   g_livingRoomAudioLockReceiverUpdates  = new ReentrantLock()
 
 // Lambdas
-val Functions$Function2<String, GenericItem, Boolean> logStateChange = [ 
-    loggerName, 
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
     itemChanged |
     val String LOGGER = loggerName + ".logStateChange"
-    logDebug(LOGGER, "State of item '{}' changed to '{}'", 
-        itemChanged.name, 
+    logDebug(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
         itemChanged.state.toString())
     true
 ]
-val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand = [ 
-    loggerName, 
+val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand = [
+    loggerName,
     itemCommanded,
     command |
     val String LOGGER = loggerName + ".logReceivedCommand"
-    logDebug(LOGGER, "Item '{}' received command '{}'", 
-        itemCommanded.name, 
+    logDebug(LOGGER, "Item '{}' received command '{}'",
+        itemCommanded.name,
         command)
     true
 ]
-val Functions$Function4<String, String, String, GenericItem, Boolean> postIrCommandToItem = [ 
+val Functions$Function4<String, String, String, GenericItem, Boolean> postIrCommandToItem = [
     loggerName,
     irMapfile,
     irCommand,
@@ -60,6 +60,10 @@ rule "Living room audio, receiver control visibility, wallplug"
 when
     Item Network_GF_LivingRoomAudio_Wallplug changed
 then
+    // There is a BUG here:
+    //  Upon restarting OH this event is not fired until the wallplug changes state
+    //  thus LivingRoomAudio_receiver_visibility is not set properly and the living
+    //  room audio sitemap display state is wrong
     val GenericItem itemChanged = Network_GF_LivingRoomAudio_Wallplug
     logStateChange.apply(LOGGER_NAME, itemChanged)
     if( itemChanged.state == OnOffType::ON && Network_GF_LivingRoom_IrBlaster.state == OnOffType::ON) {
@@ -128,12 +132,12 @@ then
                 LivingRoomAudio_receiver_volume.sendCommand(0)
                 Thread::sleep(3000)
                 Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::ON)
-                Thread::sleep(3000)                
+                Thread::sleep(3000)
                 // IR: A1 receiver
                 postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_AUDIO1", IR_GF_LivingRoom_Broadlink_RM2_command)
                 // default vol squeeze
                 Squeeze_GF_LivingRoom_Volume.sendCommand(30)
-                // IR: ramp receiver vol to default for squeeze, consider burst            
+                // IR: ramp receiver vol to default for squeeze, consider burst
                 // keep track of receiver volume
                 for (var i = 0 ; i < 20 ; i++) {
                     postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_VOL_UP", IR_GF_LivingRoom_Broadlink_RM2_command)
@@ -169,7 +173,7 @@ then
                 postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_AUDIO2", IR_GF_LivingRoom_Broadlink_RM2_command)
                 // default vol chromecast
                 Chromecast_GF_LivingRoom_volume.sendCommand(90)
-                // IR: ramp receiver vol to default for squeeze, consider burst            
+                // IR: ramp receiver vol to default for squeeze, consider burst
                 // keep track of receiver volume
                 for (var i = 0 ; i < 5 ; i++) {
                     postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_VOL_UP", IR_GF_LivingRoom_Broadlink_RM2_command)
@@ -194,7 +198,7 @@ then
         }
         case CONTROL_VOLDN:{
             logInfo(LOGGER_NAME, "Receiver vol dn")
-            
+
             g_livingRoomAudioLockReceiverUpdates.lock()
             try {
                 logDebug(LOGGER_NAME, "got lock")
@@ -222,7 +226,7 @@ then
                 // keep track of receiver volume
                 LivingRoomAudio_receiver_volume.sendCommand((LivingRoomAudio_receiver_volume.state as DecimalType) + 1)
                 // update LivingRoomAudio_receiver_status
-                
+
             } catch(Throwable t) {
                 logError(LOGGER_NAME, "exception caught: {}", t.toString())
             } finally {
@@ -308,9 +312,9 @@ then
             Squeeze_GF_LivingRoom_Control.sendCommand(PlayPauseType::PLAY)
         }
         case CONTROL_NEXT:{
-            logInfo(LOGGER_NAME, "squeeze next")   
+            logInfo(LOGGER_NAME, "squeeze next")
             Squeeze_GF_LivingRoom_Control.sendCommand(NextPreviousType::NEXT)
-        }         
+        }
         default:{
             logWarn(LOGGER_NAME, "Unexpected control signal {}", receivedCommand)
         }
@@ -323,7 +327,7 @@ when
 then
     val GenericItem itemCommanded = LivingRoomAudio_chromecast_control
     logReceivedCommand.apply(LOGGER_NAME, itemCommanded, receivedCommand.toString())
- 
+
     switch receivedCommand {
         case CONTROL_MUTE:{
             logInfo(LOGGER_NAME, "chromecast vol mute")
@@ -377,7 +381,7 @@ then
         case CONTROL_PLAY:{
             logInfo(LOGGER_NAME, "chromecast play")
             Chromecast_GF_LivingRoom_control.sendCommand(PlayPauseType::PLAY)
-        }      
+        }
         default:{
             logWarn(LOGGER_NAME, "Unexpected control signal {}", receivedCommand)
         }

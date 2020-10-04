@@ -118,8 +118,7 @@ then
     if( itemChanged.state == OnOffType::OFF) {
         // Notify on pushbullet
         logInfo(LOGGER, "Sending notification: {}", notifyMsg)
-        // TODO replace with sendTelegram("peder", "message")
-        sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+        sendTelegram("peder", "Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
 
         // Notify on computer room speaker
         val int notifyVolume = 20 // percent
@@ -156,8 +155,7 @@ then
     if( itemChanged.state == OnOffType::OFF) {
         // Notify on pushbullet
         logInfo(LOGGER, "Sending notification: {}", notifyMsg)
-        // TODO replace with sendTelegram("peder", "message")
-        sendPushbulletNote("Openhab: " + machineName + " " + machineState, notifyMsg)
+        sendTelegram("peder", "Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
 
         // Notify on computer room speaker
         val int notifyVolume = 20 // percent
@@ -245,8 +243,7 @@ then
         msg = msg + ", setting motion trigger to 'DEFAULT'"
     }
 
-    // TODO replace with sendTelegram("peder", "message")
-    //sendPushbulletNote("Motion trigger schedule", msg)
+    //sendTelegram("peder", "Motion trigger schedule:" + msg)
 end
 
 // When the UI control element change state

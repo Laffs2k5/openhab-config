@@ -1,12 +1,26 @@
+# Use this with git filters:
+# In .\.gitattributes:
+#   *.sitemap filter=removeAddPersonalStuff
+#   README.md filter=removeAddPersonalStuff
+#
+# In .\.personalStuff:
+#   mySecret=[Something Secret]
+#
+# Execute in PS:
+#   git config --global filter.removeAddPersonalStuff.clean "powershell.exe -NoProfile -noninteractive -ExecutionPolicy Bypass -c '`$input|%{`$_|removeAddPersonalStuff.ps1 -PersonalConfigFile ''.\.personalStuff'' -Clean}'"
+#   git config --global filter.removeAddPersonalStuff.smudge "powershell.exe -NoProfile -noninteractive -ExecutionPolicy Bypass -c '`$input|%{`$_|removeAddPersonalStuff.ps1 -PersonalConfigFile ''.\.personalStuff'' -Smudge}'"
+#
 # Need to remove personal stuff before commit to github
+html/grafana/smarthome-grafana-user-defaults.js filter=removeAddPersonalStuff
+items/broadlink.items                           filter=removeAddPersonalStuff
+items/default.items                             filter=removeAddPersonalStuff
+items/efergy_energy_monitor.items               filter=removeAddPersonalStuff
+items/network_binding.items                     filter=removeAddPersonalStuff
+items/squeezebox_light_sensors.items            filter=removeAddPersonalStuff
+misc/exec.whitelist                             filter=removeAddPersonalStuff
+services/runtime.cfg                            filter=removeAddPersonalStuff
+services/mqtt.cfg                               filter=removeAddPersonalStuff
 sitemaps/_default.sitemap.old                   filter=removeAddPersonalStuff
 sitemaps/coffee_timer.sitemap                   filter=removeAddPersonalStuff
 sitemaps/energy_monitors.sitemap                filter=removeAddPersonalStuff
 sitemaps/light_sensors.sitemap                  filter=removeAddPersonalStuff
-services/mqtt.cfg                               filter=removeAddPersonalStuff
-items/efergy_energy_monitor.items               filter=removeAddPersonalStuff
-items/squeezebox_light_sensors.items            filter=removeAddPersonalStuff
-items/default.items                             filter=removeAddPersonalStuff
-items/network_binding.items                     filter=removeAddPersonalStuff
-html/grafana/smarthome-grafana-user-defaults.js filter=removeAddPersonalStuff
-items/broadlink.items                           filter=removeAddPersonalStuff
