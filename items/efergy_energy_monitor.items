@@ -149,4 +149,3 @@ Number
     "Household energy monitor value is [%d]"
     <energymonitor>
     (gPersistInfluxEveryUpdate) */
-
