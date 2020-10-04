@@ -11,32 +11,42 @@ Group
 // Network equipment
 Switch
     Network_CL_Router
-    "Cellar router state is [MAP(network.map):%s]"
+    "House router state is [MAP(network.map):%s]"
     <wifirouter>
     (gNetwork)
     { channel="network:device:some.ip.address.1:online" }
-Switch
-    Network_GF_Router
-    "Ground floor router state is [MAP(network.map):%s]"
-    <wifirouter>
-    (gNetwork)
-    { channel="network:device:some.ip.address.4:online" }
 Switch
     Network_FF_Router
     "First floor router state is [MAP(network.map):%s]"
     <wifirouter>
     (gNetwork)
     { channel="network:device:some.ip.address.2:online" }
+Switch
+    Network_CL_AccessPoint
+    "Cellar access point state is [MAP(network.map):%s]"
+    <accesspoint>
+    (gNetwork)
+    { channel="network:pingdevice:some.ip.address.7:online" }
+Switch
+    Network_GF_AccessPoint
+    "Ground floor access point state is [MAP(network.map):%s]"
+    <accesspoint>
+    (gNetwork)
+    { channel="network:pingdevice:some.ip.address.5:online" }
+Switch
+    Network_FF_AccessPoint
+    "First floor access point state is [MAP(network.map):%s]"
+    <accesspoint>
+    (gNetwork)
+    { channel="network:pingdevice:some.ip.address.6:online" }
 
 // Computers
-/*
 Switch
     Network_CL_Stairroom_Server
     "The house`s server state is [MAP(network.map):%s]"
     <computer>
     (gNetwork)
-    { channel="network:device:some.ip.address.100:online" }
-*/
+    { channel="network:pingdevice:some.ip.address.166:online" }
 Switch
     Network_CL_Stairroom_Nas
     "The house`s NAS state is [MAP(network.map):%s]"

@@ -8,11 +8,17 @@ sitemap network_devices label="Network devices"
         Text
             item=Network_CL_Router
         Text
-            item=Network_GF_Router
-        Text
             item=Network_FF_Router
+        Text
+            item=Network_CL_AccessPoint
+        Text
+            item=Network_GF_AccessPoint
+        Text
+            item=Network_FF_AccessPoint
     }
     Frame label="Computers" {
+        Text
+            item=Network_CL_Stairroom_Server
         Text
             item=Network_CL_Stairroom_Nas
         Text
