@@ -3,8 +3,8 @@ sitemap lights label="Lights"
     Frame label="2nd floor"
     {
         Slider
-            item=Dimmer_GF_Bedroom_SwitchDimmer
-            label="Bedroom"
+            item=Dimmer_FF_Kid1Room_SwitchDimmer
+            label="Oldest kid room"
             icon="dimmable"
         Slider
             item=Dimmer_FF_Kid2Room_SwitchDimmer
@@ -32,8 +32,8 @@ sitemap lights label="Lights"
             label="Dining room"
             icon="dimmable"
         Slider
-            item=Dimmer_FF_Kid1Room_SwitchDimmer
-            label="Oldest kid room"
+            item=Dimmer_GF_Bedroom_SwitchDimmer
+            label="Bedroom"
             icon="dimmable"
     }
     Frame label="Cellar"
