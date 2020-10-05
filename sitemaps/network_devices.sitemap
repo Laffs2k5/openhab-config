@@ -46,7 +46,7 @@ sitemap network_devices label="Network devices"
         Text
             item=Network_CL_Bathroom_Squeezebox
         Text
-            item=Network_FF_Bedroom_SqueezeboxRadio
+            item=Network_GF_Bedroom_SqueezeboxRadio
         Text
             item=Network_GF_LivingRoom_Squeezebox
         Text

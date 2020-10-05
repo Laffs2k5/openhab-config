@@ -25,7 +25,7 @@ Number
     These numbers are updated by a rule that converts sensor data from string
 */
 Number
-    LightSensor_FF_Bedroom_SqueezeboxRadio
+    LightSensor_GF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"
     <lightsensor>
     (gRoomBedroom, gPersistInfluxEveryUpdate)

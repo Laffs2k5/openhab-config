@@ -180,6 +180,7 @@ end
 */
 
 // Motion triggering should be automatically disabled at night
+// TODO replace this logic with what is used in oldest_kid_room.rules
 rule "Living room wall lights, Automatic enable/disable motion trigger"
 when
     Time cron "0 0 23 1/1 * ? *" or

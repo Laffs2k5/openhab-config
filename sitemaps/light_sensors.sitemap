@@ -6,30 +6,30 @@ sitemap light_sensors label="Light sensors"
 {
     Frame label="Bedroom" {
         Text
-            item=LightSensor_FF_Bedroom_SqueezeboxRadio
+            item=LightSensor_GF_Bedroom_SqueezeboxRadio
             label="Squeezebox radio last reading [%d]"
         Text label="Bedroom squeezebox light sensor"
         {
             Text
-                item=Network_FF_Bedroom_SqueezeboxRadio
+                item=Network_GF_Bedroom_SqueezeboxRadio
                 label="Device is [MAP(network.map):%s]"
             Switch
-                item=LightSensor_FF_Bedroom_SqueezeboxRadio_Run
+                item=LightSensor_GF_Bedroom_SqueezeboxRadio_Run
                 label="Force update"
             Text
-                item=LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue
+                item=LightSensor_GF_Bedroom_SqueezeboxRadio_ExitValue
                 label="Last exit value [%s]"
             Text
-                item=LightSensor_FF_Bedroom_SqueezeboxRadio_LastExecution
+                item=LightSensor_GF_Bedroom_SqueezeboxRadio_LastExecution
                 label="Last readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
             Text
-                item=LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+                item=LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString
                 label="Last reading [%s]"
             Text
-                item=LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout
+                item=LightSensor_GF_Bedroom_SqueezeboxRadio_LastValidReadout
                 label="Last valid readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
             Text
-                item=LightSensor_FF_Bedroom_SqueezeboxRadio
+                item=LightSensor_GF_Bedroom_SqueezeboxRadio
                 label="Last valid readout [%d]"
             Webview
                 url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_last3Hours.html"

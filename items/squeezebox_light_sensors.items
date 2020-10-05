@@ -28,8 +28,8 @@
             15
 
     Need extra virtual item to convert from String to Number
-        Thus String LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
-        and Number LightSensor_FF_Bedroom_SqueezeboxRadio
+        Thus String LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString
+        and Number LightSensor_GF_Bedroom_SqueezeboxRadio
 */
 
 /* Chart period setting for light sensor details */
@@ -40,36 +40,36 @@ String
 
 /* Bedroom Squeeze radio light sensor */
 Switch
-    LightSensor_FF_Bedroom_SqueezeboxRadio_Run
+    LightSensor_GF_Bedroom_SqueezeboxRadio_Run
     "Bedroom squeezebox light sensor update"
     (gRoomBedroom)
     {channel="exec:command:c74bf4cf:run"}
 Number
-    LightSensor_FF_Bedroom_SqueezeboxRadio_ExitValue
+    LightSensor_GF_Bedroom_SqueezeboxRadio_ExitValue
     "Bedroom squeezebox light sensor last exit value [%d]"
     <exitvalue>
     (gRoomBedroom)
     {channel="exec:command:c74bf4cf:exit"}
 DateTime
-    LightSensor_FF_Bedroom_SqueezeboxRadio_LastExecution
+    LightSensor_GF_Bedroom_SqueezeboxRadio_LastExecution
     "Bedroom squeezebox light sensor last readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
     (gRoomBedroom)
     {channel="exec:command:c74bf4cf:lastexecution"}
 String
-    LightSensor_FF_Bedroom_SqueezeboxRadio_ValueString
+    LightSensor_GF_Bedroom_SqueezeboxRadio_ValueString
     "Bedroom squeezebox light sensor last readout value is [%s]"
     <lastreading>
     (gRoomBedroom)
     {channel="exec:command:c74bf4cf:output"}
 DateTime
-    LightSensor_FF_Bedroom_SqueezeboxRadio_LastValidReadout
+    LightSensor_GF_Bedroom_SqueezeboxRadio_LastValidReadout
     "Bedroom squeezebox light sensor last valid readout [%1$td.%1$tm.%1$tY]"
     <updatedate>
     (gRoomBedroom)
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
-    LightSensor_FF_Bedroom_SqueezeboxRadio
+    LightSensor_GF_Bedroom_SqueezeboxRadio
     "Bedroom squeezebox light sensor value is [%d]"
     (gRoomBedroom) */
 
