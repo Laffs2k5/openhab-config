@@ -32,15 +32,15 @@ sitemap light_sensors label="Light sensors"
                 item=LightSensor_GF_Bedroom_SqueezeboxRadio
                 label="Last valid readout [%d]"
             Webview
-                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_last3Hours.html"
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_last3Hours.html"
                 height=10
                 visibility=[LightSensor_chartPeriod=="0"]
             Webview
-                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_last24Hours.html"
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_last24Hours.html"
                 height=10
                 visibility=[LightSensor_chartPeriod=="1"]
             Webview
-                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_guest_room_lastWeek.html"
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_lastWeek.html"
                 height=10
                 visibility=[LightSensor_chartPeriod=="2"]
             Switch
@@ -77,15 +77,15 @@ sitemap light_sensors label="Light sensors"
                 item=LightSensor_FF_Kid1Room_SqueezeboxRadio
                 label="Last valid readout [%d]"
             Webview
-                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_last3Hours.html"
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_kid1room_last3Hours.html"
                 height=10
                 visibility=[LightSensor_chartPeriod=="0"]
             Webview
-                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_last24Hours.html"
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_kid1room_last24Hours.html"
                 height=10
                 visibility=[LightSensor_chartPeriod=="1"]
             Webview
-                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_bedroom_lastWeek.html"
+                url="https://EXAMPLE.TLD/static/grafana/light_sensor_squeezebox_kid1room_lastWeek.html"
                 height=10
                 visibility=[LightSensor_chartPeriod=="2"]
             Switch
