@@ -15,7 +15,7 @@ val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
     loggerName,
     itemChanged |
     val String LOGGER = loggerName //+ ".stateChange"
-    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+    logDebug(LOGGER, "State of item '{}' changed to '{}'",
         itemChanged.name,
         itemChanged.state.toString())
     true
@@ -25,7 +25,7 @@ val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand
     itemCommanded,
     command |
     val String LOGGER = loggerName //+ ".cmdReceived"
-    logInfo(LOGGER, "Item '{}' received command '{}'",
+    logDebug(LOGGER, "Item '{}' received command '{}'",
         itemCommanded.name,
         command)
     true
@@ -34,7 +34,7 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdate = [
     loggerName,
     itemUpdated |
     val String LOGGER = loggerName //+ ".updReceived"
-    logInfo(LOGGER, "Item '{}' received update",
+    logDebug(LOGGER, "Item '{}' received update",
         itemUpdated.name)
     true
 ]
@@ -51,7 +51,7 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState
     loggerName,
     itemUpdated |
     val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
-    logInfo(LOGGER, "Item '{}' received update '{}'",
+    logDebug(LOGGER, "Item '{}' received update '{}'",
         itemUpdated.name,
         itemUpdated.state)
     true
@@ -64,10 +64,10 @@ val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
     var String dispName = "unknown"
     if( timerName !== null ) {dispName = timerName}
     if( timerToStop !== null ) {
-        logInfo(LOGGER,"Stopping timer '{}', isRunning: {}", timerName, timerToStop.isRunning())
+        logDebug(LOGGER,"Stopping timer '{}', isRunning: {}", timerName, timerToStop.isRunning())
         timerToStop.cancel()
     } else {
-        logInfo(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
+        logDebug(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
     }
     true
 ]
@@ -129,18 +129,18 @@ then
                 // Timespan overlaps midnight, add 1 day to end time
                 endtime = now.withTimeAtStartOfDay.plusHours(endHourValue).plusDays(1)
             }
-            logInfo(LOGGER, "Motion trigger start time value is '{}'", startTime)
-            logInfo(LOGGER, "Motion trigger end time value is '{}'", endtime)
+            logDebug(LOGGER, "Motion trigger start time value is '{}'", startTime)
+            logDebug(LOGGER, "Motion trigger end time value is '{}'", endtime)
 
             // Check if current time is within given timespan
             if( !( now.isAfter(startTime) && now.isBefore(endtime) ) ) {
-                logInfo(LOGGER, "Will not change state of lights as current date '{}' is not between '{}' and '{}'.", now, startTime, endtime)
+                logDebug(LOGGER, "Will not change state of lights as current date '{}' is not between '{}' and '{}'.", now, startTime, endtime)
             } else {
                 // Log
                 if( startHourValue == endHourValue ) {
-                    logInfo(LOGGER, "Motion will affect lights as current configuration is ON always.")
+                    logDebug(LOGGER, "Motion will affect lights as current configuration is ON always.")
                 } else {
-                    logInfo(LOGGER, "Motion will affect lights as current date '{}' is between '{}' and '{}'.", now, startTime, endtime)
+                    logDebug(LOGGER, "Motion will affect lights as current date '{}' is between '{}' and '{}'.", now, startTime, endtime)
                 }
 
                 /* // just debug
@@ -164,7 +164,7 @@ then
 
                 if( itemChanged.state == OnOffType::ON ) {
                     // Motion detected and hour of day is within timespan of motion trigger enabled --> Turn lights on
-                    logInfo(LOGGER, "Turning lights on.")
+                    logDebug(LOGGER, "Turning lights on.")
                     RoofLightDimmer.sendCommand(OnOffType::ON)
                 } else if(itemChanged.state == OnOffType::OFF) {
                     // Motion no longer detected and hour of day is within timespan of motion trigger enabled
@@ -172,14 +172,14 @@ then
                     val int setTimeValue = (AutoOffTimeItem.state as DecimalType).intValue
                     if( setTimeValue > 0 ) {
                         // Start new auto off timer
-                        logInfo(LOGGER, "Setting timer for turning lights off, lights will turn off in {} minutes.", setTimeValue)
+                        logDebug(LOGGER, "Setting timer for turning lights off, lights will turn off in {} minutes.", setTimeValue)
                         // DEBUG g_kid1RoomLightsOffTimer = createTimer(now.plusSeconds(setTimeValue)) [|
                         g_kid1RoomLightsOffTimer = createTimer(now.plusMinutes(setTimeValue)) [|
-                            logInfo(LOGGER, "Lights auto off triggered")
+                            logDebug(LOGGER, "Lights auto off triggered")
                             RoofLightDimmer.sendCommand(OnOffType::OFF)
                         ]
                     } else {
-                        logInfo(LOGGER, "Lights will not turn off automatically as timeout for auto off is {} minutes.", setTimeValue)
+                        logDebug(LOGGER, "Lights will not turn off automatically as timeout for auto off is {} minutes.", setTimeValue)
                     }
                 } else {
                     logUnexpectedState.apply(LOGGER, itemChanged)
@@ -188,7 +188,7 @@ then
         } // end start and end hour is defined
 
     } else if( MotionTriggerControlItem.state == OnOffType::OFF ) {
-        logInfo(LOGGER, "Motion trigger is disabled, not changing lights.")
+        logDebug(LOGGER, "Motion trigger is disabled, not changing lights.")
     } else {
         logUnexpectedState.apply(LOGGER, MotionTriggerControlItem)
     }
@@ -212,21 +212,21 @@ then
     logReceivedUpdateWithState.apply(LOGGER, itemChanged)
 
     if( controlValue < 1 ) {
-        logInfo(LOGGER, "Auto off time is {} minutes, cancelling auto off timer if it exists.", controlValue)
+        logDebug(LOGGER, "Auto off time is {} minutes, cancelling auto off timer if it exists.", controlValue)
         stopTimer.apply(LOGGER, g_kid1RoomLightsOffTimer, "Lights auto off")
         statusText = "OFF"
     } else {
-        logInfo(LOGGER, "Auto off time is {} minutes.", controlValue)
+        logDebug(LOGGER, "Auto off time is {} minutes.", controlValue)
         // If montion sensor is untriggered it must be re-triggered to activate auto off timer
         // if montion sensor is triggered it will post OFF state itself after configured intervall
         if( MotionTriggerSensorItem.state == OnOffType::OFF ) {
-            logInfo(LOGGER, "Will re-trigger motion sensor to (re-)activate auto off timer.", controlValue)
+            logDebug(LOGGER, "Will re-trigger motion sensor to (re-)activate auto off timer.", controlValue)
             MotionTriggerSensorItem.postUpdate(OnOffType::OFF)
         }
         statusText = String.format("%d min", controlValue)
     }
 
-    logInfo(LOGGER, "Auto off UI text is: {}", statusText)
+    logDebug(LOGGER, "Auto off UI text is: {}", statusText)
     AutoOffStatusItem.postUpdate(statusText)
 end
 
@@ -248,13 +248,13 @@ then
     logReceivedUpdateWithState.apply(LOGGER, itemChanged)
 
     if( itemChanged.state == OnOffType::OFF ) {
-        logInfo(LOGGER, "Cancelling auto off timer if it exists.")
+        logDebug(LOGGER, "Cancelling auto off timer if it exists.")
         stopTimer.apply(LOGGER, g_kid1RoomLightsOffTimer, "Lights auto off")
     } else {
         // If montion sensor is untriggered it must be re-triggered to activate auto off timer
         // if montion sensor is triggered it will post OFF state itself after configured intervall
         if( MotionTriggerSensorItem.state == OnOffType::OFF ) {
-            logInfo(LOGGER, "Will re-trigger motion sensor to activate auto off timer.")
+            logDebug(LOGGER, "Will re-trigger motion sensor to activate auto off timer.")
             MotionTriggerSensorItem.postUpdate(OnOffType::OFF)
         }
     }
@@ -274,7 +274,7 @@ then
     }
 
     // Update UI status text
-    logInfo(LOGGER, "Motion control UI text is: {}", statusText)
+    logDebug(LOGGER, "Motion control UI text is: {}", statusText)
     MotionTriggerStatusItem.postUpdate(statusText)
 
 end
@@ -345,7 +345,7 @@ then
 
     val int controlValue = (AutoOffControlItem.state as DecimalType).intValue
 
-    logInfo(LOGGER, "Auto off control received command {}.", controlValue)
+    logDebug(LOGGER, "Auto off control received command {}.", controlValue)
 
     if( controlValue != CONTROL_MODE_NOCHANGE ) {
         // Failsafe default to timer off in case of problems
@@ -362,7 +362,7 @@ then
         } else {
             logWarn(LOGGER, "Item '{}' has state NULL or UNDEF, default set time {} will be used!", AutoOffSetTimeItem.name, setTimeValue)
         }
-        logInfo(LOGGER, "Current set time value is {}", setTimeValue)
+        logDebug(LOGGER, "Current set time value is {}", setTimeValue)
 
         var int newSetTime = Math.max(0, setTimeValue + controlValue) // never negative
         if( controlValue == CONTROL_MODE_START ) {
@@ -370,7 +370,7 @@ then
         } else if( controlValue == CONTROL_MODE_DISABLE) {
             newSetTime = 0              // 0 will result in termination of auto off timer
         }
-        logInfo(LOGGER, "New set time value is {}", newSetTime)
+        logDebug(LOGGER, "New set time value is {}", newSetTime)
 
         // Apply new set time
         AutoOffSetTimeItem.postUpdate(newSetTime)
