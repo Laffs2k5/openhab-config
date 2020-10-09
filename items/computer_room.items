@@ -32,20 +32,20 @@ Switch
 
 /* Yeelight strip #1: Computer room TV backlight */
 /*  How to fix wifi issues with yeelight strips:
-      - Network router:
+    - Network router:
         - Remove Parental rule in router preventing communication with internet
-      - Androind phone:
+    - Androind phone:
         - Install yeelight app
         - Check connectivity with strips in app
         - If no connection: Boot strip
         - Still no connection: Hold buton on strip whn plugging in to reset
         - Set up strip in app, make sure to enable "LAN access"
-      - Openhab:
+    - Openhab:
         - No need to modify things or config
         - Normally some part of Java has reached "Maximum number of datagrams"
-          - Can be seen in log by doing i Karaf: log:set DEBUG org.openhab.binding.yeelight
+            - Can be seen in log by doing i Karaf: log:set DEBUG org.openhab.binding.yeelight
         - To fix, restart openhab: sudo service openhab2 restart
-      - Network router:
+    - Network router:
         - Re-enable parental rule
             - Over time the strips will start to fail again because of no internet? Maybe on power outage?
 */
@@ -78,3 +78,17 @@ Dimmer
     {channel="yeelight:stripe:d6f7fd7b:colorTemperature"}
 //    {channel="yeelight:stripe:0x0000000003427b02:colorTemperature"}
 /* END Yeelight strip #1 */
+
+/* NodOn CWS-3101 wallswitch: Computer room wall */
+Number
+    Wallswitch_GF_ComputerRoom_scene
+    "Computer room wall switch scene number: [%d]"
+    (gRoomComputerRoom)
+    {channel="zwave:device:2c3b27f3:node36:scene_number"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Wallswitch_GF_ComputerRoom_batteryLevel
+    "Computer room wall switch battery level is [%.0f %%]"
+    (gRoomComputerRoom)
+    {channel="zwave:device:2c3b27f3:node36:battery-level"}
+/* END NodOn CWS-3101 wallswitch */

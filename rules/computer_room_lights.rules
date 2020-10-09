@@ -2,7 +2,7 @@
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
 
 // Constants
-val String  LOGGER_NAME = "cmpterRoom"
+val String  LOGGER_NAME = "cmptrRm"
 
 // Globals
 var int     g_tvBacklight_percent = 0
@@ -25,7 +25,7 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState
     loggerName,
     itemUpdated |
     val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
-    logInfo(LOGGER, "Item '{}' received update '{}'",
+    logDebug(LOGGER, "Item '{}' received update '{}'",
         itemUpdated.name,
         itemUpdated.state)
     true
@@ -58,6 +58,7 @@ then
         ]
     }
 end
+
 rule "Computer room TV backlight, dim up triggered"
 when
     Item ComputerRoom_TvBacklight_DimUp_trigger received update ON
@@ -104,4 +105,81 @@ then
         // Dim up gently when TV goes online
         dimUpItem.postUpdate(OnOffType::ON)
     }
+end
+
+rule "Computer room wall switch scene updated"
+when
+    Item Wallswitch_GF_ComputerRoom_scene received update
+then
+    val String LOGGER = LOGGER_NAME + ".scn"
+    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
+
+    var int btn = (triggeringItem.state as DecimalType).intValue
+    var int eventId = (((triggeringItem.state as DecimalType) - btn ) * 10).intValue
+    logDebug(LOGGER, "btn is {}", btn)
+    logDebug(LOGGER, "eventId is {}", eventId)
+
+    var GenericItem dimmerItem
+    var OnOffType binaryState
+    var int dimPercent
+    var int doubleClickPercent
+
+    switch(btn) {
+        // Left up/down button should map to TV backlight
+        // up = 1 = ON or dim up, down = 3 = OFF or dim down
+        case 1: {
+            dimmerItem = LedStrip_GF_ComputerRoom_brightness
+            binaryState = OnOffType::ON
+            dimPercent = 10
+            doubleClickPercent = 100
+        }
+        case 3: {
+            dimmerItem = LedStrip_GF_ComputerRoom_brightness
+            binaryState = OnOffType::OFF
+            dimPercent = -10
+            doubleClickPercent = 1
+        }
+        // Left up/down button should map to computer room wall light
+        // up = 1 = ON or dim up, down = 3 = OFF or dim down
+        case 2: {
+            dimmerItem = Wallplug_GF_ComputerRoom_Wall_Dimmer
+            binaryState = OnOffType::ON
+            dimPercent = 10
+            doubleClickPercent = 100
+        }
+        case 4: {
+            dimmerItem = Wallplug_GF_ComputerRoom_Wall_Dimmer
+            binaryState = OnOffType::OFF
+            dimPercent = -10
+            doubleClickPercent = 1
+        }
+        default: {
+            logError(LOGGER, "Button {} not mapped to an item. See rule 'Computer room wall switch scene updated'", btn)
+            return
+        }
+    }
+
+    switch(eventId) {
+        // 0 Single key press   ->  State change
+        case 0: {
+            dimmerItem.sendCommand(binaryState)
+        }
+        // 1 Key released
+        case 1: {
+            // no op
+        }
+        // 2 Key held down
+        case 2: {
+            dimmerItem.sendCommand((dimmerItem.state as DecimalType).intValue + dimPercent)
+        }
+        // 3 Double keypress
+        case 3: {
+            dimmerItem.sendCommand(doubleClickPercent)
+        }
+        default: {
+            logError(LOGGER, "Event id {} not mapped to an action. See rule 'Computer room wall switch scene updated'", eventId)
+            return
+        }
+    }
+
 end

@@ -170,3 +170,11 @@ Number
     (gRoomKid2Room, gPersistInfluxEveryUpdate)
     {channel="zwave:device:2c3b27f3:node32:sensor_power"}
 /* END Fibaro FGD212 Dimmer 2 */
+
+/* NodOn CWS-3101 wallswitch: Computer room wall */
+Number
+    Wallswitch_GF_ComputerRoom_batteryLevel
+    "Computer room wall switch battery level is [%.0f %%]"
+    (gRoomComputerRoom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node36:battery-level"}
+/* END NodOn CWS-3101 wallswitch */
