@@ -13,7 +13,8 @@ Switch
     "Moccamaster"
     <switch>
     (gPersistInfluxEveryUpdate)
-    { channel="tplinksmarthome:hs100:8F6DBF:switch" }
+    { channel="tplinksmarthome:hs100:8F6DBF:led" }
+    //{ channel="tplinksmarthome:hs100:8F6DBF:switch" } attempt to use led instead, in grafana switch seems to always be 1
 Number
     Wallplug_firstFloor_kitchen_cofeeMaker_rssi // if name is changed data in influx must be migrated
     "Moccamaster signal (dBm)"
@@ -176,5 +177,5 @@ Number
     Wallswitch_GF_ComputerRoom_batteryLevel
     "Computer room wall switch battery level is [%.0f %%]"
     (gRoomComputerRoom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node36:battery-level"}
+    {channel="zwave:device:2c3b27f3:node37:battery-level"}
 /* END NodOn CWS-3101 wallswitch */
