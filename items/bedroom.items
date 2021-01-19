@@ -1,0 +1,38 @@
+/* ZW112 Aeotec Door/Window Sensor 6: Bedroom window sensors */
+Contact
+    Sensor_GF_Bedroom_Window1_sensor
+    "Bedroom window 1 sensor state is [%s]"
+    <windowsensor>
+    (gRoomBedroom)
+    {channel="zwave:device:2c3b27f3:node38:sensor_door"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_GF_Bedroom_Window1_batterylevel
+    "Bedroom window 1 battery level is [%.0f %%]"
+    <battery>
+    (gRoomBedroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node38:battery-level"} */
+
+Contact
+    Sensor_GF_Bedroom_Window2_sensor
+    "Bedroom window 2 sensor state is [%s]"
+    <windowsensor>
+    (gRoomBedroom)
+    {channel="zwave:device:2c3b27f3:node39:sensor_door"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_GF_Bedroom_Window2_batterylevel
+    "Bedroom window 2 battery level is [%.0f %%]"
+    <battery>
+    (gRoomBedroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node39:battery-level"} */
+/* END Aeotec Sensor 6 */
+
+/* Nexa AN-180 wallplug Z-Wave: Bedroom panel oven */
+Switch
+    Wallplug_GF_Bedroom_PanelOven_switch
+    "Bedroom panel oven state is [%s]"
+    <paneloven>
+    (gRoomBedroom)
+    {channel="zwave:device:2c3b27f3:node8:switch_binary"}
+/* END Nexa AN-180 wallplug */

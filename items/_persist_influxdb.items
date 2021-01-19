@@ -179,3 +179,18 @@ Number
     (gRoomComputerRoom, gPersistInfluxEveryUpdate)
     {channel="zwave:device:2c3b27f3:node37:battery-level"}
 /* END NodOn CWS-3101 wallswitch */
+
+/* ZW112 Aeotec Door/Window Sensor 6: Bedroom window sensors */
+Number
+    Sensor_GF_Bedroom_Window1_batterylevel
+    "Bedroom window 1 battery level is [%.0f %%]"
+    <battery>
+    (gRoomBedroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node38:battery-level"}
+Number
+    Sensor_GF_Bedroom_Window2_batterylevel
+    "Bedroom window 2 battery level is [%.0f %%]"
+    <battery>
+    (gRoomBedroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node39:battery-level"}
+/* END Aeotec Sensor 6 */

@@ -1,0 +1,126 @@
+// Imports
+import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+
+// Constants
+val String  LOGGER_NAME = "bdRm"
+
+// Globals
+
+// Lambdas
+val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".stateChange"
+    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+        itemChanged.name,
+        itemChanged.state.toString())
+    true
+]
+val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand = [
+    loggerName,
+    itemCommanded,
+    command |
+    val String LOGGER = loggerName //+ ".cmdReceived"
+    logDebug(LOGGER, "Item '{}' received command '{}'",
+        itemCommanded.name,
+        command)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdate = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".updReceived"
+    logDebug(LOGGER, "Item '{}' received update",
+        itemUpdated.name)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
+    loggerName,
+    itemChanged |
+    val String LOGGER = loggerName //+ ".logUnexpectedState"
+    logError(LOGGER, "The state '{}' of item '{}' was unexpected!",
+        itemChanged.state.toString(),
+        itemChanged.name)
+    true
+]
+val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState = [
+    loggerName,
+    itemUpdated |
+    val String LOGGER = loggerName //+ ".logReceivedUpdateWithState"
+    logDebug(LOGGER, "Item '{}' received update '{}'",
+        itemUpdated.name,
+        itemUpdated.state)
+    true
+]
+val Functions$Function3<String, Timer, String, Boolean> stopTimer = [
+    loggerName,
+    timerToStop,
+    timerName |
+    val String LOGGER = loggerName + ".stopTimer"
+    var String dispName = "unknown"
+    if( timerName !== null ) {dispName = timerName}
+    if( timerToStop !== null ) {
+        logDebug(LOGGER,"Stopping timer '{}', isRunning: {}", timerName, timerToStop.isRunning())
+        timerToStop.cancel()
+    } else {
+        logDebug(LOGGER,"Not stopping timer '{}' as it was not instantiated", timerName)
+    }
+    true
+]
+/*
+// This is just debug
+rule "Bedroom window 1 sensor received update"
+when
+    Item Sensor_GF_Bedroom_Window1_sensor received update
+then
+    val String LOGGER = LOGGER_NAME + ".sensUpd"
+    logReceivedUpdate.apply(LOGGER, triggeringItem)
+end
+rule "Bedroom window 2 sensor received update"
+when
+    Item Sensor_GF_Bedroom_Window2_sensor received update
+then
+    val String LOGGER = LOGGER_NAME + ".sensUpd"
+    logReceivedUpdate.apply(LOGGER, triggeringItem)
+end
+*/
+/*
+// This is just debug
+rule "Bedroom panel oven switch received command"
+when
+    Item Wallplug_GF_Bedroom_PanelOven_switch received command
+then
+    val String LOGGER = LOGGER_NAME + ".ovenCmd"
+    val GenericItem itemCommanded = Wallplug_GF_Bedroom_PanelOven_switch
+    logReceivedCommand.apply(LOGGER, itemCommanded, receivedCommand.toString())
+end
+*/
+
+// Window sensors:
+// Open:    disable panel oven power
+// Closed:  enable  panel oven power
+rule "Bedroom, any window sensor received update"
+when
+    Item Sensor_GF_Bedroom_Window1_sensor received update
+    or
+    Item Sensor_GF_Bedroom_Window2_sensor received update
+then
+    val String LOGGER = LOGGER_NAME + ".sens"
+    logReceivedUpdate.apply(LOGGER, triggeringItem)
+    val ContactItem Window1SensorItem = Sensor_GF_Bedroom_Window1_sensor
+    val ContactItem Window2SensorItem = Sensor_GF_Bedroom_Window2_sensor
+    val SwitchItem  PanelOvenControlItem = Wallplug_GF_Bedroom_PanelOven_switch
+
+    // Failsafe: newly defined items will hav unknown state until updated
+    if(Window1SensorItem.state == NULL || Window1SensorItem.state == UNDEF ) {
+        logError(LOGGER, "Will not change state of panel oven power as window sensor state is not set!")
+    } else if(Window2SensorItem.state == NULL || Window2SensorItem.state == UNDEF ) {
+        logError(LOGGER, "Will not change state of panel oven power as window sensor state is not set!")
+    } else {
+        if(Window1SensorItem.state == OpenClosedType::OPEN || Window2SensorItem.state == OpenClosedType::OPEN ) {
+            PanelOvenControlItem.sendCommand(OnOffType::OFF)
+        } else {
+            PanelOvenControlItem.sendCommand(OnOffType::ON)
+        }
+    }
+end
