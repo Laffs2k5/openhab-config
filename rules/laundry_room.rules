@@ -211,7 +211,7 @@ then
     }
 
     logInfo(LOGGER, "Auto off enabled httpBody: '{}'",httpBody)
-    val httpResult = sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node9/config", "application/json", httpBody)
+    val httpResult = sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node40/config", "application/json", httpBody)
     logInfo(LOGGER, "Auto off enabled httpResult: '{}'",httpResult)
 end
 

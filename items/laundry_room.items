@@ -78,35 +78,42 @@ Switch
 /* END Qubino Flush 1 Relay Z-wave */
 
 /* TELLDUS Multisensor Z-Wave: Laundry room */
+/* [Deprecated] Not in use
 Switch
     Sensor_CL_LaundryRoom_alarmBurglar
     "Laundry room motion sensor state is [%s]"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node9:alarm_burglar" }
+    { channel="zwave:device:2c3b27f3:node40:alarm_tamper" } */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Sensor_CL_LaundryRoom_sensorTemperature
     "Laundry room temperature is [%.0f °C]"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node9:sensor_temperature" } */
+    { channel="zwave:device:2c3b27f3:node40:sensor_temperature" } */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Sensor_CL_LaundryRoom_sensorLuminance
     "Laundry room light sensor value is [%d]"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node9:sensor_luminance" } */
+    { channel="zwave:device:2c3b27f3:node40:sensor_luminance" } */
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Sensor_CL_LaundryRoom_batteryLevel
     "Laundry room battery Level is [%.0f %%]"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node9:battery-level" } */
-
+    { channel="zwave:device:2c3b27f3:node40:battery-level" } */
+/* [Deprecated] Not in use
 Switch
     Sensor_CL_LaundryRoom_sensorBinary
     "Binary Sensor"
     (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node9:sensor_binary" }
+    { channel="zwave:device:2c3b27f3:node40:sensor_binary" } */
+/* Not in use, device enables lights (node7) through z-wave network
+Switch
+    Sensor_CL_LaundryRoom_alarmMotion
+    "Motion alarm"
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node40:alarm_motion"} */
 /* END TELLDUS Multisensor */
 
 /* Fibaro Wallplug Z-Wave: Laundry room tumbler */

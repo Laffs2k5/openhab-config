@@ -75,19 +75,19 @@ Number
     "Laundry room temperature is [%.0f °C]"
     <temperature>
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    { channel="zwave:device:2c3b27f3:node9:sensor_temperature" }
+    { channel="zwave:device:2c3b27f3:node40:sensor_temperature" }
 Number
     Sensor_CL_LaundryRoom_sensorLuminance
     "Laundry room light sensor value is [%d]"
     <lightsensor>
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    { channel="zwave:device:2c3b27f3:node9:sensor_luminance" }
+    { channel="zwave:device:2c3b27f3:node40:sensor_luminance" }
 Number
     Sensor_CL_LaundryRoom_batteryLevel
     "Laundry room battery Level is [%.0f %%]"
     <battery>
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
-    { channel="zwave:device:2c3b27f3:node9:battery-level" }
+    { channel="zwave:device:2c3b27f3:node40:battery-level" }
 /* END TELLDUS Multisensor */
 
 /* Shenzhen multisensor Z-Wave: Living room */
