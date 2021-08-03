@@ -1,0 +1,101 @@
+/* Virtual items */
+Group
+    gKid2RoomLightMotionAndAutoOff
+    "Youngest kid room light auto off group"
+    <time>
+
+// For motion and auto off functionality
+Number
+    Kid2Room_Lights_AutoOff_control
+    "Auto off control"
+    <selfenergy>
+    (gKid2RoomLightMotionAndAutoOff)
+Number
+    Kid2Room_Lights_AutoOff_setTime
+    "Auto off time set is [%d min]"
+    <time>
+    (gKid2RoomLightMotionAndAutoOff)
+String
+    Kid2Room_Lights_AutoOff_setTime_config
+    "Auto off is [%s]"
+    <time>
+    (gKid2RoomLightMotionAndAutoOff)
+Switch
+    Kid2Room_Lights_MotionTrigger_control
+    "Motion trigger[]"
+    <motion>
+    (gKid2RoomLightMotionAndAutoOff)
+Number
+    Kid2Room_Lights_MotionTrigger_startHour
+    "Motion trigger start hour [%d]"
+    <time>
+    (gKid2RoomLightMotionAndAutoOff)
+Number
+    Kid2Room_Lights_MotionTrigger_endHour
+    "Motion trigger end hour [%d]"
+    <time>
+    (gKid2RoomLightMotionAndAutoOff)
+String
+    Kid2Room_Lights_MotionTrigger_config
+    "Motion trigger is [%s]"
+    <schedule>
+    (gKid2RoomLightMotionAndAutoOff)
+/* END Virtual items */
+
+/* Vision ZP3102 Z-Wave: motion sensor #2: Youngest kid room */
+Switch
+    Sensor_FF_Kid2Room_SensorBinary
+    "Youngest kid room Binary Sensor state is [%s]"
+    (gRoomKid2Room)
+    {channel="zwave:device:2c3b27f3:node41:sensor_binary"}
+/* Not used
+Number
+    Sensor_FF_Kid2Room_SensorTemperature
+    "Youngest kid room temperature is [%.0f °C]"
+    (gRoomKid2Room)
+    {channel="zwave:device:2c3b27f3:node41:sensor_temperature"}
+Switch
+    Sensor_FF_Kid2Room_AlarmBurglar
+    "Youngest kid room motion sensor state is [%s]"
+    (gRoomKid2Room)
+    {channel="zwave:device:2c3b27f3:node41:alarm_burglar"} */
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_FF_Kid2Room_BatteryLevel
+    "Youngest kid room battery Level is [%.0f %%]"
+    (gRoomKid2Room)
+    {channel="zwave:device:2c3b27f3:node41:battery-level"} */
+/* END Vision ZP3102 Z-Wave: motion sensor #2 */
+
+/* Fibaro FGD212 Dimmer 2: Youngest kid room */
+Dimmer
+    Dimmer_FF_Kid2Room_SwitchDimmer
+    "Youngest kid light brightness [%d %%]"
+    <dimmablelight>
+    (gRoomKid2Room)
+    {channel="zwave:device:2c3b27f3:node32:switch_dimmer1"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Dimmer_FF_Kid2Room_SensorPower
+    "Youngest kid power consumption [%.0f W]"
+    <energymonitor>
+    (gRoomKid2Room, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node32:sensor_power"} */
+//Number   Dimmer_FF_Kid2Room_SceneNumber            "Scene number"                        {channel="zwave:device:2c3b27f3:node32:scene_number"}
+//Number   Dimmer_FF_Kid2Room_SensorPower            "Sensor (power)"                      {channel="zwave:device:2c3b27f3:node32:sensor_power"}
+//Number   Dimmer_FF_Kid2Room_MeterKwh               "Electric meter (k wh)"               {channel="zwave:device:2c3b27f3:node32:meter_kwh"}
+//Number   Dimmer_FF_Kid2Room_MeterWatts             "Electric meter (watts)"              {channel="zwave:device:2c3b27f3:node32:meter_watts"}
+//Switch   Dimmer_FF_Kid2Room_MeterReset             "Reset the total power consumption"   {channel="zwave:device:2c3b27f3:node32:meter_reset"}
+//Number   Dimmer_FF_Kid2Room_ConfigDecimalParam19   "Force initial brightness"            {channel="zwave:device:2c3b27f3:node32:config_decimal_param19"}
+//Switch   Dimmer_FF_Kid2Room_AlarmHeat              "Alarm (heat)"                        {channel="zwave:device:2c3b27f3:node32:alarm_heat"}
+//Switch   Dimmer_FF_Kid2Room_AlarmPower             "Alarm (power)"                       {channel="zwave:device:2c3b27f3:node32:alarm_power"}
+//Switch   Dimmer_FF_Kid2Room_AlarmSystem            "Alarm (system)"                      {channel="zwave:device:2c3b27f3:node32:alarm_system"}
+//Dimmer   Dimmer_FF_Kid2Room_SwitchDimmer1          "Dimmer 1"                            {channel="zwave:device:2c3b27f3:node32:switch_dimmer1"}
+//Number   Dimmer_FF_Kid2Room_SensorPower1           "Sensor (power) 1"                    {channel="zwave:device:2c3b27f3:node32:sensor_power1"}
+//Number   Dimmer_FF_Kid2Room_MeterKwh1              "Electric meter (k wh) 1"             {channel="zwave:device:2c3b27f3:node32:meter_kwh1"}
+//Number   Dimmer_FF_Kid2Room_MeterWatts1            "Electric meter (watts) 1"            {channel="zwave:device:2c3b27f3:node32:meter_watts1"}
+//Switch   Dimmer_FF_Kid2Room_AlarmHeat1             "Alarm (heat) 1"                      {channel="zwave:device:2c3b27f3:node32:alarm_heat1"}
+//Switch   Dimmer_FF_Kid2Room_AlarmPower1            "Alarm (power) 1"                     {channel="zwave:device:2c3b27f3:node32:alarm_power1"}
+//Switch   Dimmer_FF_Kid2Room_AlarmSystem1           "Alarm (system) 1"                    {channel="zwave:device:2c3b27f3:node32:alarm_system1"}
+//Dimmer   Dimmer_FF_Kid2Room_SwitchDimmer2          "Dimmer 2"                            {channel="zwave:device:2c3b27f3:node32:switch_dimmer2"}
+/* END Fibaro FGD212 Dimmer 2 */

@@ -172,6 +172,14 @@ Number
     {channel="zwave:device:2c3b27f3:node32:sensor_power"}
 /* END Fibaro FGD212 Dimmer 2 */
 
+/* Vision ZP3102 Z-Wave: motion sensor #2: Youngest kid room */
+Number
+    Sensor_FF_Kid2Room_BatteryLevel
+    "Youngest kid room battery Level is [%.0f %%]"
+    (gRoomKid2Room, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node41:battery-level"}
+/* END Vision ZP3102 Z-Wave: motion sensor #2 */
+
 /* NodOn CWS-3101 wallswitch: Computer room wall */
 Number
     Wallswitch_GF_ComputerRoom_batteryLevel
