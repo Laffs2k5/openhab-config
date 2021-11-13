@@ -64,6 +64,10 @@ then
     //  Upon restarting OH this event is not fired until the wallplug changes state
     //  thus LivingRoomAudio_receiver_visibility is not set properly and the living
     //  room audio sitemap display state is wrong
+    //
+    // Manual workaround:
+    //  curl -k -X POST --header "Content-Type: text/plain" --header "Accept: application/json" -d "OFF" "https://docker1.leiflan/rest/items/LivingRoomAudio_receiver_visibility"
+    //  curl -k -X POST --header "Content-Type: text/plain" --header "Accept: application/json" -d "ON" "https://docker1.leiflan/rest/items/LivingRoomAudio_receiver_visibility"
     val GenericItem itemChanged = Network_GF_LivingRoomAudio_Wallplug
     logStateChange.apply(LOGGER_NAME, itemChanged)
     if( itemChanged.state == OnOffType::ON && Network_GF_LivingRoom_IrBlaster.state == OnOffType::ON) {
