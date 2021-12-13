@@ -84,11 +84,11 @@ Number
     Wallswitch_GF_ComputerRoom_scene
     "Computer room wall switch scene number: [%d]"
     (gRoomComputerRoom)
-    {channel="zwave:device:2c3b27f3:node37:scene_number"}
+    {channel="zwave:device:2c3b27f3:node44:scene_number"}
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number
     Wallswitch_GF_ComputerRoom_batteryLevel
     "Computer room wall switch battery level is [%.0f %%]"
     (gRoomComputerRoom)
-    {channel="zwave:device:2c3b27f3:node37:battery-level"}
+    {channel="zwave:device:2c3b27f3:node44:battery-level"}
 /* END NodOn CWS-3101 wallswitch */

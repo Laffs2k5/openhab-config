@@ -185,7 +185,7 @@ Number
     Wallswitch_GF_ComputerRoom_batteryLevel
     "Computer room wall switch battery level is [%.0f %%]"
     (gRoomComputerRoom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node37:battery-level"}
+    {channel="zwave:device:2c3b27f3:node44:battery-level"}
 /* END NodOn CWS-3101 wallswitch */
 
 /* ZW112 Aeotec Door/Window Sensor 6: Bedroom window sensors */
