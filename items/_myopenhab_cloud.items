@@ -23,24 +23,32 @@ Group
 
 /* Yeelight strip #1: Computer room TV backlight */
 // These are proxy items
+// TODO
+//  disable for now as in OH3 these become orphan in karaf:
+//  > openhab:links orphan list
+/*
 Dimmer
     Cloud_LedStrip_GF_ComputerRoom_brightness
     "TV backlight brightness"
     <dimmablelight>
     (gCloudItems)
     ["Lighting"]
-    {channel="yeelight:Stripe:0x0000000003427b02:Brightness"}
+    {channel="yeelight:Stripe:0x0000000003427b02:color"}
 Color
     Cloud_LedStrip_GF_ComputerRoom_color
     "TV backlight color"
     <colorlight>
     (gCloudItems)
     ["Lighting"]
-    {channel="yeelight:Stripe:0x0000000003427b02:Color"}
+    {channel="yeelight:Stripe:0x0000000003427b02:color"}
 /* END Yeelight strip #1 */
 
 /* Computer room: Audio/TV control */
 // These trigger rules that proxy functionality elsewhere
+// TODO
+//  disable for now as in OH3 these become orphan in karaf:
+//  > openhab:links orphan list
+/*
 Switch
     Cloud_Scene_GF_ComputerRoom_chromecast
     "Chromecast"

@@ -1,5 +1,7 @@
 // Imports
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import org.openhab.core.model.script.ScriptServiceUtil // Needed to convert item name to item
+import java.time.format.DateTimeFormatter
 
 // Constants
 val String  LOGGER_NAME = "laundry_room"
@@ -11,11 +13,19 @@ val int     CONTROL_MODE_START = 1      // indicates start/restart auto off time
 
 
 // Lambdas
+val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName = [
+    loggerName,
+    itemName |
+    logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
+    val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    resolvedItem
+]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
     loggerName,
     itemChanged |
     val String LOGGER = loggerName //+ ".logStateChange"
-    logInfo(LOGGER, "State of item '{}' changed to '{}'",
+    logDebug(LOGGER, "State of item '{}' changed to '{}'",
         itemChanged.name,
         itemChanged.state.toString())
     true
@@ -56,6 +66,70 @@ val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
         itemChanged.name)
     true
 ]
+val Functions$Function3<String, String, String, String> getAndLogMachineNotifyMsg = [
+    loggerName,
+    machineName,
+    machineState |
+    val triggeredJavaTime = now
+    val DateTimeFormatter fmtAsHour = DateTimeFormatter.ofPattern("HH:mm")
+    val DateTimeFormatter fmtAsDate = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at "
+        + triggeredJavaTime.toLocalDateTime().format(fmtAsHour) + " on " + triggeredJavaTime.toLocalDateTime().format(fmtAsDate) + "."
+    logInfo(loggerName, "{}", notifyMsg)
+    notifyMsg
+]
+val Functions$Function4<String, String, String, String, Boolean> notifyMachineToTelegram = [
+    loggerName,
+    machineName,
+    machineState,
+    notifyMsg |
+    logInfo(loggerName, "Sending notification: {}", notifyMsg)
+    val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807") // peder bot
+    telegramAction.sendTelegram("Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
+    true
+]
+val Functions$Function3<String, String, String, Boolean> notifyMachineToSpeaker = [
+    loggerName,
+    machineName,
+    machineState |
+
+    val int notifyVolume = 20 // percent
+    val String notifyMp3 = "mario-1-up.mp3"
+    val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
+    //val String notifyVoice = "picotts:enUS"
+    //val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
+
+    playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
+    //Thread::sleep(2000)
+    //logInfo(loggerName, "Reading notification: {}", notifyMessage)
+    //say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+
+    true
+]
+val Functions$Function3<String, String, String, String> updateThingConfiguration = [
+    loggerName,
+    thingUID,
+    httpBody |
+
+    val String MAP_FILE = "secrets.map" // transform via secrets.map to get eg. john:doe@localhost:8080
+    val String MAP_REST_URI_AUTHORITY = "MAP_REST_URI_AUTHORITY" // transform via MAP_FILE to get eg. john:doe@localhost:8080
+    val String restUriAutority = transform("MAP", MAP_FILE, MAP_REST_URI_AUTHORITY) // fetch host with basic auth secret
+    val String restUriScheme = "http"
+    val String restContentType = "application/json"
+    val String restUriConfigPath = "/rest/things/" + thingUID + "/config"
+
+    logInfo(loggerName, "HTTP PUT request to '{}' with body '{}'", restUriConfigPath, httpBody)
+    var String httpResult
+    try {
+        httpResult = sendHttpPutRequest(restUriScheme + "://" + restUriAutority + restUriConfigPath, restContentType, httpBody)
+    } catch(Throwable t) {
+        logError(loggerName, "Exception caught during HTTP PUT request: {}", t.toString())
+    }
+    logDebug(loggerName, "HTTP request result: {}", httpResult)
+
+    httpResult
+]
+
 
 // When tumbple dryer power sensor receives update
 // Perform check if machine is now running/stopped
@@ -66,6 +140,7 @@ when
     Item Wallplug_CL_LaundryRoom_WashingMachine_SensorPower received update
 then
     val String LOGGER = LOGGER_NAME + ".machinePwrUpd"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     var SwitchItem MachineStateItem
@@ -98,7 +173,7 @@ then
 end
 
 // When machine changes state
-// Notify by pushbullet
+// Notify by telegram
 // Notify on computer room speaker
 rule "Laundry room, washing machine running state changed"
 when
@@ -109,33 +184,20 @@ then
     val GenericItem itemChanged = LaudryRoom_WashingMachine_RunningState
 
     logStateChange.apply(LOGGER, itemChanged)
-    val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
 
-    // Log state and machine
-    val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at " + now.toString("HH:mm") + " on " + now.toString("dd MMMM yyyy") + "."
-    logInfo(LOGGER, "{}", notifyMsg)
+    val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
+    val String notifyMsg = getAndLogMachineNotifyMsg.apply(LOGGER, machineName, machineState)
 
     if( itemChanged.state == OnOffType::OFF) {
-        // Notify on pushbullet
-        logInfo(LOGGER, "Sending notification: {}", notifyMsg)
-        sendTelegram("peder", "Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
-
-        // Notify on computer room speaker
-        val int notifyVolume = 20 // percent
-        val String notifyMp3 = "mario-1-up.mp3"
-        val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
-        //val String notifyVoice = "picotts:enUS"
-        //val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
-        playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
-        //Thread::sleep(2000)
-        //say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+        notifyMachineToTelegram.apply(LOGGER, machineName, machineState, notifyMsg)
+        notifyMachineToSpeaker.apply(LOGGER, machineName, machineState)
     } else {
         logInfo(LOGGER, "No notification will be sent.")
     }
 end
 
 // When machine changes state
-// Notify by pushbullet
+// Notify by telegram
 // Notify on computer room speaker
 rule "Laundry room, tumble dryer running state changed"
 when
@@ -146,26 +208,13 @@ then
     val GenericItem itemChanged = LaudryRoom_TumbleDryer_RunningState
 
     logStateChange.apply(LOGGER, itemChanged)
-    val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
 
-    // Log state and machine
-    val String notifyMsg = "The " + machineName + " entered the " + machineState + " state at " + now.toString("HH:mm") + " on " + now.toString("dd MMMM yyyy") + "."
-    logInfo(LOGGER, "{}", notifyMsg)
+    val String machineState = transform("MAP", "houshold_items.map", itemChanged.state.toString)
+    val String notifyMsg = getAndLogMachineNotifyMsg.apply(LOGGER, machineName, machineState)
 
     if( itemChanged.state == OnOffType::OFF) {
-        // Notify on pushbullet
-        logInfo(LOGGER, "Sending notification: {}", notifyMsg)
-        sendTelegram("peder", "Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
-
-        // Notify on computer room speaker
-        val int notifyVolume = 20 // percent
-        val String notifyMp3 = "mario-1-up.mp3"
-        val String notifySink = "chromecast:chromecast:7ea2b22cb8d648aa8a693283bcea5489" // Computer room speaker
-        //val String notifyVoice = "picotts:enUS"
-        //val String notifyMessage = "The " + machineName + " just entered the " + machineState + " state."
-        playSound(notifySink, notifyMp3, new PercentType(notifyVolume))
-        //Thread::sleep(2000)
-        //say(notifyMessage, notifyVoice, notifySink, new PercentType(notifyVolume))
+        notifyMachineToTelegram.apply(LOGGER, machineName, machineState, notifyMsg)
+        notifyMachineToSpeaker.apply(LOGGER, machineName, machineState)
     } else {
         logInfo(LOGGER, "No notification will be sent.")
     }
@@ -177,17 +226,23 @@ when
     Item LaundryRoom_MainLights_AutoOff_setTime received update
 then
     val String LOGGER = LOGGER_NAME + ".autoOffChange"
-    logInfo(LOGGER, "Auto off rule triggered")
-
     val int controlValue = (LaundryRoom_MainLights_AutoOff_setTime.state as DecimalType).intValue
     val int secondsValue = controlValue*60
-    logInfo(LOGGER, "Auto off control value: '{}'",controlValue)
-    logInfo(LOGGER, "Auto off seconds value: '{}'",secondsValue)
+    logInfo(LOGGER, "Auto off changed to {} minutes, updating ...", controlValue)
+    logDebug(LOGGER, "Auto off seconds value: '{}'", secondsValue)
 
-    // Example of how to configure zwave item dynamically using the REST API
+    // Configure zwave item dynamically using the REST API
+    // NOTE: Config paramteres varies by thing type and manufacturer
     val httpBody = "{'config_11_2':" + secondsValue.toString() + "}"
-    logInfo(LOGGER, "Auto off httpBody: '{}'",httpBody)
-    sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node7/config", "application/json", httpBody)
+    val String thingUID = "zwave:device:2c3b27f3:node7"
+    val String httpResult = updateThingConfiguration.apply(LOGGER, thingUID, httpBody)
+
+    // Output shold contain UID field
+    val String resultUID = transform("JSONPATH", "$.UID", httpResult)
+    logDebug(LOGGER, "JSON parse result UID: '{}'", resultUID)
+    if( resultUID != thingUID ) {
+        logError(LOGGER, "PUT request did not return expected ouput, missing field 'UID' with value '{}' in HTTP request result: {}", thingUID, httpResult)
+    }
 end
 
 // Allow to enable/disable motion triggering
@@ -201,6 +256,7 @@ then
     logStateChange.apply(LOGGER, itemChanged)
 
     val MotionTriggerItem = LaundryRoom_MainLights_MotionTrigger_control
+    logInfo(LOGGER, "Auto off enabled changed to {}, updating ...", MotionTriggerItem.state.toString())
     var httpBody = "{'group_2': ['node_7_0']}" // default to ON
     if( MotionTriggerItem.state == OnOffType::ON ) {
         httpBody = "{'group_2': ['node_7_0']}"
@@ -208,11 +264,20 @@ then
         httpBody = "{'group_2': null}"
     } else {
         logUnexpectedState.apply(LOGGER, MotionTriggerItem)
+        return // early
     }
 
-    logInfo(LOGGER, "Auto off enabled httpBody: '{}'",httpBody)
-    val httpResult = sendHttpPutRequest("http://localhost:8080/rest/things/zwave:device:2c3b27f3:node40/config", "application/json", httpBody)
-    logInfo(LOGGER, "Auto off enabled httpResult: '{}'",httpResult)
+    // Configure zwave item dynamically using the REST API
+    // NOTE: Config paramteres varies by thing type and manufacturer
+    val String thingUID = "zwave:device:2c3b27f3:node40"
+    val String httpResult = updateThingConfiguration.apply(LOGGER, thingUID, httpBody)
+
+    // Output shold contain UID field
+    val String resultUID = transform("JSONPATH", "$.UID", httpResult)
+    logDebug(LOGGER, "JSON parse result UID: '{}'", resultUID)
+    if( resultUID != thingUID ) {
+        logError(LOGGER, "PUT request did not return expected ouput, missing field 'UID' with value '{}' in HTTP request result: {}", thingUID, httpResult)
+    }
 end
 
 // Motion triggering should be automatically disabled at night
@@ -223,7 +288,7 @@ when
 then
     val String LOGGER = LOGGER_NAME + ".autoMotionDisable"
     logInfo(LOGGER, "Auto enable/disable motion rule triggered")
-    var Number hour = now.getHourOfDay
+    var Number hour = now.getHour()
     logInfo(LOGGER, "hour: '{}'",hour)
 
     var msg = "Rule was triggered, hour=" + hour.toString()
@@ -243,21 +308,19 @@ then
         msg = msg + ", setting motion trigger to 'DEFAULT'"
     }
 
-    //sendTelegram("peder", "Motion trigger schedule:" + msg)
+    //val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
+    //telegramAction.sendTelegram("Motion trigger schedule:" + msg)
 end
 
 // When the UI control element change state
 rule "Laundry room lights, Auto off control item state change"
 when
-    //Item LaundryRoom_MainLights_AutoOff_control changed
     Item LaundryRoom_MainLights_AutoOff_control received update
 then
     val String LOGGER = LOGGER_NAME + ".controlChange"
-    //val GenericItem itemChanged = LaundryRoom_MainLights_AutoOff_control
-    //logStateChange.apply(LOGGER, itemChanged)
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
-    //val SwitchItem MainSwitch = Relay_CL_LaundryRoom_MainLights_switch
     val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
     val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
 
@@ -285,7 +348,7 @@ then
         } else if( controlValue == CONTROL_MODE_DISABLE) {
             newSetTime = 0              // 0 will result in termination of auto off timer
         }
-        logInfo(LOGGER, "setting newSetTime={} minutes", newSetTime)
+        logDebug(LOGGER, "setting newSetTime={} minutes", newSetTime)
 
         // Apply new set time
         AutoOffSetTimeItem.postUpdate(newSetTime)
@@ -302,6 +365,7 @@ when
     Item Sensor_CL_LaundryRoom_sensorLuminance received update
 then
     val String LOGGER = LOGGER_NAME + ".lightDataReceived"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdate.apply(LOGGER, triggeringItem)
     Sensor_CL_LaundryRoom_sensorLuminance_LastReadout.postUpdate(new DateTimeType())
 end

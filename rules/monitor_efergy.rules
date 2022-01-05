@@ -1,3 +1,6 @@
+// Imports
+import java.time.format.DateTimeFormatter
+
 // Constants
 val String  LOGGER_NAME = "efergy_monitor"
 val int     VALID_READOUT_MAX_MINUTES = 30 // set negative for DEBUG
@@ -14,60 +17,65 @@ when
     //Time cron "30 * * ? * * *" // At second :30 of every minute
 then
     val String LOGGER = LOGGER_NAME + ".cronTrigger"
-    val String dateFormat = "dd-MM-yyyy HH:mm"
-    val DateTime triggeredTime = now
-    val String timestamp = triggeredTime.toString(dateFormat)
-    logInfo(LOGGER, "Efergy monitoring status check triggered at {}",timestamp)
+    val triggeredJavaTime = now
+    val DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+    logInfo(LOGGER, "Efergy monitoring status check triggered at {}", triggeredJavaTime.toLocalDateTime().format(dateFormatter))
 
     val LastValidReadoutItem = EnergyMonitor_Household_Efergy_LastValidReadout
     val LastNotifiedItem = Monitor_Efergy_LastValidReadout_LastNotified
 
     // Determine last valid readout
     logDebug(LOGGER, "Last valid readout item state: {}", LastValidReadoutItem.state)
-    var DateTime lastValidReadoutTime = new DateTime(1900, 1, 1, 0, 0, 0)
+    var lastValidReadoutJavaTime = ZonedDateTime.parse("1900-01-01T00:00:00.000Z").withZoneSameInstant(ZoneId.systemDefault())
     if( LastValidReadoutItem.state != NULL && LastValidReadoutItem.state != UNDEF ) {
         try {
-            lastValidReadoutTime = new DateTime((LastValidReadoutItem.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli)
+            lastValidReadoutJavaTime = (LastValidReadoutItem.state as DateTimeType).getZonedDateTime()
         } catch(Throwable t) {
             logError(LOGGER, "Exception caught when parsing last valid readout item state to Date: {}", t.toString())
         }
     }
     else {
-        logWarn(LOGGER,"The state of the last valid readout item {} is {}, defaulting to a long long time ago: {}", LastValidReadoutItem.name, LastValidReadoutItem.state, lastValidReadoutTime.toString(dateFormat))
+        logWarn(LOGGER,"The state of the last valid readout item {} is {}, defaulting to a long long time ago: {}",
+            LastValidReadoutItem.name, LastValidReadoutItem.state, lastValidReadoutTime.toString(dateFormat))
     }
-    logDebug(LOGGER, "Last valid readout DateTime: {}", lastValidReadoutTime.toString(dateFormat))
+    logDebug(LOGGER, "Last valid readout DateTime: {}", lastValidReadoutJavaTime.toLocalDateTime().format(dateFormatter))
 
     // Check if it's been too long since last valid readout
-    if( lastValidReadoutTime.plusMinutes(VALID_READOUT_MAX_MINUTES) < triggeredTime ) {
+    if( lastValidReadoutJavaTime.plusMinutes(VALID_READOUT_MAX_MINUTES).isBefore(triggeredJavaTime) ) {
         logDebug(LOGGER, "It has been too long since last valid readout!")
         logDebug(LOGGER, "Last notified item state: {}", LastNotifiedItem.state)
-        var DateTime lastNotifiedTime = new DateTime(1900, 1, 1, 0, 0, 0)
+        var lastNotifiedJavaTime = ZonedDateTime.parse("1900-01-01T00:00:00.000Z").withZoneSameInstant(ZoneId.systemDefault())
         if( LastNotifiedItem.state != NULL && LastNotifiedItem.state != UNDEF ) {
             try {
-                lastNotifiedTime = new DateTime((LastNotifiedItem.state as DateTimeType).zonedDateTime.toInstant.toEpochMilli)
+                lastNotifiedJavaTime = (LastNotifiedItem.state as DateTimeType).getZonedDateTime()
             } catch(Throwable t) {
                 logError(LOGGER, "Exception caught when parsing last notified item state to Date: {}", t.toString())
             }
         }
         else {
-            logWarn(LOGGER,"The state of the last notified item {} is {}, defaulting to a long long time ago: {}", LastNotifiedItem.name, LastNotifiedItem.state, lastNotifiedTime.toString(dateFormat))
+            logWarn(LOGGER,"The state of the last notified item {} is {}, defaulting to a long long time ago: {}",
+                LastNotifiedItem.name, LastNotifiedItem.state, lastNotifiedJavaTime.toLocalDateTime().format(dateFormatter))
         }
-        logDebug(LOGGER, "Last notified DateTime: {}", lastNotifiedTime.toString(dateFormat))
+        logDebug(LOGGER, "Last notified DateTime: {}", lastNotifiedJavaTime.toLocalDateTime().format(dateFormatter))
 
         // Warn always
-        val String notifyMsg = "Please note that the efergy energy monitor has not reported a valid readout for more than " + VALID_READOUT_MAX_MINUTES.toString() + " minutes, last valid readout was at " + lastValidReadoutTime.toString(dateFormat) + "."
+        val String notifyMsg = "Please note that the efergy energy monitor has not reported a valid readout for more than "
+            + VALID_READOUT_MAX_MINUTES.toString() + " minutes, last valid readout was at "
+            + lastValidReadoutJavaTime.toLocalDateTime().format(dateFormatter) + "."
         logWarn(LOGGER,notifyMsg)
 
         // Notify?
-        if( lastNotifiedTime.plusHours(ALERT_MIN_HOURS_THRESHOLD) < triggeredTime ) {
+        if( lastNotifiedJavaTime.plusHours(ALERT_MIN_HOURS_THRESHOLD).isBefore(triggeredJavaTime) ) {
             logDebug(LOGGER, "Sending notification as last notification was not sent within the threshold of {} hours.", ALERT_MIN_HOURS_THRESHOLD)
-            sendTelegram("peder", "Openhab: Efergy status check:" + notifyMsg)
+            val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
+            telegramAction.sendTelegram("Openhab: Efergy status check: " + notifyMsg)
 
             // Record last notification datetime
             LastNotifiedItem.postUpdate(new DateTimeType())
         }
         else {
-            logInfo(LOGGER, "Not sending notification as last notification was sent within the threshold of {} hours, last notification was sent at {}.", ALERT_MIN_HOURS_THRESHOLD, lastNotifiedTime.toString(dateFormat))
+            logInfo(LOGGER, "Not sending notification as last notification was sent within the threshold of {} hours, last notification was sent at {}.",
+                ALERT_MIN_HOURS_THRESHOLD, lastNotifiedJavaTime.toLocalDateTime().format(dateFormatter))
         }
     }
     else {
@@ -75,4 +83,3 @@ then
     }
 
 end
-

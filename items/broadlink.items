@@ -24,7 +24,7 @@ String
     IR_GF_LivingRoom_Broadlink_RM2_command
     "Living room IR blaster controller"
     <irblaster>
-    { channel="broadlink:rm2:a17bc822:command" }
+    { channel="broadlink:rm2:random.MAC.address2:command" }
 /*
 String
     IR_GF_LivingRoom_Broadlink_RM2_temperature

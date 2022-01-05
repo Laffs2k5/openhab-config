@@ -26,8 +26,6 @@ sitemap network_devices label="Network devices"
         Text
             item=Network_GF_ComputerRoom_Stine_PC
         Text
-            item=Network_GF_ComputerRoom_Mikkel_RPi
-        Text
             item=Network_GF_ComputerRoom_openhab_RPi
         Text
             item=Network_GF_ComputerRoom_efergy_RPi
