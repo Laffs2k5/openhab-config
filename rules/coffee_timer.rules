@@ -121,7 +121,10 @@ val Functions$Function3<String, NumberItem, NumberItem, Integer> calculateSchedu
 
     // Calculate when to trigger
     // Add 24h if schedule time has already passed
-    var int triggerInMinutes = triggerMinutes - now.getMinute().intValue
+    var int minutesOfDay = (now.toLocalDateTime().getHour() * 60) + now.toLocalDateTime().getMinute()
+    logDebug(LOGGER, "minutesOfDay '{}'", minutesOfDay)
+
+    var int triggerInMinutes = triggerMinutes - minutesOfDay
     if (triggerInMinutes < 0) {
         logDebug(LOGGER, "minutes until trigger is less than zero '{}', adding 24 hours", triggerInMinutes)
         triggerInMinutes += (24 * 60)

@@ -285,11 +285,13 @@ rule "Laundry room lights, Automatic enable/disable motion trigger"
 when
     Time cron "0 0 23 1/1 * ? *" or
     Time cron "0 0 05 1/1 * ? *"
+    // DEBUG
+    //Time cron "30 * * ? * * *" // At second :30 of every minute
 then
     val String LOGGER = LOGGER_NAME + ".autoMotionDisable"
     logInfo(LOGGER, "Auto enable/disable motion rule triggered")
     var Number hour = now.getHour()
-    logInfo(LOGGER, "hour: '{}'",hour)
+    logInfo(LOGGER, "hour: '{}'", hour)
 
     var msg = "Rule was triggered, hour=" + hour.toString()
 
