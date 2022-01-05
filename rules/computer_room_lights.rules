@@ -1,5 +1,6 @@
 // Imports
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import org.openhab.core.model.script.ScriptServiceUtil // Needed to convert item name to item
 
 // Constants
 val String  LOGGER_NAME = "cmptrRm"
@@ -12,6 +13,14 @@ var int     g_tvBacklight_delay_pr_step_millis = 200
 var Timer   g_tvBacklight_fade_Timer = null
 
 // Lambdas
+val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName = [
+    loggerName,
+    itemName |
+    logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
+    val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    resolvedItem
+]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
     loggerName,
     itemChanged |
@@ -38,7 +47,8 @@ when
     Item ComputerRoom_TvBacklight_DimDown_trigger received update ON
 then
     val String LOGGER = LOGGER_NAME + ".tvLightDownTrg"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
     triggeringItem.postUpdate(OnOffType::OFF)
 
     val LightBrightnessItem = LedStrip_GF_ComputerRoom_brightness
@@ -64,7 +74,8 @@ when
     Item ComputerRoom_TvBacklight_DimUp_trigger received update ON
 then
     val String LOGGER = LOGGER_NAME + ".tvLightUpTrg"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
     triggeringItem.postUpdate(OnOffType::OFF)
 
     val LightBrightnessItem = LedStrip_GF_ComputerRoom_brightness
@@ -112,6 +123,7 @@ when
     Item Wallswitch_GF_ComputerRoom_scene received update
 then
     val String LOGGER = LOGGER_NAME + ".scn"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     var int btn = (triggeringItem.state as DecimalType).intValue
@@ -170,7 +182,9 @@ then
         }
         // 2 Key held down
         case 2: {
-            dimmerItem.sendCommand((dimmerItem.state as DecimalType).intValue + dimPercent)
+            // never negative or above 100
+            val int setPercent = Math.max(0,Math.min(100, (dimmerItem.state as DecimalType).intValue + dimPercent))
+            dimmerItem.sendCommand(setPercent)
         }
         // 3 Double keypress
         case 3: {

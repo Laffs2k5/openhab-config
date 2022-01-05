@@ -1,5 +1,6 @@
 // Imports
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import org.openhab.core.model.script.ScriptServiceUtil // Needed to convert item name to item
 
 // Constants
 val String  LOGGER_NAME = "lvngRoomLght"
@@ -11,6 +12,14 @@ val int     CONTROL_MODE_START = 1      // indicates start/restart auto off time
 var Timer   g_livingRoomWallLightsOffTimer = null   // For turning off living room wall lights
 
 // Lambdas
+val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName = [
+    loggerName,
+    itemName |
+    logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
+    val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    resolvedItem
+]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
     loggerName,
     itemChanged |
@@ -79,6 +88,7 @@ when
     Item Sensor_GF_LivingRoomWall_sensorBinary received update
 then
     val String LOGGER = LOGGER_NAME + ".wallLightsMotionBinaryUpdated"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdate.apply(LOGGER, triggeringItem)
 end
 */
@@ -189,11 +199,11 @@ then
     val String LOGGER = LOGGER_NAME + ".motionOffAtnight"
     val MotionTriggerItem = LivingRoom_WallLights_MotionTrigger_control
 
-    logDebug(LOGGER, "Motion enable/disable cron running, hour is {}.", now.getHourOfDay)
+    logDebug(LOGGER, "Motion enable/disable cron running, hour is {}.", now.getHour)
 
 // TODO this is a bug, without hour being defined nothing happens.
 // proper fix is to have UI motion disable override the setting modified by this job
-//    var Number hour = now.getHourOfDay
+//    var Number hour = now.getHour
 
 //    logInfo(LOGGER, "hour: '{}'",hour)
 
@@ -222,6 +232,7 @@ when
     Item LivingRoom_WallLights_AutoOff_control received update
 then
     val String LOGGER = LOGGER_NAME + ".wallLightsAutoOffCtl"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     val NumberItem AutoOffControlItem = LivingRoom_WallLights_AutoOff_control

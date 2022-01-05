@@ -3,6 +3,7 @@ import java.util.HashMap                        //
 import org.eclipse.xtext.xbase.lib.Functions    // Needed for use of lambda
 import java.util.concurrent.locks.ReentrantLock // Needed to block rules from triggering in paralell
 import java.util.concurrent.TimeUnit            //
+import org.openhab.core.model.script.ScriptServiceUtil // Needed to convert item name to item
 
 // Constants
 val String LOGGER_NAME = "cmpterRoom"
@@ -62,6 +63,14 @@ var ReentrantLock   g_computerRoomLockTvUpdates = new ReentrantLock()
 var ReentrantLock   g_computerRoomLockReceiverUpdates = new ReentrantLock()
 
 // Lambdas
+val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName = [
+    loggerName,
+    itemName |
+    logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
+    val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    resolvedItem
+]
 val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState = [
     loggerName,
     itemUpdated |
@@ -130,7 +139,8 @@ when
     Item Cloud_Scene_GF_ComputerRoom_chromecast received update ON
 then
     val String LOGGER = LOGGER_NAME + ".sceneCc"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
     ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_CHROMECAST)
     //triggeringItem.postUpdate(OnOffType::OFF)
 end
@@ -139,7 +149,8 @@ when
     Item Cloud_Scene_GF_ComputerRoom_computer received update ON
 then
     val String LOGGER = LOGGER_NAME + ".sceneComputer"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
     ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_COMPUTER)
     //triggeringItem.postUpdate(OnOffType::OFF)
 end
@@ -148,7 +159,8 @@ when
     Item Cloud_Scene_GF_ComputerRoom_allOff received update ON
 then
     val String LOGGER = LOGGER_NAME + ".sceneAllOff"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
     ComputerRoom_IrBlaster_scenes_control.sendCommand(CONTROL_SCENE_ALLOFF)
     //triggeringItem.postUpdate(OnOffType::OFF)
 end
@@ -161,7 +173,8 @@ when
     Item ComputerRoom_IrBlaster_scenes_control received update
 then
     val String LOGGER = LOGGER_NAME + ".sceneCtl"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
 
     val GenericItem IrBlasterItem                   = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
     val StringItem  AudioControlItem                = ComputerRoom_IrBlaster_Audio_control
@@ -273,7 +286,8 @@ when
     Item ComputerRoom_IrBlaster_TV_control received update
 then
     val String LOGGER = LOGGER_NAME + ".tvCtl"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
 
     val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
     val HashMap<String, HashMap<String,String>> irCommandsMap = new HashMap<String, HashMap<String,String>>(g_tvIrCommandsDefMap)
@@ -305,7 +319,8 @@ when
     Item ComputerRoom_IrBlaster_Audio_control received update
 then
     val String LOGGER = LOGGER_NAME + ".audioCtl"
-    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem as GenericItem))
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
+    logReceivedUpdateWithState.apply(LOGGER, (triggeringItem))
 
     val GenericItem IrBlasterItem = IR_GF_ComputerRoom_Broadlink_RM3Mini_command
     val HashMap<String, HashMap<String,String>> irCommandsMap = new HashMap<String, HashMap<String,String>>(g_audioIrCommandsDefMap)

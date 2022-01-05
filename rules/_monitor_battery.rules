@@ -1,6 +1,7 @@
 // Imports
 import java.util.HashMap
 import java.util.LinkedHashMap
+import java.time.format.DateTimeFormatter
 
 // Constants
 val String  LOGGER_NAME = "battery_monitor"
@@ -45,8 +46,9 @@ when
     //Time cron "0 0/1 * 1/1 * ? *" // every minute
 then
     val String LOGGER = LOGGER_NAME + ".cronTrigger"
-    val String timestamp = now.toString("dd-MM-yy HH:mm")
-    logDebug(LOGGER, "Battery monitoring status check triggered at {}",timestamp)
+    val DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")
+    val String timestamp = now.toLocalDateTime().format(formatter)
+    logDebug(LOGGER, "Battery monitoring status check triggered at {}", timestamp)
 
     // Look for items with low battery
     var lowBatteryItems = gBatteryMonitoredItems.members.filter[s|s.state <= BATTERY_ALERT_THRESHOLD]
@@ -62,18 +64,21 @@ then
             var LinkedHashMap<String, String> dd = DeviceData.get(device.name)
             notifyMsg += "      This device is a " + dd.get("TYPE") + "\n"
             notifyMsg += "      Powered by " + dd.get("BATTERY") + "\n"
-            logDebug(LOGGER, "Device '{}' reports {}% battery.\nThis device is a '{}' powered by '{}'",device.name,device.state.toString(),dd.get("TYPE"),dd.get("BATTERY"))
+            logDebug(LOGGER, "Device '{}' reports {}% battery.\nThis device is a '{}' powered by '{}'",
+                device.name, device.state.toString(), dd.get("TYPE"), dd.get("BATTERY"))
         } catch(Throwable t) {
             logError(LOGGER, "Exception caught when reporting on device: {}.The exception was: {}",
-            device.name,
-            t.toString())
+                device.name,
+                t.toString())
         }
     ]
 
     // Notify and log
     if (notifyMsg != "") {
-        notifyMsg = "Please note that the following device(s) are reporting a battery level below the configured threshold of " + BATTERY_ALERT_THRESHOLD + "%:\n" + notifyMsg
-        logWarn(LOGGER,notifyMsg)
-        sendTelegram("peder", "Openhab: battery monitoring: " + notifyMsg)
+        notifyMsg = "Please note that the following device(s) are reporting a battery level below the configured threshold of "
+            + BATTERY_ALERT_THRESHOLD + "%%:\n" + notifyMsg
+        logWarn(LOGGER, notifyMsg)
+        val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
+        telegramAction.sendTelegram("Openhab: battery monitoring: " + notifyMsg)
     }
 end

@@ -1,5 +1,6 @@
 // Imports
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import org.openhab.core.model.script.ScriptServiceUtil // Needed to convert item name to item
 
 // Constants
 val String  LOGGER_NAME = "bdRm"
@@ -7,6 +8,14 @@ val String  LOGGER_NAME = "bdRm"
 // Globals
 
 // Lambdas
+val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName = [
+    loggerName,
+    itemName |
+    logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
+    val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    resolvedItem
+]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
     loggerName,
     itemChanged |
@@ -74,6 +83,7 @@ when
     Item Sensor_GF_Bedroom_Window1_sensor received update
 then
     val String LOGGER = LOGGER_NAME + ".sensUpd"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdate.apply(LOGGER, triggeringItem)
 end
 rule "Bedroom window 2 sensor received update"
@@ -81,6 +91,7 @@ when
     Item Sensor_GF_Bedroom_Window2_sensor received update
 then
     val String LOGGER = LOGGER_NAME + ".sensUpd"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdate.apply(LOGGER, triggeringItem)
 end
 */
@@ -106,6 +117,7 @@ when
     Item Sensor_GF_Bedroom_Window2_sensor received update
 then
     val String LOGGER = LOGGER_NAME + ".sens"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdate.apply(LOGGER, triggeringItem)
     val ContactItem Window1SensorItem = Sensor_GF_Bedroom_Window1_sensor
     val ContactItem Window2SensorItem = Sensor_GF_Bedroom_Window2_sensor

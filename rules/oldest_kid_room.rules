@@ -1,5 +1,6 @@
 // Imports
 import org.eclipse.xtext.xbase.lib.Functions // Needed for use of lambda
+import org.openhab.core.model.script.ScriptServiceUtil // Needed to convert item name to item
 
 // Constants
 val String  LOGGER_NAME = "kd1RmLght"
@@ -11,6 +12,14 @@ val int     CONTROL_MODE_START = 1      // indicates start/restart auto off time
 var Timer   g_kid1RoomLightsOffTimer = null   // For turning off Oldest kid room lights
 
 // Lambdas
+val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName = [
+    loggerName,
+    itemName |
+    logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
+    val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    resolvedItem
+]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
     loggerName,
     itemChanged |
@@ -79,6 +88,7 @@ when
     Item Sensor_FF_Kid1Room_SensorBinary received update
 then
     val String LOGGER = LOGGER_NAME + ".mtnSensUpd"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdate.apply(LOGGER, triggeringItem)
 end
 */
@@ -123,11 +133,11 @@ then
             logDebug(LOGGER, "Motion trigger start hour value is '{}' configured by item '{}'", startHourValue, MotionTriggerStartitem.name)
             val int endHourValue = (MotionTriggerEnditem.state as DecimalType).intValue
             logDebug(LOGGER, "Motion trigger start hour value is '{}' configured by item '{}'", endHourValue, MotionTriggerEnditem.name)
-            val startTime = now.withTimeAtStartOfDay.plusHours(startHourValue)
-            var endtime = now.withTimeAtStartOfDay.plusHours(endHourValue)
+            val startTime = now.with(LocalTime.MIN).plusHours(startHourValue)
+            var endtime = now.with(LocalTime.MIN).plusHours(endHourValue)
             if( startHourValue > endHourValue ) {
                 // Timespan overlaps midnight, add 1 day to end time
-                endtime = now.withTimeAtStartOfDay.plusHours(endHourValue).plusDays(1)
+                endtime = now.with(LocalTime.MIN).plusHours(endHourValue).plusDays(1)
             }
             logDebug(LOGGER, "Motion trigger start time value is '{}'", startTime)
             logDebug(LOGGER, "Motion trigger end time value is '{}'", endtime)
@@ -289,6 +299,7 @@ when
 then
     val String LOGGER = LOGGER_NAME + ".aOfftimeChg"
     val SwitchItem MotionTriggerControlItem = Kid1Room_Lights_MotionTrigger_control
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logStateChange.apply(LOGGER, triggeringItem)
 
     // Motion trigger control will re-trigger motion item as needed and update UI status text
@@ -338,6 +349,7 @@ when
     Item Kid1Room_Lights_AutoOff_control received update
 then
     val String LOGGER = LOGGER_NAME + ".aOffTm"
+    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
     logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
 
     val NumberItem AutoOffControlItem = Kid1Room_Lights_AutoOff_control

@@ -73,17 +73,3 @@ String
     <music>
     (gRoomLivingRoom, gSqueezeboxes)
     { channel="squeezebox:squeezeboxplayer:C2009170-21E7-40C8-A4E6-BC31D7B14EC5:886a13a301e9:artist" }
-/*
-Image
-    Squeeze_GF_LivingRoom_CoverArt
-    "Living room squeezebox cover art is [%s]"
-    <icon>
-    (gRoomLivingRoom, gSqueezeboxes)
-    { channel="squeezebox:squeezeboxplayer:C2009170-21E7-40C8-A4E6-BC31D7B14EC5:886a13a301e9:coverartdata" }
-*/
-Dimmer
-    Squeeze_GF_LivingRoom_NotificationVolume
-    "Living room squeezebox notification volume is [%d %%]"
-    <icon>
-    (gRoomLivingRoom, gSqueezeboxes)
-    { channel="squeezebox:squeezeboxplayer:C2009170-21E7-40C8-A4E6-BC31D7B14EC5:886a13a301e9:notificationSoundVolume" }
