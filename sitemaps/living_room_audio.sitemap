@@ -1,11 +1,7 @@
 sitemap living_room_audio label="Living room audio"
 {
-    Frame label="Audio receiver" visibility=[LivingRoomAudio_receiver_visibility=="ON"] {
-/*
-        Text
-            item=LivingRoomAudio_receiver_status
-*/
-        Switch 
+    Frame label="Audio receiver" {
+        Switch
             item=LivingRoomAudio_receiver_control
             label=""
             mappings=[0="Off", 2="Squeeze", 3="Chromecast"]
@@ -14,17 +10,9 @@ sitemap living_room_audio label="Living room audio"
             label="Volume control"
             mappings=[1="Mute", 4="vol -", 5="vol +"]
             icon="volume"
-        Text 
-            item=LivingRoomAudio_receiver_volume 
+        Text
+            item=LivingRoomAudio_receiver_volume
             label="Volume [%d %%]"
-    }
-    Frame label="Audio receiver" visibility=[LivingRoomAudio_receiver_visibility=="OFF", Network_GF_LivingRoom_IrBlaster=="OFF"] {
-        Text
-            item=Network_GF_LivingRoomAudio_Wallplug
-            label="Device is [MAP(network.map):%s]"
-        Text
-            item=Network_GF_LivingRoom_IrBlaster
-            label="IR blaster state is [MAP(network.map):%s]"
     }
     Frame label="Squeezebox" visibility=[Network_GF_LivingRoom_Squeezebox=="OFF"] {
         Text
@@ -32,15 +20,6 @@ sitemap living_room_audio label="Living room audio"
             label="Squeezebox is [MAP(network.map):%s]"
     }
     Frame label="Squeezebox" visibility=[Network_GF_LivingRoom_Squeezebox=="ON"] {
-/*
-        Text
-            item=Network_GF_LivingRoom_Squeezebox
-            label="Squeezebox is [MAP(network.map):%s]"
-*/
-/*
-        Switch
-            item=Squeeze_GF_LivingRoom_Mute
-*/
         Switch
             item=LivingRoomAudio_squeeze_control
             label=""
@@ -49,11 +28,6 @@ sitemap living_room_audio label="Living room audio"
         Slider
             item=Squeeze_GF_LivingRoom_Volume
             label="Current volume [%d %%]"
-/*
-        Text
-            item=Squeeze_GF_LivingRoom_Control
-            label="[%s]"
-*/
         Switch
             item=LivingRoomAudio_squeeze_control
             label="[]"
@@ -70,26 +44,18 @@ sitemap living_room_audio label="Living room audio"
             item=Squeeze_GF_LivingRoom_Stream
             label="[]"
             mappings=[
-                "http://lyd.nrk.no/nrk_radio_p1_vestfold_mp3_h"="P1", 
-                "http://lyd.nrk.no/nrk_radio_p2_mp3_h"="P2", 
+                "http://lyd.nrk.no/nrk_radio_p1_vestfold_mp3_h"="P1",
+                "http://lyd.nrk.no/nrk_radio_p2_mp3_h"="P2",
                 "http://lyd.nrk.no/nrk_radio_p13_mp3_h"="P13",
                 "http://lyd.nrk.no/nrk_radio_jazz_mp3_h"="JZ",
                 "http://lyd.nrk.no/nrk_radio_klassisk_mp3_h"="CL"
             ]
         Text
             item=Squeeze_GF_LivingRoom_Remotetitle
-            label="[%s]" 
+            label="[%s]"
         Text
             item=Squeeze_GF_LivingRoom_Title
             label="[%s]"
-/*
-        Text
-            item=Squeeze_GF_LivingRoom_Album
-            label="Album: [%s]"
-        Text
-            item=Squeeze_GF_LivingRoom_Artist
-            label="Artist: [%s]"
-*/
     }
     Frame label="Squeezebox" visibility=[Network_GF_LivingRoom_ChromecastAudio=="OFF"] {
         Text
@@ -112,11 +78,6 @@ sitemap living_room_audio label="Living room audio"
         Slider
             item=Chromecast_GF_LivingRoom_volume
             label="Current volume [%d %%]"
-/*
-        Text
-            item=Chromecast_GF_LivingRoom_control
-            label="[%s]"
-*/
         Switch
             item=LivingRoomAudio_chromecast_control
             label=""

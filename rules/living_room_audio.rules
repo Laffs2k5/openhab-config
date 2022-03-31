@@ -108,12 +108,26 @@ then
                 Squeeze_GF_LivingRoom_Volume.sendCommand(0)
                 // 0 vol CC
                 Chromecast_GF_LivingRoom_volume.sendCommand(0)
-                // IR: power off receiver
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_POWER", IR_GF_LivingRoom_Broadlink_RM2_command)
-                // update LivingRoomAudio_receiver_status
-
+                // IR: toggle receiver mute
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(800)
+                // IR: toggle receiver volume min
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_DN_MIN", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(9500)
+                // IR: toggle receiver mute
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(800)
                 // keep track of receiver volume
                 LivingRoomAudio_receiver_volume.sendCommand(0)
+                // IR: receiver only predictable state thorough IR is power on, achieved by power toggle x3
+                for (var i = 0 ; i < 3 ; i++) {
+                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_POWER_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                    Thread::sleep(1700)
+                }
+                Thread::sleep(6500)
+                // IR: receiver off, by ensuring it is muted on above, we now know it will be off after a final toggle
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_POWER_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(1700)
             } catch(Throwable t) {
                 logError(LOGGER_NAME, "exception caught: {}", t.toString())
             } finally {
@@ -131,25 +145,35 @@ then
                 Squeeze_GF_LivingRoom_Volume.sendCommand(0)
                 // 0 vol CC
                 Chromecast_GF_LivingRoom_volume.sendCommand(0)
-                // Wallplug: Toggle power receiver
-                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::OFF)
+                // IR: toggle receiver mute
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(800)
+                // IR: toggle receiver volume min
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_DN_MIN", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(9500)
+                // IR: toggle receiver mute
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(800)
+                // keep track of receiver volume
                 LivingRoomAudio_receiver_volume.sendCommand(0)
-                Thread::sleep(3000)
-                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::ON)
-                Thread::sleep(3000)
-                // IR: A1 receiver
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_AUDIO1", IR_GF_LivingRoom_Broadlink_RM2_command)
+                // IR: receiver only predictable state thorough IR is power on, achieved by power toggle x3
+                for (var i = 0 ; i < 3 ; i++) {
+                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_POWER_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                    Thread::sleep(1700)
+                }
+                Thread::sleep(6500)
+                // IR: receiver optical in = squeeze
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_CHAN_OPT", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(400)
                 // default vol squeeze
                 Squeeze_GF_LivingRoom_Volume.sendCommand(30)
-                // IR: ramp receiver vol to default for squeeze, consider burst
+                // IR: ramp receiver vol to default for squeeze
                 // keep track of receiver volume
-                for (var i = 0 ; i < 20 ; i++) {
-                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_VOL_UP", IR_GF_LivingRoom_Broadlink_RM2_command)
+                for (var i = 0 ; i < 16 ; i++) {
+                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_UP_1", IR_GF_LivingRoom_Broadlink_RM2_command)
                     LivingRoomAudio_receiver_volume.sendCommand((LivingRoomAudio_receiver_volume.state as DecimalType) + 1)
-                    Thread::sleep(300)
+                    Thread::sleep(400)
                 }
-                // update LivingRoomAudio_receiver_status
-
             } catch(Throwable t) {
                 logError(LOGGER_NAME, "exception caught: {}", t.toString())
             } finally {
@@ -167,25 +191,35 @@ then
                 Squeeze_GF_LivingRoom_Volume.sendCommand(0)
                 // 0 vol CC
                 Chromecast_GF_LivingRoom_volume.sendCommand(0)
-                // Wallplug: Toggle power receiver
-                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::OFF)
-                LivingRoomAudio_receiver_volume.sendCommand(0)
-                Thread::sleep(3000)
-                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::ON)
-                Thread::sleep(3000)
-                // IR: A1 receiver
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_AUDIO2", IR_GF_LivingRoom_Broadlink_RM2_command)
-                // default vol chromecast
-                Chromecast_GF_LivingRoom_volume.sendCommand(90)
-                // IR: ramp receiver vol to default for squeeze, consider burst
+                // IR: toggle receiver mute
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(800)
+                // IR: toggle receiver volume min
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_DN_MIN", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(9500)
+                // IR: toggle receiver mute
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(800)
                 // keep track of receiver volume
-                for (var i = 0 ; i < 5 ; i++) {
-                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_VOL_UP", IR_GF_LivingRoom_Broadlink_RM2_command)
-                    LivingRoomAudio_receiver_volume.sendCommand((LivingRoomAudio_receiver_volume.state as DecimalType) + 1)
-                    Thread::sleep(300)
+                LivingRoomAudio_receiver_volume.sendCommand(0)
+                // IR: receiver only predictable state thorough IR is power on, achieved by power toggle x3
+                for (var i = 0 ; i < 3 ; i++) {
+                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_POWER_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
+                    Thread::sleep(1700)
                 }
-                // update LivingRoomAudio_receiver_status
-
+                Thread::sleep(6500)
+                // IR: receiver optical in = squeeze
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_CHAN_AUX", IR_GF_LivingRoom_Broadlink_RM2_command)
+                Thread::sleep(400)
+                // default vol chromecast
+                Chromecast_GF_LivingRoom_volume.sendCommand(30)
+                // IR: ramp receiver vol to default for squeeze
+                // keep track of receiver volume
+                for (var i = 0 ; i < 16 ; i++) {
+                    postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_UP_1", IR_GF_LivingRoom_Broadlink_RM2_command)
+                    LivingRoomAudio_receiver_volume.sendCommand((LivingRoomAudio_receiver_volume.state as DecimalType) + 1)
+                    Thread::sleep(400)
+                }
             } catch(Throwable t) {
                 logError(LOGGER_NAME, "exception caught: {}", t.toString())
             } finally {
@@ -196,7 +230,7 @@ then
         case CONTROL_MUTE:{
             logInfo(LOGGER_NAME, "Receiver vol mute")
             // IR: mute receiver
-            postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_MUTE", IR_GF_LivingRoom_Broadlink_RM2_command)
+            postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
             // update LivingRoomAudio_receiver_status
 
         }
@@ -207,7 +241,7 @@ then
             try {
                 logDebug(LOGGER_NAME, "got lock")
                 // IR: vol - receiver
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_VOL_DN", IR_GF_LivingRoom_Broadlink_RM2_command)
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_DN_1", IR_GF_LivingRoom_Broadlink_RM2_command)
                 // keep track of receiver volume
                 LivingRoomAudio_receiver_volume.sendCommand((LivingRoomAudio_receiver_volume.state as DecimalType) - 1)
                 // update LivingRoomAudio_receiver_status
@@ -226,7 +260,7 @@ then
             try {
                 logDebug(LOGGER_NAME, "got lock")
                 // IR: vol + receiver
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "PIONEER_RECEIVER_VOL_UP", IR_GF_LivingRoom_Broadlink_RM2_command)
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_VOL_UP_1", IR_GF_LivingRoom_Broadlink_RM2_command)
                 // keep track of receiver volume
                 LivingRoomAudio_receiver_volume.sendCommand((LivingRoomAudio_receiver_volume.state as DecimalType) + 1)
                 // update LivingRoomAudio_receiver_status
