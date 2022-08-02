@@ -1,0 +1,20 @@
+// Constants
+val String  LOGGER_NAME = "systemStartup"
+
+// Make sure bathroom fan is always on after startup
+// User has possibility to turn it off just for a set amount of time
+rule "Bathroom exhaust fan, initialize to on when system starts"
+when
+    System started
+then
+    val String LOGGER = LOGGER_NAME + ".bathroomExhaustInit"
+    val SwitchItem exhaustSwitch = Relay_CL_Bathroom_ExhaustFan_switch
+    if (
+      exhaustSwitch.state == NULL
+      || exhaustSwitch.state == UNDEF
+      || exhaustSwitch.state == OnOffType::OFF
+      ) {
+        exhaustSwitch.postUpdate(OnOffType::ON)
+        logInfo(LOGGER, "Item '{}' was set to 'ON' during system startup", exhaustSwitch.name)
+      }
+end

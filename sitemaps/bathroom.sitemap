@@ -1,0 +1,47 @@
+sitemap bathroom label="Bathroom"
+{
+    Frame
+        label="Exhaust fan control"
+    {
+        Text
+            item=Relay_CL_Bathroom_ExhaustFan_switch
+            label="Power status[]"
+            icon="switch"
+        /*Switch
+            item=Relay_CL_Bathroom_ExhaustFan_AutoOn_30min_switch
+            label="Disable for 30 min[]"
+            icon="fan"
+            mappings=[OFF="Click me"]*/
+        Switch
+            item=Relay_CL_Bathroom_ExhaustFan_AutoOn_50min_switch
+            label="Disable for 50 min[]"
+            icon="fan"
+            mappings=[OFF="Click me"]
+
+        Text
+            label="Advanced"
+            icon="settings"
+        {
+            Switch
+                item=Relay_CL_Bathroom_ExhaustFan_switch
+                label="Power control[]"
+        }
+    }
+    Frame
+        label="Bathroom light"
+        icon="bathroom"
+    {
+        Switch
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Power[]"
+            icon="switch"
+        Slider
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+        Setpoint
+            item=Dimmer_CL_Bathroom_SwitchDimmer
+            label="Brightness"
+            icon="dimmable"
+    }
+}
