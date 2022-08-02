@@ -56,12 +56,12 @@ then
     logDebug("TvBacklight","Dimmming down")
     if (LightBrightnessItem.state instanceof DecimalType) {
         g_tvBacklight_percent = ((LightBrightnessItem.state as DecimalType) / g_tvBacklight_percent_steps).intValue * g_tvBacklight_percent_steps //round
-        g_tvBacklight_fade_Timer = createTimer(now.plusMillis(g_tvBacklight_delay_pr_step_millis)) [|
+        g_tvBacklight_fade_Timer = createTimer(now.plusNanos(1000000*g_tvBacklight_delay_pr_step_millis)) [|
             LightBrightnessItem.sendCommand(g_tvBacklight_percent)
             if (g_tvBacklight_percent > 0) {
                 g_tvBacklight_percent = g_tvBacklight_percent - g_tvBacklight_percent_steps
                 logDebug("TvBacklight","Dimmming, decrease {} to {}", g_tvBacklight_percent_steps, g_tvBacklight_percent)
-                g_tvBacklight_fade_Timer.reschedule(now.plusMillis(g_tvBacklight_delay_pr_step_millis))
+                g_tvBacklight_fade_Timer.reschedule(now.plusNanos(1000000*g_tvBacklight_delay_pr_step_millis))
             } else {
                 logDebug("TvBacklight","Done dimmming, final brightness is {}", g_tvBacklight_percent)
             }
@@ -83,12 +83,12 @@ then
     logDebug("TvBacklight","Dimmming up")
     if (LightBrightnessItem.state instanceof DecimalType) {
         g_tvBacklight_percent = ((LightBrightnessItem.state as DecimalType) / g_tvBacklight_percent_steps).intValue * g_tvBacklight_percent_steps //round
-        g_tvBacklight_fade_Timer = createTimer(now.plusMillis(g_tvBacklight_delay_pr_step_millis)) [|
+        g_tvBacklight_fade_Timer = createTimer(now.plusNanos(1000000*g_tvBacklight_delay_pr_step_millis)) [|
             LightBrightnessItem.sendCommand(g_tvBacklight_percent)
             if (g_tvBacklight_percent < g_tvBacklight_percent_maxVal) {
                 g_tvBacklight_percent = g_tvBacklight_percent + g_tvBacklight_percent_steps
                 logDebug("TvBacklight","Dimmming, increase {} to {}", g_tvBacklight_percent_steps, g_tvBacklight_percent)
-                g_tvBacklight_fade_Timer.reschedule(now.plusMillis(g_tvBacklight_delay_pr_step_millis))
+                g_tvBacklight_fade_Timer.reschedule(now.plusNanos(1000000*g_tvBacklight_delay_pr_step_millis))
             } else {
                 logDebug("TvBacklight","Done dimmming, final brightness is {}", g_tvBacklight_percent)
             }
