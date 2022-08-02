@@ -108,6 +108,8 @@ then
                 Squeeze_GF_LivingRoom_Volume.sendCommand(0)
                 // 0 vol CC
                 Chromecast_GF_LivingRoom_volume.sendCommand(0)
+                // Wallplug: Power off subwoofer
+                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::OFF)
                 // IR: toggle receiver mute
                 postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_MUTE_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
                 Thread::sleep(800)
@@ -156,14 +158,16 @@ then
                 Thread::sleep(800)
                 // keep track of receiver volume
                 LivingRoomAudio_receiver_volume.sendCommand(0)
-                // IR: receiver only predictable state thorough IR is power on, achieved by power toggle x3
+                // IR: receiver only predictable state through IR is power on, achieved by power toggle x3
                 for (var i = 0 ; i < 3 ; i++) {
                     postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_POWER_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
                     Thread::sleep(1700)
                 }
+                // Wallplug: Power of subwoofer
+                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::ON)
                 Thread::sleep(6500)
                 // IR: receiver optical in = squeeze
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_CHAN_OPT", IR_GF_LivingRoom_Broadlink_RM2_command)
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_CHAN_AUX", IR_GF_LivingRoom_Broadlink_RM2_command)
                 Thread::sleep(400)
                 // default vol squeeze
                 Squeeze_GF_LivingRoom_Volume.sendCommand(30)
@@ -207,9 +211,11 @@ then
                     postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_POWER_TOGGLE", IR_GF_LivingRoom_Broadlink_RM2_command)
                     Thread::sleep(1700)
                 }
+                // Wallplug: Power of subwoofer
+                Wallplug_GF_LivingRoomAudio_wallplug.sendCommand(OnOffType::ON)
                 Thread::sleep(6500)
                 // IR: receiver optical in = squeeze
-                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_CHAN_AUX", IR_GF_LivingRoom_Broadlink_RM2_command)
+                postIrCommandToItem.apply(LOGGER_NAME, IR_MAPFILE, "ANDERSSON_CHAN_OPT", IR_GF_LivingRoom_Broadlink_RM2_command)
                 Thread::sleep(400)
                 // default vol chromecast
                 Chromecast_GF_LivingRoom_volume.sendCommand(30)
