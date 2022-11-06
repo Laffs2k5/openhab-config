@@ -52,3 +52,6 @@ services/influxdb.cfg
 services/pushbullet.cfg
 services/telegram.cfg
 transform/secrets.map
+
+# js stuff
+automation/js/node_modules

@@ -22,7 +22,7 @@
 //  MAC Address:    random.MAC.address1
 String
     IR_GF_LivingRoom_Broadlink_RM2_command
-    "Living room IR blaster controller"
+    "Living room audio IR blaster controller"
     <irblaster>
     { channel="broadlink:rm2:random.MAC.address2:command" }
 /*
@@ -36,10 +36,10 @@ String
 // IR blaster - Broadlink RM3 mini #1 [an.ip.address.155]
 //  MAC Address:    random.MAC.address3
 String
-    IR_GF_xRoom_Broadlink_RM3Mini_command
-    "x room IR blaster controller"
+    IR_GF_LivingRoom_Broadlink_RM3Mini_command
+    "Living room air condiition IR blaster controller"
     <irblaster>
-    {channel="broadlink:rm3:37cddbbc:command"}
+    { channel="broadlink:rm3:37cddbbc:command" }
 
 
 // IR blaster - Broadlink RM3 mini #2 [an.ip.address.156]

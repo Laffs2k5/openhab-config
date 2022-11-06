@@ -1,0 +1,24 @@
+{
+  "name": "aircondition",
+  "version": "1.0.0",
+  "description": "Rules for aircondition",
+  "main": "aircondition_rules.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peder Schmedling",
+  "license": "MIT",
+  "devDependencies": {
+    "openhab": "^2.0.4"
+  },
+  "dependencies": {
+    "leif-tools": "file:leif-tools-1.0.0.tgz"
+  },
+  "prettier": {
+    "printWidth": 180,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true
+  }
+}

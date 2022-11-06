@@ -1,0 +1,18 @@
+{
+  "name": "leif-tools",
+  "version": "1.0.0",
+  "description": "General openhab es6 scripts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peder Schmedling",
+  "license": "MIT",
+  "prettier": {
+    "printWidth": 180,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true
+  }
+}
