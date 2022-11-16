@@ -202,3 +202,36 @@ Number
     (gRoomBedroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node39:battery-level"}
 /* END Aeotec Sensor 6 */
+
+/* Aeotec ZW078 Heavy Duty Switch: Laundry room water heater */
+Number:Temperature
+    Relay_CL_LaundryRoom_WaterHeater_sensorTemperature
+    "Laundry room water heater relay internal temperature"
+    <temperature>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node46:sensor_temperature"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterKwh
+    "Laundry room water heater energy consumption [%.0f kWh]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node46:meter_kwh"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterCurrent
+    "Laundry room water heater current consumption [%.0f A]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node46:meter_current"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterVoltage
+    "Laundry room water heater voltage monitor [%.0f V]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node46:meter_voltage"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterWatts
+    "Laundry room water heater power consumption (instantaneous) [%.0f W]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node46:meter_watts"}
+/* END Aeotec ZW078 Heavy Duty Switch */

@@ -1,0 +1,72 @@
+sitemap
+    laundry_room_waterheater
+    label="Water heater"
+{
+    Switch
+        item=Relay_CL_LaundryRoom_WaterHeater_switchBinary
+        label="Current state [%s]"
+        visibility=[LaundryRoomWaterHeater_scheduleEnable=="OFF"]
+    Text
+        item=Relay_CL_LaundryRoom_WaterHeater_switchBinary
+        label="Current state [%s]"
+        visibility=[LaundryRoomWaterHeater_scheduleEnable=="ON"]
+    Switch
+        item=LaundryRoomWaterHeater_scheduleEnable
+    Text
+        label="Manage schedule"
+        icon="schedule"
+    {
+        Frame label="Weekdays" {
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_0
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_1
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_2
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_3
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_4
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_5
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_6
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_7
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_8
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_9
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_10
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_11
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_12
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_13
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_14
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_15
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_16
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_17
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_18
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_19
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_20
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_21
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_22
+            Switch item=LaundryRoomWaterHeater_schedule_weekdays_23
+        }
+        Frame label="Weekend and holidays" {
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_0
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_1
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_2
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_3
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_4
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_5
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_6
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_7
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_8
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_9
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_10
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_11
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_12
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_13
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_14
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_15
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_16
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_17
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_18
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_19
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_20
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_21
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_22
+            Switch item=LaundryRoomWaterHeater_schedule_weekend_23
+        }
+    }
+}

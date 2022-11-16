@@ -1,0 +1,104 @@
+Group
+    gRoomLaundryRoomWaterHeater
+    "Groups virtual items for water heater control in the laundry room"
+
+/* Aeotec ZW078 Heavy Duty Switch: Laundry room water heater */
+Switch
+    Relay_CL_LaundryRoom_WaterHeater_switchBinary
+    "Laundry room water heater control []"
+    <switch>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
+    {channel="zwave:device:2c3b27f3:node46:switch_binary"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number:Temperature
+    Relay_CL_LaundryRoom_WaterHeater_sensorTemperature
+    "Laundry room water heater relay internal temperature"
+    <temperature>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
+    {channel="zwave:device:2c3b27f3:node46:sensor_temperature"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterKwh
+    "Laundry room water heater energy consumption [%.0f kWh]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
+    {channel="zwave:device:2c3b27f3:node46:meter_kwh"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterCurrent
+    "Laundry room water heater current consumption [%.0f A]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
+    {channel="zwave:device:2c3b27f3:node46:meter_current"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterVoltage
+    "Laundry room water heater voltage monitor [%.0f V]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
+    {channel="zwave:device:2c3b27f3:node46:meter_voltage"}
+Number
+    Relay_CL_LaundryRoom_WaterHeater_meterWatts
+    "Laundry room water heater power consumption (instantaneous) [%.0f W]"
+    <energymonitor>
+    (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
+    {channel="zwave:device:2c3b27f3:node46:meter_watts"} */
+//Switch               Relay_CL_LaundryRoom_WaterHeater_meterReset          "Reset meter"                     (gRoomLaundryRoomWaterHeater)   {channel="zwave:device:2c3b27f3:node46:meter_reset"}
+/* END Aeotec ZW078 Heavy Duty Switch */
+
+/* Virtual items */
+
+Switch
+    LaundryRoomWaterHeater_scheduleEnable
+    "Schedule on/off"
+    <switch>
+    (gRoomLaundryRoomWaterHeater)
+
+Switch LaundryRoomWaterHeater_schedule_weekdays_0  "From 00:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_1  "From 01:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_2  "From 02:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_3  "From 03:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_4  "From 04:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_5  "From 05:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_6  "From 06:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_7  "From 07:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_8  "From 08:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_9  "From 09:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_10 "From 10:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_11 "From 11:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_12 "From 12:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_13 "From 13:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_14 "From 14:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_15 "From 15:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_16 "From 16:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_17 "From 17:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_18 "From 18:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_19 "From 19:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_20 "From 20:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_21 "From 21:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_22 "From 22:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekdays_23 "From 23:00[]" <time> (gRoomLaundryRoomWaterHeater)
+
+Switch LaundryRoomWaterHeater_schedule_weekend_0  "From 00:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_1  "From 01:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_2  "From 02:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_3  "From 03:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_4  "From 04:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_5  "From 05:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_6  "From 06:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_7  "From 07:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_8  "From 08:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_9  "From 09:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_10 "From 10:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_11 "From 11:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_12 "From 12:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_13 "From 13:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_14 "From 14:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_15 "From 15:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_16 "From 16:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_17 "From 17:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_18 "From 18:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_19 "From 19:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_20 "From 20:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_21 "From 21:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_22 "From 22:00[]" <time> (gRoomLaundryRoomWaterHeater)
+Switch LaundryRoomWaterHeater_schedule_weekend_23 "From 23:00[]" <time> (gRoomLaundryRoomWaterHeater)
+
+/* END Virtual items */
