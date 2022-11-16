@@ -1,7 +1,6 @@
 Group
     gLivingRoomAircondition
-    "Timer1 group"
-    <time>
+    "Groups virtual items for aircondition control in the living room"
 Switch
     LivingRoomAircondition_scheduleEnable
     "Schedule on/off"

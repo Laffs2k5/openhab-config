@@ -68,29 +68,4 @@ sitemap
             Switch item=LivingRoomAircondition_schedule_weekend_23  mappings=[AC_HEAT_AUTO_17="17°",AC_HEAT_AUTO_18="18°",AC_HEAT_AUTO_19="19°",AC_HEAT_AUTO_20="20°",AC_HEAT_AUTO_21="21°",AC_HEAT_AUTO_22="22°",AC_HEAT_AUTO_23="23°",AC_OFF="off"]
         }
     }
-
-/*
-    Frame label="Sony TV volume" {
-        Switch
-            item=IR_GF_LivingRoom_Broadlink_RM2_command
-            label=""
-            mappings=[SONY_VOLUME_UP="+", SONY_VOLUME_DN="-", SONY_VOLUME_DN_BURST="---"]
-    }
-    Frame label="Pioneer receiver commands" {
-        Switch
-            item=IR_GF_LivingRoom_Broadlink_RM2_command
-            label=""
-            mappings=[PIONEER_RECEIVER_AUDIO1="A1", PIONEER_RECEIVER_AUDIO2="A2", PIONEER_RECEIVER_POWER="POWER", PIONEER_RECEIVER_MUTE="MUTE", PIONEER_RECEIVER_VOL_UP="+", PIONEER_RECEIVER_VOL_DN="-"]
-    }
-    Frame label="Squeezebox classic commands" {
-        Switch
-            item=IR_GF_LivingRoom_Broadlink_RM2_command
-            label=""
-            mappings=[SQUEEZEBOX_CLASSIC_POWER="POWER", SQUEEZEBOX_CLASSIC_PLAY="PLAY", SQUEEZEBOX_CLASSIC_PAUSE="PAUSE", SQUEEZEBOX_CLASSIC_VOL_UP="+", SQUEEZEBOX_CLASSIC_VOL_DN="-"]
-    }
-*/
-/*
-    Text
-        item=IR_GF_LivingRoom_Broadlink_RM2_temperature
-*/
 }
