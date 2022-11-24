@@ -235,3 +235,30 @@ Number
     (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
     {channel="zwave:device:2c3b27f3:node46:meter_watts"}
 /* END Aeotec ZW078 Heavy Duty Switch */
+
+/* ZWA039 Aeotec aërQ Temperature and Humidity Sensor: Bathroom humidity sensor */
+Number:Temperature
+    Sensor_CL_Bathroom_TempHumidity_SensorTemperature
+    "Bathroom temperature is [%.0f °C]"
+    <temperature>
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node49:sensor_temperature"}
+Number
+    Sensor_CL_Bathroom_TempHumidity_SensorRelhumidity
+    "Bathroom relative humidity is [%.0f %%]"
+    <humidity>
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node49:sensor_relhumidity"}
+Number
+    Sensor_CL_Bathroom_TempHumidity_SensorDewpoint
+    "Bathroom dew point is [%.0f °C]"
+    <rain>
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node49:sensor_dewpoint"}
+Number
+    Sensor_CL_Bathroom_TempHumidity_BatteryLevel
+    "Bathroom humidity sensor battery level is [%.0f %%]"
+    <battery>
+    (gRoomBathroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node49:battery-level"}
+/* END ZWA039 Aeotec aërQ */

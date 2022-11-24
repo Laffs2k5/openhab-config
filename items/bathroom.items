@@ -55,3 +55,36 @@ Switch
     }
 //Switch   Relay_CL_Bathroom_ExhaustFan_alarmPower     "Alarm (power)"   {channel="zwave:device:2c3b27f3:node45:alarm_power"}
 /* END Nexa AN179 */
+
+/* ZWA039 Aeotec aërQ Temperature and Humidity Sensor: Bathroom humidity sensor */
+// Switch               Sensor_CL_Bathroom_TempHumidity_SensorBinary        "Binary sensor"                {channel="zwave:device:2c3b27f3:node49:sensor_binary"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number:Temperature
+    Sensor_CL_Bathroom_TempHumidity_SensorTemperature
+    "Bathroom temperature is [%.0f °C]"
+    <temperature>
+    (gRoomBathroom)
+    {channel="zwave:device:2c3b27f3:node49:sensor_temperature"}
+Number
+    Sensor_CL_Bathroom_TempHumidity_SensorRelhumidity
+    "Bathroom relative humidity is [%.0f %%]"
+    <humidity>
+    (gRoomBathroom)
+    {channel="zwave:device:2c3b27f3:node49:sensor_relhumidity"}
+Number
+    Sensor_CL_Bathroom_TempHumidity_SensorDewpoint
+    "Bathroom dew point is [%.0f °C]"
+    <rain>
+    (gRoomBathroom)
+    {channel="zwave:device:2c3b27f3:node49:sensor_dewpoint"} */
+// Switch               Sensor_CL_Bathroom_TempHumidity_AlarmHeat           "Alarm (heat)"              (gRoomBathroom)      {channel="zwave:device:2c3b27f3:node49:alarm_heat"}
+// Switch               Sensor_CL_Bathroom_TempHumidity_AlarmPower          "Alarm (power)"             (gRoomBathroom)      {channel="zwave:device:2c3b27f3:node49:alarm_power"}
+// Switch               Sensor_CL_Bathroom_TempHumidity_AlarmGeneral        "Alarm (weather)"           (gRoomBathroom)      {channel="zwave:device:2c3b27f3:node49:alarm_general"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_CL_Bathroom_TempHumidity_BatteryLevel
+    "Bathroom humidity sensor battery level is [%.0f %%]"
+    <battery>
+    (gRoomBathroom)
+    {channel="zwave:device:2c3b27f3:node49:battery-level"} */
+/* END ZWA039 Aeotec aërQ */

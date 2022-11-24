@@ -32,6 +32,10 @@ val HashMap< String, LinkedHashMap<String, String>> DeviceData = newHashMap(
             "TYPE"      -> "Aeotec Door/Window Sensor 6",
             "BATTERY"   -> "Micro USB chargeable")),
 
+    "Sensor_CL_Bathroom_TempHumidity_BatteryLevel" -> (newLinkedHashMap(
+            "TYPE"      -> "Aeotec aërQ Temperature and Humidity Sensor",
+            "BATTERY"   -> "CR2477 lithium battery")),
+
     "ITEM_NAME_HERE" -> (newLinkedHashMap(
             "TYPE"      -> "DETAILS ABOUT DEVICE TYPE HERE",
             "BATTERY"   -> "WHAT BATTERY TO ORDER"))
