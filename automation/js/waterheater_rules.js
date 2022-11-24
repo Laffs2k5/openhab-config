@@ -8,7 +8,7 @@ const SCRIPT = {
     name: 'waterheater_rules.js',
     logger: {
         name: 'org.openhab.leif.waterheater',
-        globalLogDebugOnInfo: true,
+        globalLogDebugOnInfo: false,
         create: (prefix, localLogDebugOnInfo = false) => {
             return leifLog.createLogger(SCRIPT.logger.name, prefix, localLogDebugOnInfo || SCRIPT.logger.globalLogDebugOnInfo)
         },
