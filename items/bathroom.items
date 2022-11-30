@@ -32,26 +32,24 @@ Number
 
 /* Nexa AN179 In-Wall Switch Module: Bathroom exhaust fan */
 // Z-wave - Relay - Z-Wave Node 045: AN179 In-Wall Switch Module
+
+// main manual switch
+/* Moved to file _persist_influxdb.items to persisted for charting
 Switch
     Relay_CL_Bathroom_ExhaustFan_switch
     "Bathroom exhaust state is [%s]"
     (gRoomBathroom)
-    {channel="zwave:device:2c3b27f3:node45:switch_binary"}
-/*Switch
-    Relay_CL_Bathroom_ExhaustFan_AutoOn_30min_switch
-    "Bathroom exhaust state is [%s]"
-    (gRoomBathroom)
-    {
-        channel="zwave:device:2c3b27f3:node45:switch_binary",
-        expire = "30m, command=ON"
-    }*/
+    {channel="zwave:device:2c3b27f3:node45:switch_binary"} */
+
+// used by the humidity trigger to enable for 15 mi nat a time
 Switch
-    Relay_CL_Bathroom_ExhaustFan_AutoOn_50min_switch
+    Relay_CL_Bathroom_ExhaustFan_AutoOff_15min_switch
     "Bathroom exhaust state is [%s]"
     (gRoomBathroom)
     {
         channel="zwave:device:2c3b27f3:node45:switch_binary",
-        expire = "50m, command=ON"
+        // expire = "1m, command=OFF" // DEBUG
+        expire = "15m, command=OFF"
     }
 //Switch   Relay_CL_Bathroom_ExhaustFan_alarmPower     "Alarm (power)"   {channel="zwave:device:2c3b27f3:node45:alarm_power"}
 /* END Nexa AN179 */
@@ -88,3 +86,29 @@ Number
     (gRoomBathroom)
     {channel="zwave:device:2c3b27f3:node49:battery-level"} */
 /* END ZWA039 Aeotec aërQ */
+
+/* Virtual items */
+
+Switch
+    BathroomExhaustFan_humidityTriggerEnable
+    "Control fan by humidity"
+    <switch>
+    (gRoomBathroom)
+
+Number
+    BathroomExhaustFan_humidityTriggerControl
+    "Start fan at []"
+    <humidity>
+    (gRoomBathroom)
+Switch
+    BathroomExhaustFan_killSwitch_AutoOn_50min
+    "Disable fan for 50 min[]"
+    (gRoomBathroom)
+    // {expire = "1m, command=OFF"} // DEBUG
+    {expire = "50m, command=OFF"}
+DateTime
+    BathroomExhaustFan_Relhumidity_LastReadout
+    "Bathroom humidity last readout [%1$td.%1$tm.%1$tY]"
+    <updatedate>
+
+/* END Virtual items */

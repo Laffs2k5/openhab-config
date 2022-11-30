@@ -7,17 +7,23 @@ sitemap bathroom label="Bathroom"
             item=Relay_CL_Bathroom_ExhaustFan_switch
             label="Power status[]"
             icon="switch"
-        /*Switch
-            item=Relay_CL_Bathroom_ExhaustFan_AutoOn_30min_switch
-            label="Disable for 30 min[]"
-            icon="fan"
-            mappings=[OFF="Click me"]*/
         Switch
-            item=Relay_CL_Bathroom_ExhaustFan_AutoOn_50min_switch
-            label="Disable for 50 min[]"
+            item=BathroomExhaustFan_killSwitch_AutoOn_50min
             icon="fan"
-            mappings=[OFF="Click me"]
-
+            mappings=[ON="Click me"]
+        Text
+            item=Sensor_CL_Bathroom_TempHumidity_SensorRelhumidity
+            label="Last humidity reading [%.0f %%]"
+        Text
+            item=BathroomExhaustFan_Relhumidity_LastReadout
+            label="Last readout at [%1$td.%1$tm.%1$tY %1$tH:%1$tM:%1$tS]"
+        Switch
+            item=BathroomExhaustFan_humidityTriggerEnable
+        Switch
+            item=BathroomExhaustFan_humidityTriggerControl
+            mappings=[50="50%",55="55%",60="60%",65="65%",70="70%",75="75%",
+                80="80%",85="85%",90="90%",95="95%"]
+            visibility=[BathroomExhaustFan_humidityTriggerEnable=="ON"]
         Text
             label="Advanced"
             icon="settings"

@@ -236,6 +236,17 @@ Number
     {channel="zwave:device:2c3b27f3:node46:meter_watts"}
 /* END Aeotec ZW078 Heavy Duty Switch */
 
+/* Nexa AN179 In-Wall Switch Module: Bathroom exhaust fan */
+// Z-wave - Relay - Z-Wave Node 045: AN179 In-Wall Switch Module
+
+// main manual switch
+Switch
+    Relay_CL_Bathroom_ExhaustFan_switch
+    "Bathroom exhaust state is [%s]"
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+    {channel="zwave:device:2c3b27f3:node45:switch_binary"}
+/* END Nexa AN179 */
+
 /* ZWA039 Aeotec aërQ Temperature and Humidity Sensor: Bathroom humidity sensor */
 Number:Temperature
     Sensor_CL_Bathroom_TempHumidity_SensorTemperature
