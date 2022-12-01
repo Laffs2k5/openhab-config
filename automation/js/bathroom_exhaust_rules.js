@@ -1,11 +1,14 @@
 'use strict'
 
 // custom logger class through leifLog.createLogger
-const { leifLog } = require('leif-tools')
+const { leifLog, leifRules } = require('leif-tools')
 
 // Meta and logger for this script
 const SCRIPT = {
     name: 'bathroom_exhaust_rules.js',
+    tags: () => {
+        return ['programmatically created by ' + SCRIPT.name]
+    },
     logger: {
         name: 'org.openhab.leif.bathroom',
         globalLogDebugOnInfo: false,
@@ -22,6 +25,12 @@ const { actions, items, osgi, rules, time, triggers } = require('openhab')
 
 // l.i('loading runtime ...')
 // const { ON } = require('@runtime')
+
+const ruleHelperLogDebugOnInfo = false
+const ruleHelper = leifRules.createHelper(SCRIPT.logger.name, ruleHelperLogDebugOnInfo || SCRIPT.logger.globalLogDebugOnInfo)
+
+// const exhaustAutoOnCron = '0/10 * * * * ? *' // For debug: Every 10 seconds every day
+const exhaustAutoOnCron = '0 0/5 * * * ?' // Every 5 minutes every day - https://www.programmertools.online/generator/cron_expression.html
 
 const rulesUidPrefix = 'BathRoomExhaust'
 
@@ -42,6 +51,7 @@ const rulesToCreate = {
     [`${rulesUidPrefix}TriggerEnabled`]: {
         ruleName: 'Bathroom exhaust: humidity trigger enabled/disabled',
         ruleDescription: 'Check if fan should be enabled when trigger is enabled, immediately don\'t wait for next humidity value update.',
+        tags : SCRIPT.tags(),
         triggerEvents: [triggers.ItemStateChangeTrigger(itemNames.triggerEnableSwitch)],
 
         // log and call function from BathRoomExhaustHumidityTrigger
@@ -60,23 +70,25 @@ const rulesToCreate = {
         },
     },
     [`${rulesUidPrefix}TriggerPointChanged`]: {
-      ruleName: 'Bathroom exhaust: humidity trigger point changed',
-      ruleDescription: 'Check if fan should be enabled when set point changes, immediately don\'t wait for next humidity value update.',
-      triggerEvents: [triggers.ItemStateChangeTrigger(itemNames.triggerPoint)],
+        ruleName: 'Bathroom exhaust: humidity trigger point changed',
+        ruleDescription: 'Check if fan should be enabled when set point changes, immediately don\'t wait for next humidity value update.',
+        tags : SCRIPT.tags(),
+        triggerEvents: [triggers.ItemStateChangeTrigger(itemNames.triggerPoint)],
 
-      // log and call function from BathRoomExhaustHumidityTrigger
-      func: (event) => {
-          const localLogDebugOnInfo = false
-          const l = SCRIPT.logger.create(rulesUidPrefix + 'TriggerPointChanged', localLogDebugOnInfo)
-          l.d('received event of type: {}', event.eventType)
-          const newState = event.newState // when trigger is ItemStateChangeTrigger
-          l.d('new state is: {}', newState)
-          rulesToCreate[`${rulesUidPrefix}HumidityTrigger`].func(null)
-      },
-  },
+        // log and call function from BathRoomExhaustHumidityTrigger
+        func: (event) => {
+            const localLogDebugOnInfo = false
+            const l = SCRIPT.logger.create(rulesUidPrefix + 'TriggerPointChanged', localLogDebugOnInfo)
+            l.d('received event of type: {}', event.eventType)
+            const newState = event.newState // when trigger is ItemStateChangeTrigger
+            l.d('new state is: {}', newState)
+            rulesToCreate[`${rulesUidPrefix}HumidityTrigger`].func(null)
+        },
+    },
     [`${rulesUidPrefix}KillSwitchChanged`]: {
         ruleName: 'Bathroom exhaust: kill switch enabled/disabled',
         ruleDescription: 'Turn off the fan if kill switch is ON.',
+        tags : SCRIPT.tags(),
         triggerEvents: [triggers.ItemStateChangeTrigger(itemNames.killSwitch)],
 
         func: (event) => {
@@ -97,8 +109,10 @@ const rulesToCreate = {
     [`${rulesUidPrefix}HumidityTrigger`]: {
         ruleName: 'Bathroom exhaust: humidity trigger',
         ruleDescription: 'Check if exhaust fan should be enabled based on current config and humidity.',
+        tags : SCRIPT.tags(),
         triggerEvents: [
             triggers.ItemStateChangeTrigger(itemNames.humidityValue), // when humidity changes
+            triggers.GenericCronTrigger(exhaustAutoOnCron), // on a schedule
             triggers.SystemStartlevelTrigger(100), // System start level - 100 - Startup is fully complete, ref. https://www.openhab.org/docs/configuration/rules-dsl.html#system-based-triggers
         ],
 
@@ -145,84 +159,15 @@ const rulesToCreate = {
     },
 }
 
-this.scriptLoaded = () => {
-    l.i('script {} loaded.', SCRIPT.name)
-    removeKnownExistingRules()
-    main()
-}
-
 this.scriptUnloaded = () => {
     l.i('unloading script {} ...', SCRIPT.name)
-    removeKnownExistingRules()
+    ruleHelper.removeKnownExistingRules(rulesToCreate)
     l.i('script unloaded.')
 }
 
-// TODO: move to leif-tools
-const ruleExists = (uid) => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('ruleExists', localLogDebugOnInfo)
-    l.d('looking for rule with uid {} ...', uid)
-    return !(RuleManager.getStatusInfo(uid) == null)
-}
-
-// TODO: move to leif-tools
-const removeRule = (uid) => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('removeRule', localLogDebugOnInfo)
-    if (ruleExists(uid)) {
-        l.i('removing rule with uid {} ...', uid)
-        ruleRegistry.remove(uid)
-        return !ruleExists(uid)
-    } else {
-        return false
-    }
-}
-
-// TODO: move to leif-tools
-const removeKnownExistingRules = () => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('removeKnownExistingRules', localLogDebugOnInfo)
-    let rules = Object.keys(rulesToCreate)
-    l.d('looking for {} definition(s) ...', rules.length)
-    rules.forEach((ruleUid) => {
-        l.d('looking for rule {} ...', ruleUid)
-        if (ruleExists(ruleUid)) removeRule(ruleUid)
-    })
-}
-
-// TODO: move to leif-tools
-const createRules = () => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('createRules', localLogDebugOnInfo)
-
-    return Object.keys(rulesToCreate).map((ruleUid) => {
-        let ruleDef = rulesToCreate[ruleUid]
-        l.d('lets create the rule "{}"!', ruleDef.ruleName)
-
-        l.d('ruleUid {}', ruleUid)
-        l.d('ruleDescription {}', ruleDef.ruleDescription)
-        l.d('triggerEvents {}', ruleDef.triggerEvents[0])
-        l.d('tags {}', ['programmatically created by ' + SCRIPT.name])
-        l.d('updateCurrentSettingsTextTrigger {}', ruleDef.func)
-
-        // remove previous version of rule if exists
-        if (ruleExists(ruleUid)) {
-            l.i('previous version of rule exists, removing ...')
-            removeRule(ruleUid)
-        }
-
-        return rules.JSRule({
-            name: ruleDef.ruleName,
-            description: ruleDef.ruleDescription,
-            id: ruleUid,
-            triggers: ruleDef.triggerEvents,
-            tags: ['programmatically created by ' + SCRIPT.name],
-            execute: ruleDef.func,
-        })
-    })
-}
-
 // "entry point", called from scriptLoaded
-const main = () => {
-    createRules()
+this.scriptLoaded = () => {
+    l.i('script {} loaded.', SCRIPT.name)
+    ruleHelper.removeKnownExistingRules(rulesToCreate)
+    ruleHelper.createRules(rulesToCreate)
 }

@@ -1,11 +1,14 @@
 'use strict'
 
 // custom logger class through leifLog.createLogger
-const { leifLog } = require('leif-tools')
+const { leifLog, leifRules } = require('leif-tools')
 
 // Meta and logger for this script
 const SCRIPT = {
     name: 'waterheater_rules.js',
+    tags: () => {
+        return ['programmatically created by ' + SCRIPT.name]
+    },
     logger: {
         name: 'org.openhab.leif.waterheater',
         globalLogDebugOnInfo: false,
@@ -22,6 +25,9 @@ const { actions, items, osgi, rules, time, triggers } = require('openhab')
 
 // l.i('loading runtime ...')
 // const { ON } = require('@runtime')
+
+const ruleHelperLogDebugOnInfo = false
+const ruleHelper = leifRules.createHelper(SCRIPT.logger.name, ruleHelperLogDebugOnInfo || SCRIPT.logger.globalLogDebugOnInfo)
 
 // const waterheaterScheduleCron = '0/10 * * * * ? *' // For debug: Every 10 seconds every day
 const waterheaterScheduleCron = '0 0 * * * ?' // Every hour every day - https://www.programmertools.online/generator/cron_expression.html
@@ -42,6 +48,7 @@ const rulesToCreate = {
     [`${rulesUidPrefix}ScheduleEnabled`]: {
         ruleName: 'Laundry room water heater: schedule enabled/disabled',
         ruleDescription: 'Set desired water heater setting when schedule is enabled, immediately dont wait for next cron trigger.',
+        tags: SCRIPT.tags(),
         triggerEvents: [triggers.ItemStateChangeTrigger(itemNames.scheduleSwitch)],
 
         // log and call function from LaundryRoomWaterHeaterScheduleRunner
@@ -61,6 +68,7 @@ const rulesToCreate = {
     [`${rulesUidPrefix}ScheduleRunner`]: {
         ruleName: 'Laundry room water heater: schedule',
         ruleDescription: 'Each hour this checks if water heater setting should be changed and changes it as needed.',
+        tags: SCRIPT.tags(),
         triggerEvents: [
             triggers.GenericCronTrigger(waterheaterScheduleCron),
             triggers.SystemStartlevelTrigger(100), // System start level - 100 - Startup is fully complete, ref. https://www.openhab.org/docs/configuration/rules-dsl.html#system-based-triggers
@@ -108,84 +116,15 @@ const rulesToCreate = {
     },
 }
 
-this.scriptLoaded = () => {
-    l.i('script {} loaded.', SCRIPT.name)
-    removeKnownExistingRules()
-    main()
-}
-
 this.scriptUnloaded = () => {
     l.i('unloading script {} ...', SCRIPT.name)
-    removeKnownExistingRules()
+    ruleHelper.removeKnownExistingRules(rulesToCreate)
     l.i('script unloaded.')
 }
 
-// TODO: move to leif-tools
-const ruleExists = (uid) => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('ruleExists', localLogDebugOnInfo)
-    l.d('looking for rule with uid {} ...', uid)
-    return !(RuleManager.getStatusInfo(uid) == null)
-}
-
-// TODO: move to leif-tools
-const removeRule = (uid) => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('removeRule', localLogDebugOnInfo)
-    if (ruleExists(uid)) {
-        l.i('removing rule with uid {} ...', uid)
-        ruleRegistry.remove(uid)
-        return !ruleExists(uid)
-    } else {
-        return false
-    }
-}
-
-// TODO: move to leif-tools
-const removeKnownExistingRules = () => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('removeKnownExistingRules', localLogDebugOnInfo)
-    let rules = Object.keys(rulesToCreate)
-    l.d('looking for {} definition(s) ...', rules.length)
-    rules.forEach((ruleUid) => {
-        l.d('looking for rule {} ...', ruleUid)
-        if (ruleExists(ruleUid)) removeRule(ruleUid)
-    })
-}
-
-// TODO: move to leif-tools
-const createRules = () => {
-    const localLogDebugOnInfo = false
-    const l = SCRIPT.logger.create('createRules', localLogDebugOnInfo)
-
-    return Object.keys(rulesToCreate).map((ruleUid) => {
-        let ruleDef = rulesToCreate[ruleUid]
-        l.d('lets create the rule "{}"!', ruleDef.ruleName)
-
-        l.d('ruleUid {}', ruleUid)
-        l.d('ruleDescription {}', ruleDef.ruleDescription)
-        l.d('triggerEvents {}', ruleDef.triggerEvents[0])
-        l.d('tags {}', ['programmatically created by ' + SCRIPT.name])
-        l.d('updateCurrentSettingsTextTrigger {}', ruleDef.func)
-
-        // remove previous version of rule if exists
-        if (ruleExists(ruleUid)) {
-            l.i('previous version of rule exists, removing ...')
-            removeRule(ruleUid)
-        }
-
-        return rules.JSRule({
-            name: ruleDef.ruleName,
-            description: ruleDef.ruleDescription,
-            id: ruleUid,
-            triggers: ruleDef.triggerEvents,
-            tags: ['programmatically created by ' + SCRIPT.name],
-            execute: ruleDef.func,
-        })
-    })
-}
-
 // "entry point", called from scriptLoaded
-const main = () => {
-    createRules()
+this.scriptLoaded = () => {
+    l.i('script {} loaded.', SCRIPT.name)
+    ruleHelper.removeKnownExistingRules(rulesToCreate)
+    ruleHelper.createRules(rulesToCreate)
 }
