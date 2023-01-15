@@ -41,7 +41,7 @@ Switch
     (gRoomBathroom)
     {channel="zwave:device:2c3b27f3:node45:switch_binary"} */
 
-// used by the humidity trigger to enable for 15 mi nat a time
+// used by the humidity trigger to enable for 15 min at a time
 Switch
     Relay_CL_Bathroom_ExhaustFan_AutoOff_15min_switch
     "Bathroom exhaust state is [%s]"
@@ -94,12 +94,12 @@ Switch
     "Control fan by humidity"
     <switch>
     (gRoomBathroom)
-
+/* Moved to file _persist_influxdb.items to persisted for charting
 Number
     BathroomExhaustFan_humidityTriggerControl
     "Start fan at []"
     <humidity>
-    (gRoomBathroom)
+    (gRoomBathroom)*/
 Switch
     BathroomExhaustFan_killSwitch_AutoOn_50min
     "Disable fan for 50 min[]"

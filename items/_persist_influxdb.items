@@ -247,6 +247,14 @@ Switch
     {channel="zwave:device:2c3b27f3:node45:switch_binary"}
 /* END Nexa AN179 */
 
+/* Bathroom virtual items */
+Number
+    BathroomExhaustFan_humidityTriggerControl
+    "Start fan at []"
+    <humidity>
+    (gRoomBathroom, gPersistInfluxEveryUpdate)
+/* END Bathroom virtual items */
+
 /* ZWA039 Aeotec aërQ Temperature and Humidity Sensor: Bathroom humidity sensor */
 Number:Temperature
     Sensor_CL_Bathroom_TempHumidity_SensorTemperature
