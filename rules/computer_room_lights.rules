@@ -18,7 +18,7 @@ val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName 
     itemName |
     logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
     val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
-    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
+    logDebug(loggerName, "resolved to item with state '{}'", resolvedItem.state.toString())
     resolvedItem
 ]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
