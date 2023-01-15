@@ -69,27 +69,6 @@ Number
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
     { channel="zwave:device:2c3b27f3:node7:meter_watts" }
 
-/* TELLDUS Multisensor Z-Wave: Laundry room */
-Number
-    Sensor_CL_LaundryRoom_sensorTemperature
-    "Laundry room temperature is [%.0f °C]"
-    <temperature>
-    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    { channel="zwave:device:2c3b27f3:node40:sensor_temperature" }
-Number
-    Sensor_CL_LaundryRoom_sensorLuminance
-    "Laundry room light sensor value is [%d]"
-    <lightsensor>
-    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    { channel="zwave:device:2c3b27f3:node40:sensor_luminance" }
-Number
-    Sensor_CL_LaundryRoom_batteryLevel
-    "Laundry room battery Level is [%.0f %%]"
-    <battery>
-    (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
-    { channel="zwave:device:2c3b27f3:node40:battery-level" }
-/* END TELLDUS Multisensor */
-
 /* Shenzhen multisensor Z-Wave: Living room */
 Number
     Sensor_GF_LivingRoomWall_sensorLuminance
@@ -281,3 +260,11 @@ Number
     (gRoomBathroom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node49:battery-level"}
 /* END ZWA039 Aeotec aërQ */
+
+/* Vision ZP3102 Z-Wave: motion sensor #3: Laundry room */
+Number
+    Sensor_CL_LaundryRoom_BatteryLevel
+    "Laundry room battery Level is [%.0f %%]"
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node50:battery-level"}
+/* END Vision ZP3102 */

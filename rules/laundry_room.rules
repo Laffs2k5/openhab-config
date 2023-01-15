@@ -18,7 +18,7 @@ val Functions$Function2<String, String, GenericItem> getGenericItemFromItemName 
     itemName |
     logDebug(loggerName, "Resolving item '{}' as GenericItem ...", itemName)
     val resolvedItem = ScriptServiceUtil.getItemRegistry.getItem(itemName) as GenericItem
-    logDebug(loggerName, "resolved to item with state '{}'", resolvedItem.state.toString())
+    logDebug(loggerName, "reolved to item with state '{}'", resolvedItem.state.toString())
     resolvedItem
 ]
 val Functions$Function2<String, GenericItem, Boolean> logStateChange = [
@@ -45,25 +45,6 @@ val Functions$Function2<String, GenericItem, Boolean> logReceivedUpdateWithState
     logDebug(LOGGER, "Item '{}' received update '{}'",
         itemUpdated.name,
         itemUpdated.state)
-    true
-]
-val Functions$Function3<String, GenericItem, String, Boolean> logReceivedCommand = [
-    loggerName,
-    itemCommanded,
-    command |
-    val String LOGGER = loggerName //+ ".logReceivedCommand"
-    logDebug(LOGGER, "Item '{}' received command '{}'",
-        itemCommanded.name,
-        command)
-    true
-]
-val Functions$Function2<String, GenericItem, Boolean> logUnexpectedState = [
-    loggerName,
-    itemChanged |
-    val String LOGGER = loggerName //+ ".logUnexpectedState"
-    logError(LOGGER, "The state '{}' of item '{}' was unexpected!",
-        itemChanged.state.toString(),
-        itemChanged.name)
     true
 ]
 val Functions$Function3<String, String, String, String> getAndLogMachineNotifyMsg = [
@@ -106,30 +87,6 @@ val Functions$Function3<String, String, String, Boolean> notifyMachineToSpeaker 
 
     true
 ]
-val Functions$Function3<String, String, String, String> updateThingConfiguration = [
-    loggerName,
-    thingUID,
-    httpBody |
-
-    val String MAP_FILE = "secrets.map" // transform via secrets.map to get eg. john:doe@localhost:8080
-    val String MAP_REST_URI_AUTHORITY = "MAP_REST_URI_AUTHORITY" // transform via MAP_FILE to get eg. john:doe@localhost:8080
-    val String restUriAutority = transform("MAP", MAP_FILE, MAP_REST_URI_AUTHORITY) // fetch host with basic auth secret
-    val String restUriScheme = "http"
-    val String restContentType = "application/json"
-    val String restUriConfigPath = "/rest/things/" + thingUID + "/config"
-
-    logInfo(loggerName, "HTTP PUT request to '{}' with body '{}'", restUriConfigPath, httpBody)
-    var String httpResult
-    try {
-        httpResult = sendHttpPutRequest(restUriScheme + "://" + restUriAutority + restUriConfigPath, restContentType, httpBody)
-    } catch(Throwable t) {
-        logError(loggerName, "Exception caught during HTTP PUT request: {}", t.toString())
-    }
-    logDebug(loggerName, "HTTP request result: {}", httpResult)
-
-    httpResult
-]
-
 
 // When tumbple dryer power sensor receives update
 // Perform check if machine is now running/stopped
@@ -218,156 +175,4 @@ then
     } else {
         logInfo(LOGGER, "No notification will be sent.")
     }
-end
-
-// When set time changes configure the zwave relay with the update value
-rule "Laundry room lights, Auto off time changed"
-when
-    Item LaundryRoom_MainLights_AutoOff_setTime received update
-then
-    val String LOGGER = LOGGER_NAME + ".autoOffChange"
-    val int controlValue = (LaundryRoom_MainLights_AutoOff_setTime.state as DecimalType).intValue
-    val int secondsValue = controlValue*60
-    logInfo(LOGGER, "Auto off changed to {} minutes, updating ...", controlValue)
-    logDebug(LOGGER, "Auto off seconds value: '{}'", secondsValue)
-
-    // Configure zwave item dynamically using the REST API
-    // NOTE: Config paramteres varies by thing type and manufacturer
-    val httpBody = "{'config_11_2':" + secondsValue.toString() + "}"
-    val String thingUID = "zwave:device:2c3b27f3:node7"
-    val String httpResult = updateThingConfiguration.apply(LOGGER, thingUID, httpBody)
-
-    // Output shold contain UID field
-    val String resultUID = transform("JSONPATH", "$.UID", httpResult)
-    logDebug(LOGGER, "JSON parse result UID: '{}'", resultUID)
-    if( resultUID != thingUID ) {
-        logError(LOGGER, "PUT request did not return expected ouput, missing field 'UID' with value '{}' in HTTP request result: {}", thingUID, httpResult)
-    }
-end
-
-// Allow to enable/disable motion triggering
-// The zwave group asociation of the motion sensor is reconfigured
-rule "Laundry room lights, Motion trigger control change"
-when
-    Item LaundryRoom_MainLights_MotionTrigger_control changed
-then
-    val String LOGGER = LOGGER_NAME + ".autoOffEnabledChange"
-    val GenericItem itemChanged = LaundryRoom_MainLights_MotionTrigger_control
-    logStateChange.apply(LOGGER, itemChanged)
-
-    val MotionTriggerItem = LaundryRoom_MainLights_MotionTrigger_control
-    logInfo(LOGGER, "Auto off enabled changed to {}, updating ...", MotionTriggerItem.state.toString())
-    var httpBody = "{'group_2': ['node_7_0']}" // default to ON
-    if( MotionTriggerItem.state == OnOffType::ON ) {
-        httpBody = "{'group_2': ['node_7_0']}"
-    } else if( MotionTriggerItem.state == OnOffType::OFF ) {
-        httpBody = "{'group_2': null}"
-    } else {
-        logUnexpectedState.apply(LOGGER, MotionTriggerItem)
-        return // early
-    }
-
-    // Configure zwave item dynamically using the REST API
-    // NOTE: Config paramteres varies by thing type and manufacturer
-    val String thingUID = "zwave:device:2c3b27f3:node40"
-    val String httpResult = updateThingConfiguration.apply(LOGGER, thingUID, httpBody)
-
-    // Output shold contain UID field
-    val String resultUID = transform("JSONPATH", "$.UID", httpResult)
-    logDebug(LOGGER, "JSON parse result UID: '{}'", resultUID)
-    if( resultUID != thingUID ) {
-        logError(LOGGER, "PUT request did not return expected ouput, missing field 'UID' with value '{}' in HTTP request result: {}", thingUID, httpResult)
-    }
-end
-
-// Motion triggering should be automatically disabled at night
-rule "Laundry room lights, Automatic enable/disable motion trigger"
-when
-    Time cron "0 0 23 1/1 * ? *" or
-    Time cron "0 0 05 1/1 * ? *"
-    // DEBUG
-    //Time cron "30 * * ? * * *" // At second :30 of every minute
-then
-    val String LOGGER = LOGGER_NAME + ".autoMotionDisable"
-    logInfo(LOGGER, "Auto enable/disable motion rule triggered")
-    var Number hour = now.getHour()
-    logInfo(LOGGER, "hour: '{}'", hour)
-
-    var msg = "Rule was triggered, hour=" + hour.toString()
-
-    val MotionTriggerItem = LaundryRoom_MainLights_MotionTrigger_control
-    if( hour == 23 ) {
-        MotionTriggerItem.sendCommand(OnOffType::OFF)
-        msg = msg + ", setting motion trigger to 'OFF'"
-    } else if( hour == 05 ) {
-        MotionTriggerItem.sendCommand(OnOffType::ON)
-        msg = msg + ", setting motion trigger to 'ON'"
-    } else {
-        logError(LOGGER, "The hour '{}' was unexpected!",hour)
-
-        // Default to ON
-        MotionTriggerItem.sendCommand(OnOffType::ON)
-        msg = msg + ", setting motion trigger to 'DEFAULT'"
-    }
-
-    //val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
-    //telegramAction.sendTelegram("Motion trigger schedule:" + msg)
-end
-
-// When the UI control element change state
-rule "Laundry room lights, Auto off control item state change"
-when
-    Item LaundryRoom_MainLights_AutoOff_control received update
-then
-    val String LOGGER = LOGGER_NAME + ".controlChange"
-    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
-    logReceivedUpdateWithState.apply(LOGGER, triggeringItem)
-
-    val NumberItem AutoOffControlItem = LaundryRoom_MainLights_AutoOff_control
-    val NumberItem AutoOffSetTimeItem = LaundryRoom_MainLights_AutoOff_setTime
-
-    val int controlValue = (AutoOffControlItem.state as DecimalType).intValue
-
-    if( controlValue != CONTROL_MODE_NOCHANGE ) {
-        // Failsafe default to timer off in case of problems
-        if( AutoOffSetTimeItem.state == NULL || AutoOffSetTimeItem.state == UNDEF ) {
-            logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffSetTimeItem.name)
-            AutoOffSetTimeItem.postUpdate(0)
-        }
-
-        // Determine new set time
-        // Failsafe default to timer off in case of problems
-        var int setTimeValue = 0
-        if( AutoOffSetTimeItem.state != NULL && AutoOffSetTimeItem.state != UNDEF ) {
-            setTimeValue = (AutoOffSetTimeItem.state as DecimalType).intValue
-        } else {
-            logWarn(LOGGER, "Item '{}' has state NULL or UNDEF!", AutoOffSetTimeItem.name)
-        }
-        var int newSetTime = Math.max(0, setTimeValue + controlValue) // never negative
-        //logInfo(LOGGER, "controlValue={}, setTimeValue={}, newSetTime={}", controlValue, setTimeValue, newSetTime)
-        if( controlValue == CONTROL_MODE_START ) {
-            newSetTime = setTimeValue   // no change, just start/restart auto off timer
-        } else if( controlValue == CONTROL_MODE_DISABLE) {
-            newSetTime = 0              // 0 will result in termination of auto off timer
-        }
-        logDebug(LOGGER, "setting newSetTime={} minutes", newSetTime)
-
-        // Apply new set time
-        AutoOffSetTimeItem.postUpdate(newSetTime)
-
-        // To prevent the UI showing button in "pressed" state
-        AutoOffControlItem.postUpdate(CONTROL_MODE_NOCHANGE)
-    }
-end
-
-// When light sensor data is received
-// record date/time
-rule "Laundry room light sensor data received"
-when
-    Item Sensor_CL_LaundryRoom_sensorLuminance received update
-then
-    val String LOGGER = LOGGER_NAME + ".lightDataReceived"
-    val GenericItem triggeringItem = getGenericItemFromItemName.apply(LOGGER, triggeringItemName)
-    logReceivedUpdate.apply(LOGGER, triggeringItem)
-    Sensor_CL_LaundryRoom_sensorLuminance_LastReadout.postUpdate(new DateTimeType())
 end

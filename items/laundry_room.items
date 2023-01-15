@@ -1,31 +1,4 @@
 /* Virtual items */
-Group
-    gLaundryRoomAutoOff
-    "Laundry room auto off group"
-    <time>
-
-// For auto off functionaluty
-Number
-    LaundryRoom_MainLights_AutoOff_setTime
-    "Auto off time set is [%d min]"
-    <time>
-    (gLaundryRoomAutoOff)
-Number
-    LaundryRoom_MainLights_AutoOff_control
-    "Auto off control"
-    <selfenergy>
-    (gLaundryRoomAutoOff)
-Switch
-    LaundryRoom_MainLights_MotionTrigger_control
-    "Laundry room light on by motion is [%s]"
-    <motion>
-    (gLaundryRoomAutoOff)
-
-// For recording date and value when receiving updates from Telldus multisensor
-DateTime
-    Sensor_CL_LaundryRoom_sensorLuminance_LastReadout
-    "Laundry room light sensor last readout at [%1$td.%1$tm.%1$tY]"
-    <updatedate>
 
 // For recording machine state
 Switch
@@ -38,83 +11,6 @@ Switch
     <washingmachine>
 
 /* END Virtual items */
-
-/* Qubino Flush 1 Relay Z-wave: Laundry room main lights */
-Switch
-    Relay_CL_LaundryRoom_MainLights_switch
-    "Laundry room main lights switch state is [%s]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node7:switch_binary" }
-Switch
-    Relay_CL_LaundryRoom_MainLights_sensor
-    "Laundry room main lights binary sensor state is [%s]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node7:sensor_binary" }
-/* Moved to file _persist_influxdb.items to persisted for charting
-Number
-    Relay_CL_LaundryRoom_meterWatts
-    "Laundry room main lights power consumption [%.0f W]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node7:meter_watts" } */
-/* Not used
-Number
-    Relay_CL_LaundryRoom_MainLights_meterKwh
-    "Laundry room main lights power consumption [%.0f kWh]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node7:meter_kwh" } */
-//Switch   Relay_CL_LaundryRoom_alarmPower           "Alarm (power)"              {channel="zwave:device:2c3b27f3:node7:alarm_power"}
-Switch
-    Relay_CL_LaundryRoom_switchBinary1
-    "Laundry room main lights switch 1 state is [%s]"
-    (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node7:switch_binary1"}
-//Number   Relay_CL_LaundryRoom_meterWatts1          "Electric meter (watts) 1"   {channel="zwave:device:2c3b27f3:node7:meter_watts1"}
-//Number   Relay_CL_LaundryRoom_meterKwh1            "Electric meter (kWh) 1"     {channel="zwave:device:2c3b27f3:node7:meter_kwh1"}
-//Switch   Relay_CL_LaundryRoom_sensorBinary2        "Binary Sensor I2"           {channel="zwave:device:2c3b27f3:node7:sensor_binary2"}
-//Switch   Relay_CL_LaundryRoom_alarmPower2          "Alarm (power) 2"            {channel="zwave:device:2c3b27f3:node7:alarm_power2"}
-//Switch   Relay_CL_LaundryRoom_sensorBinary3        "Binary Sensor I3"           {channel="zwave:device:2c3b27f3:node7:sensor_binary3"}
-//Number   Relay_CL_LaundryRoom_sensorTemperature3   "Sensor (temperature)"       {channel="zwave:device:2c3b27f3:node7:sensor_temperature3"}
-//Number   Relay_CL_LaundryRoom_sensorTemperature4   "Sensor (temperature)"       {channel="zwave:device:2c3b27f3:node7:sensor_temperature4"}
-/* END Qubino Flush 1 Relay Z-wave */
-
-/* TELLDUS Multisensor Z-Wave: Laundry room */
-/* [Deprecated] Not in use
-Switch
-    Sensor_CL_LaundryRoom_alarmBurglar
-    "Laundry room motion sensor state is [%s]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node40:alarm_tamper" } */
-/* Moved to file _persist_influxdb.items to persisted for charting
-Number
-    Sensor_CL_LaundryRoom_sensorTemperature
-    "Laundry room temperature is [%.0f °C]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node40:sensor_temperature" } */
-/* Moved to file _persist_influxdb.items to persisted for charting
-Number
-    Sensor_CL_LaundryRoom_sensorLuminance
-    "Laundry room light sensor value is [%d]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node40:sensor_luminance" } */
-/* Moved to file _persist_influxdb.items to persisted for charting
-Number
-    Sensor_CL_LaundryRoom_batteryLevel
-    "Laundry room battery Level is [%.0f %%]"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node40:battery-level" } */
-/* [Deprecated] Not in use
-Switch
-    Sensor_CL_LaundryRoom_sensorBinary
-    "Binary Sensor"
-    (gRoomLaundryRoom)
-    { channel="zwave:device:2c3b27f3:node40:sensor_binary" } */
-/* Not in use, device enables lights (node7) through z-wave network
-Switch
-    Sensor_CL_LaundryRoom_alarmMotion
-    "Motion alarm"
-    (gRoomLaundryRoom)
-    {channel="zwave:device:2c3b27f3:node40:alarm_motion"} */
-/* END TELLDUS Multisensor */
 
 /* Fibaro Wallplug Z-Wave: Laundry room tumbler */
 /* Not used
