@@ -67,7 +67,7 @@ Number
     "Laundry room main lights power consumption [%.0f W]"
     <energymonitor>
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
-    { channel="zwave:device:2c3b27f3:node7:meter_watts" }
+    { channel="zwave:device:2c3b27f3:node51:meter_watts" }
 
 /* Shenzhen multisensor Z-Wave: Living room */
 Number
@@ -268,3 +268,24 @@ Number
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     {channel="zwave:device:2c3b27f3:node50:battery-level"}
 /* END Vision ZP3102 */
+
+/* TELLDUS Multisensor Z-Wave: Laundry room */
+Number
+    Sensor_CL_LaundryRoom_sensor2Temperature
+    "Laundry room temperature is [%.0f °C]"
+    <temperature>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    { channel="zwave:device:2c3b27f3:node40:sensor_temperature" }
+Number
+    Sensor_CL_LaundryRoom_sensor2Luminance
+    "Laundry room light sensor value is [%d]"
+    <lightsensor>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate)
+    { channel="zwave:device:2c3b27f3:node40:sensor_luminance" }
+Number
+    Sensor_CL_LaundryRoom_sensor2batteryLevel
+    "Laundry room battery Level is [%.0f %%]"
+    <battery>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    { channel="zwave:device:2c3b27f3:node40:battery-level" }
+/* END TELLDUS Multisensor */

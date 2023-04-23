@@ -12,7 +12,8 @@
     "openhab": "^2.0.4"
   },
   "dependencies": {
-    "leif-tools": "file:leif-tools-1.0.0.tgz"
+    "leif-tools": "file:leif-tools-1.0.0.tgz",
+    "openhab_rules_tools": "^1.1.4"
   },
   "prettier": {
     "printWidth": 180,

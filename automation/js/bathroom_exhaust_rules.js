@@ -127,7 +127,7 @@ const rulesToCreate = {
             _itemNames.forEach(itemName => {
                 l.d('getting item {} ...', itemName)
                 _items[itemName] = items.getItem(itemNames[itemName])
-                l.d('state of item {} is: {}', itemName, _items[itemName])
+                l.d('state of item {} is: {}', itemName, _items[itemName].state)
             })
 
             // update last readout time
