@@ -54,7 +54,7 @@ Switch
     "Laundry room Binary Sensor state is [%s]"
     (gRoomLaundryRoom)
     {channel="zwave:device:2c3b27f3:node50:sensor_binary"}
-//Number:Temperature   ZWaveMotionsensorZWaveNode050VisionZP31023SensorTemperature   "Sensor (temperature)"   {channel="zwave:device:2c3b27f3:node50:sensor_temperature"}
+//Number:Temperature   ZWaveMotionsensorZWaveNode050VisionZP31023SensorTemperature   "Sensor (temperature)"   {unit="°C", channel="zwave:device:2c3b27f3:node50:sensor_temperature"}
 //Switch               ZWaveMotionsensorZWaveNode050VisionZP31023AlarmBurglar        "Alarm (burglar)"        {channel="zwave:device:2c3b27f3:node50:alarm_burglar"}
 /* Moved to file _persist_influxdb.items to persisted for charting
 Number

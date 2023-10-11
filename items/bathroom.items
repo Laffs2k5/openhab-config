@@ -62,7 +62,10 @@ Number:Temperature
     "Bathroom temperature is [%.0f °C]"
     <temperature>
     (gRoomBathroom)
-    {channel="zwave:device:2c3b27f3:node49:sensor_temperature"}
+    {
+        unit="°C",
+        channel="zwave:device:2c3b27f3:node49:sensor_temperature"
+    }
 Number
     Sensor_CL_Bathroom_TempHumidity_SensorRelhumidity
     "Bathroom relative humidity is [%.0f %%]"

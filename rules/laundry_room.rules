@@ -65,8 +65,10 @@ val Functions$Function4<String, String, String, String, Boolean> notifyMachineTo
     machineState,
     notifyMsg |
     logInfo(loggerName, "Sending notification: {}", notifyMsg)
-    val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807") // peder bot
-    telegramAction.sendTelegram("Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
+    // TODO: remove telegram binding
+    // val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807") // peder bot
+    // telegramAction.sendTelegram("Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
+    sendNotification("leif.peder@gmail.com", "Openhab: " + machineName + " " + machineState + ": " + notifyMsg)
     true
 ]
 val Functions$Function3<String, String, String, Boolean> notifyMachineToSpeaker = [

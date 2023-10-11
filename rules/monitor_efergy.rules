@@ -67,8 +67,10 @@ then
         // Notify?
         if( lastNotifiedJavaTime.plusHours(ALERT_MIN_HOURS_THRESHOLD).isBefore(triggeredJavaTime) ) {
             logDebug(LOGGER, "Sending notification as last notification was not sent within the threshold of {} hours.", ALERT_MIN_HOURS_THRESHOLD)
-            val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
-            telegramAction.sendTelegram("Openhab: Efergy status check: " + notifyMsg)
+            // TODO: remove telegram binding
+            // val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
+            // telegramAction.sendTelegram("Openhab: Efergy status check: " + notifyMsg)
+            sendNotification("leif.peder@gmail.com", "Openhab: Efergy status check: " + notifyMsg)
 
             // Record last notification datetime
             LastNotifiedItem.postUpdate(new DateTimeType())

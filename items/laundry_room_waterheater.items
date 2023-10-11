@@ -15,7 +15,10 @@ Number:Temperature
     "Laundry room water heater relay internal temperature"
     <temperature>
     (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater)
-    {channel="zwave:device:2c3b27f3:node46:sensor_temperature"}
+    {
+        unit="°C",
+        channel="zwave:device:2c3b27f3:node46:sensor_temperature"
+    }
 Number
     Relay_CL_LaundryRoom_WaterHeater_meterKwh
     "Laundry room water heater energy consumption [%.0f kWh]"

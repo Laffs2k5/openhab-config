@@ -8,7 +8,7 @@ val String  LOGGER_NAME = "battery_monitor"
 val Number  BATTERY_ALERT_THRESHOLD = 15 // % of full
 val HashMap< String, LinkedHashMap<String, String>> DeviceData = newHashMap(
 
-    "Sensor_CL_LaundryRoom_batteryLevel" -> (newLinkedHashMap(
+    "Sensor_CL_LaundryRoom_sensor2batteryLevel" -> (newLinkedHashMap(
             "TYPE"      -> "TELLDUS PST02B Slim Z-Wave Multi-Sensor",
             "BATTERY"   -> "CR123A lithium battery")),
 
@@ -86,7 +86,9 @@ then
         notifyMsg = "Please note that the following device(s) are reporting a battery level below the configured threshold of "
             + BATTERY_ALERT_THRESHOLD + "%%:\n" + notifyMsg
         logWarn(LOGGER, notifyMsg)
-        val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
-        telegramAction.sendTelegram("Openhab: battery monitoring: " + notifyMsg)
+        // TODO: remove telegram binding
+        // val telegramAction = getActions("telegram","telegram:telegramBot:99ccb3e807")
+        // telegramAction.sendTelegram("Openhab: battery monitoring: " + notifyMsg)
+        sendNotification("leif.peder@gmail.com", "Openhab: battery monitoring: " + notifyMsg)
     }
 end

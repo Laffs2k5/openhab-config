@@ -188,7 +188,10 @@ Number:Temperature
     "Laundry room water heater relay internal temperature"
     <temperature>
     (gRoomLaundryRoom, gRoomLaundryRoomWaterHeater, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node46:sensor_temperature"}
+    {
+        unit="°C",
+        channel="zwave:device:2c3b27f3:node46:sensor_temperature"
+    }
 Number
     Relay_CL_LaundryRoom_WaterHeater_meterKwh
     "Laundry room water heater energy consumption [%.0f kWh]"
@@ -240,7 +243,10 @@ Number:Temperature
     "Bathroom temperature is [%.0f °C]"
     <temperature>
     (gRoomBathroom, gPersistInfluxEveryUpdate)
-    {channel="zwave:device:2c3b27f3:node49:sensor_temperature"}
+    {
+        unit="°C",
+        channel="zwave:device:2c3b27f3:node49:sensor_temperature"
+    }
 Number
     Sensor_CL_Bathroom_TempHumidity_SensorRelhumidity
     "Bathroom relative humidity is [%.0f %%]"

@@ -25,8 +25,11 @@ sitemap lights label="Lights"
     Frame label="1st floor"
     {
         Switch
-            item=gLightsLivingRoomWallLights
-            label="Living room wall lights[]"
+            item=Wallplug_GF_LivingRoomWall_switch1
+            label="Book shelves light[]"
+        Switch
+            item=Wallplug_GF_LivingRoomWall_switch2
+            label="Piano lights[]"
         Slider
             item=Dimmer_GF_DiningRoom_SwitchDimmer
             label="Dining room"
