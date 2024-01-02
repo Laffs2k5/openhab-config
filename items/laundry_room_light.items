@@ -119,3 +119,19 @@ Number
 // Switch    Sensor_CL_LaundryRoom_sensor2Binary    "Binary Sensor"    (gRoomLaundryRoom)    { channel="zwave:device:2c3b27f3:node40:sensor_binary" }
 // Switch    Sensor_CL_LaundryRoom_sensor2alarmBurglar   "Laundry room motion sensor state is [%s]"        (gRoomLaundryRoom)        { channel="zwave:device:2c3b27f3:node40:alarm_tamper" }
 /* END TELLDUS Multisensor */
+
+/* ZWA011 Aeotec Door/Window Sensor 7: Laundry room door sensor */
+Contact
+    Sensor_CL_LaundryRoom_Door_Sensor_state
+    "Laundry room door sensor state is [%s]"
+    <windowsensor>
+    (gRoomLaundryRoom)
+    {channel="zwave:device:2c3b27f3:node54:sensor_door"}
+/* Moved to file _persist_influxdb.items to persisted for charting
+Number
+    Sensor_CL_LaundryRoom_Door_Sensor_batterylevel
+    "Laundry room door sensor battery level is [%.0f %%]"
+    <battery>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node54:battery-level"} */
+/* END Laundry room door sensor */

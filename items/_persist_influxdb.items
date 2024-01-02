@@ -295,3 +295,12 @@ Number
     (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
     { channel="zwave:device:2c3b27f3:node40:battery-level" }
 /* END TELLDUS Multisensor */
+
+/* ZWA011 Aeotec Door/Window Sensor 7: Laundry room door sensor */
+Number
+    Sensor_CL_LaundryRoom_Door_Sensor_batterylevel
+    "Laundry room door sensor battery level is [%.0f %%]"
+    <battery>
+    (gRoomLaundryRoom, gPersistInfluxEveryUpdate, gBatteryMonitoredItems)
+    {channel="zwave:device:2c3b27f3:node54:battery-level"}
+/* END Laundry room door sensor */

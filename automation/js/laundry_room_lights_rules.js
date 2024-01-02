@@ -46,6 +46,7 @@ const itemNames = {
     motionActive: 'LaundryRoom_Lights_MotionTrigger_active',
     motionSensor1: 'Sensor_CL_LaundryRoom_SensorBinary',
     motionSensor2: 'Sensor_CL_LaundryRoom_sensor2alarmMotion',
+    doorSensor: 'Sensor_CL_LaundryRoom_Door_Sensor_state',
 
     autoOffControl: 'LaundryRoom_Lights_AutoOff_control',
     autoOffTime: 'LaundryRoom_Lights_AutoOff_setTime',
@@ -271,6 +272,26 @@ const rulesToCreate = {
             const localLogDebugOnInfo = false
             const l = SCRIPT.logger.create(rulesUidPrefix + 'MotionDetected', localLogDebugOnInfo)
             l.d('motion detected')
+            if (items.getItem(itemNames.motionActive).state == 'ON') {
+                items.getItem(itemNames.lightsSwitch).sendCommand('ON')
+            }
+
+            const activeState = items.getItem(itemNames.motionActive).state
+            l.d('Item that detected motion: {}', event.itemName)
+            l.d('Active state was: {}', activeState)
+        },
+    },
+    [`${rulesUidPrefix}DoorOpened`]: {
+        ruleName: 'Laundry room lights: door sensor trigger',
+        ruleDescription: 'When door opens, turn lights on if motion trigger is active.',
+        tags: SCRIPT.tags(),
+        triggerEvents: [triggers.ItemStateUpdateTrigger(itemNames.doorSensor, 'OPEN')],
+
+        // make this as quick as possible
+        func: (event) => {
+            const localLogDebugOnInfo = false
+            const l = SCRIPT.logger.create(rulesUidPrefix + 'DoorOpened', localLogDebugOnInfo)
+            l.d('door became open')
             if (items.getItem(itemNames.motionActive).state == 'ON') {
                 items.getItem(itemNames.lightsSwitch).sendCommand('ON')
             }
